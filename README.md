@@ -1,7 +1,6 @@
 # BlueprintFlow
 
 BlueprintFlow aims to simplify code generation through abstractions and structured data retrieval, allowing developers to create high-quality, modularized code with reduced overhead and adherence to established standards.
-This tool offers a systematic approach that not only ensures efficiency but also enhances productivity by minimizing manual labor and leveraging advanced retrieval techniques.
 
 ## Overview
 
@@ -17,12 +16,6 @@ This tool offers a systematic approach that not only ensures efficiency but also
 - **Code Generation**: automate the production of efficient, modular code.
 - **Abstraction Generation**: create high-level, reusable code structures using AI.
 
-### Philosophy
-
-- **Offline-First**: prioritize software that works seamlessly without internet connection.
-- **Local Privacy**: store all data locally.
-- **Open-Source**: promote transparency, collaboration, and community-driven development.
-
 ### User Interaction
 
 - **Q&A**: provide question and answer mechanisms to support development needs.
@@ -33,7 +26,7 @@ This tool offers a systematic approach that not only ensures efficiency but also
 
 ### Content Validation
 
-- **Code Failure by Default**: ensure generated code fails without human interaction.
+- **Code Failure by Default**: fail code generated without human validation.
 - **Function Calling**: allow custom validations through function calling.
 - **Traceability**: track content generation up to its origins.
 - **Watermarks**: embed identifiers for metadata purposes.
@@ -57,3 +50,9 @@ This tool offers a systematic approach that not only ensures efficiency but also
 - [Pydantic](https://github.com/pydantic/pydantic)
 - [Chroma](https://github.com/chroma-core/chroma)
 - [Kùzu](https://github.com/kuzudb/kuzu)
+
+### Philosophy
+
+- **Offline-First**: prioritize software that works seamlessly without internet connection.
+- **Local Privacy**: store all data locally.
+- **Open-Source**: promote transparency, collaboration, and community-driven development.

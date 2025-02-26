@@ -1,0 +1,41 @@
+{
+    /** On Save **/
+    "editor.formatOnSave": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "notebook.formatOnSave.enabled": true,
+    /* Features **/
+    "explorer.excludeGitIgnore": true,
+    "notebook.diff.ignoreMetadata": true,
+    "notebook.diff.ignoreOutputs": true,
+    "notebook.diff.overviewRuler": true,
+    "notebook.output.wordWrap": true,
+    /* Extensions **/
+    "material-icon-theme.folders.associations": {
+        "blueprintflow": "src"
+    },
+    "mypy-type-checker.args": [
+        "--ignore-missing-imports",
+        "--show-column-numbers",
+        "--config-file=pyproject.toml"
+    ],
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    /* Editor settings for Python **/
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.python": "explicit",
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "notebook.codeActionsOnSave": {
+        "notebook.source.fixAll.python": "explicit",
+        "notebook.source.organizeImports": "explicit"
+    },
+    "notebook.defaultFormatter": "charliermarsh.ruff",
+    "cSpell.words": [
+        "blueprintflow",
+        "Kùzu"
+    ],
+}

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+echo "Applying pre-commit hook..."
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+    against=HEAD
+else
+    against=$(git hash-object -t tree /dev/null)
+fi
+allownonascii=false
+exec 1>&2
+if [[ "$allownonascii" != "true" ]] &&
+    test "$(git diff --cached --name-only --diff-filter=A -z "$against" | LC_ALL=C tr -d '[ -~]\0' | wc -c)" != 0; then
+    echo "Error: Attempt to add a non-ASCII file name"
+    exit 1
+fi
+format=true
+if [[ $format == "true" ]]; then
+    make format >/dev/null 2>&1 || {
+        echo "Error: Please solve all issues revealed by 'make format'"
+        exit 1
+    }
+fi
+lint=true
+if [[ $lint == "true" ]]; then
+    make lint >/dev/null 2>&1 || {
+        echo "Error: Please solve all errors revealed by 'make lint'"
+        exit 1
+    }
+fi
+
+echo
