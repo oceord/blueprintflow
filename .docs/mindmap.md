@@ -39,7 +39,7 @@ mindmap
                 Boilerplate
                 High-Quality Code
         (Tools)
-            Chroma
+            LanceDB
             Kùzu
             LiteLLM
             Pydantic

@@ -48,7 +48,7 @@ BlueprintFlow aims to simplify code generation through abstractions and structur
 - Python
 - [LiteLLM](https://github.com/BerriAI/litellm)
 - [Pydantic](https://github.com/pydantic/pydantic)
-- [Chroma](https://github.com/chroma-core/chroma)
+- [LanceDB](https://github.com/lancedb/lancedb)
 - [Kùzu](https://github.com/kuzudb/kuzu)
 
 ### Philosophy
