@@ -1,6 +1,6 @@
 # Makefile to gather common commands
 
-.PHONY: build check clean format help lint pipenv-dev-install publish-pypi publish-testpypi show-version-dev validate-publish version-bump version-bump-dev version-bump-patch version-bump-post version-bump-rc
+.PHONY: build check clean format help lint pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git-hooks validate-publish version-bump version-bump-dev version-bump-patch version-bump-post version-bump-rc
 .DEFAULT_GOAL := help
 
 help: ## Show this help menu
@@ -9,15 +9,16 @@ help: ## Show this help menu
 		sort | \
 		awk 'BEGIN {FS=":.* ## "}; {printf "\t%-23s %s\n", $$1, $$2};'
 
-.print-phony:
+print-phony:
 	@echo -n "\n.PHONY: "
-	@grep '^[a-z|_|-]*:.* ##' $(MAKEFILE_LIST) | \
+	@grep '^[a-z|_|-]*:.*' $(MAKEFILE_LIST) | \
 		sort | \
-		awk 'BEGIN {FS=":.* ## "}; {printf "%s ", $$1};'
+		awk 'BEGIN {FS=":.*"}; {printf "%s ", $$1};'
 	@echo "\n"
 
 set-up-git-hooks:
-	@cp .githooks/* .git/hooks/
+	@mkdir -p .git/hooks
+	@cp .githooks/* .git/hooks
 
 ####### CI/CD COMMANDS #######################################################################
 
@@ -30,11 +31,14 @@ version-bump-rc: ## Bump blueprintflow release candidate version
 version-bump: ## Bump blueprintflow version
 	@python -m incremental.update blueprintflow
 
+version-bump-patch: ## Bump blueprintflow patch-release version
+	@python -m incremental.update blueprintflow --patch
+
 version-bump-post: ## Bump blueprintflow post-release version
 	@python -m incremental.update blueprintflow --post
 
-version-bump-patch: ## Bump blueprintflow patch-release version
-	@python -m incremental.update blueprintflow --patch
+print-version: ## Display current local version
+	@pip show blueprintflow | grep 'Version:'
 
 build: check ## Build a distribution for the package
 	$(info Building distribution artifacts...)
@@ -57,9 +61,6 @@ publish-pypi: validate-publish ## Publish the dist to PyPI
 	$(info Publishing distribution to PyPI...)
 	@twine upload dist/*
 	@echo Done.
-
-show-version-dev: ## Display current dev version
-	@pip show blueprintflow | grep 'Version:'
 
 ####### COMMANDS #######################################################################
 
