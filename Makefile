@@ -1,17 +1,7 @@
 # Makefile to gather common commands
 
-.PHONY: build check clean format help lint pipenv-dev-install version
+.PHONY: build check clean format help lint pipenv-dev-install publish-pypi publish-testpypi show-version-dev validate-publish version-bump version-bump-dev version-bump-patch version-bump-post version-bump-rc
 .DEFAULT_GOAL := help
-
-# Project variables
-SRC:=src/$(MODULE)
-
-# Command overrides
-# In docker-related commands, provide DOCKER=podman to use podman instead of docker
-DOCKER:=docker
-
-# Fetch from git tags the current dev version string, if not found use seconds since epoch
-TAG := $(shell git describe --tags --always --dirty --broken 2>/dev/null || date +%s)
 
 help: ## Show this help menu
 	$(info Available make commands:)
@@ -29,12 +19,49 @@ help: ## Show this help menu
 set-up-git-hooks:
 	@cp .githooks/* .git/hooks/
 
-####### COMMANDS #######################################################################
+####### CI/CD COMMANDS #######################################################################
 
-build: ## Build a distribution for the package
+version-bump-dev: ## Bump blueprintflow dev-release version
+	@python -m incremental.update blueprintflow --dev
+
+version-bump-rc: ## Bump blueprintflow release candidate version
+	@python -m incremental.update blueprintflow --rc
+
+version-bump: ## Bump blueprintflow version
+	@python -m incremental.update blueprintflow
+
+version-bump-post: ## Bump blueprintflow post-release version
+	@python -m incremental.update blueprintflow --post
+
+version-bump-patch: ## Bump blueprintflow patch-release version
+	@python -m incremental.update blueprintflow --patch
+
+build: check ## Build a distribution for the package
 	$(info Building distribution artifacts...)
-	@python -m build --wheel
+	@rm -rf dist/
+	@python -m build
 	@echo Done.
+
+validate-publish: ## Validate if the current distribution can be published
+	@if find dist -type f | grep -E '\.(dev|rc)\d*'; then \
+		echo "Publish Error: the distribution cannot be published to PyPI.";\
+		exit 1; \
+	else echo "Publish OK: the distribution can be published to PyPI."; fi
+
+publish-testpypi: validate-publish ## Publish the dist to TestPyPI
+	$(info Publishing distribution to TestPyPI...)
+	@twine upload -r testpypi dist/* --verbose
+	@echo Done.
+
+publish-pypi: validate-publish ## Publish the dist to PyPI
+	$(info Publishing distribution to PyPI...)
+	@twine upload dist/*
+	@echo Done.
+
+show-version-dev: ## Display current dev version
+	@pip show blueprintflow | grep 'Version:'
+
+####### COMMANDS #######################################################################
 
 check: ## Check source-code for known security vulnerabilities
 	$(info Checking code for known security vulnerabilities...)
@@ -73,11 +100,8 @@ lint: ## Perform a static code analysis
 
 pipenv-dev-install: ## Create dev venv
 	@PIPENV_VERBOSITY=-1 pipenv run pip install --upgrade pip
-	@if [ -f "Pipfile.lock" ]; then \
-		PIPENV_VERBOSITY=-1 pipenv install --dev --ignore-pipfile --deploy; \
+	@if [ -f "Pipfile.lock" ] ; then \
+		PIPENV_VERBOSITY=-1 pipenv install --dev --ignore-pipfile --deploy ; \
 	else \
-		PIPENV_VERBOSITY=-1 pipenv install --dev; \
+		PIPENV_VERBOSITY=-1 pipenv install --dev ; \
 	fi
-
-version: ## Display current dev version
-	@echo Version: $(TAG)

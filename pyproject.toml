@@ -1,11 +1,10 @@
 [build-system]
-requires = ["setuptools>=43.0.0"]
+requires = ["setuptools>=70.0.0", "incremental>=24.7.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-dynamic = ["readme"]
+dynamic = ["version", "readme"]
 name = "blueprintflow"
-version = "0.0.0"
 license = { file = "LICENSE" }
 description = "Simplify code generation via abstractions and structured retrieval"
 classifiers = [
@@ -20,10 +19,12 @@ classifiers = [
 ]
 authors = [{ name = "oceord" }]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = ["incremental>=24.7.2"]
 
 [project.urls]
 Repository = "https://github.com/oceord/blueprintflow"
+
+[tool.incremental]
 
 [tool.setuptools.dynamic]
 readme = { file = ["README.md"], content-type = "text/markdown" }
@@ -38,6 +39,11 @@ allow_redefinition = true
 local_partial_types = true
 strict_equality = true
 install_types = true
+
+[tool.ruff]
+exclude = [
+    "src/blueprintflow/_version.py", # handled by incremental
+]
 
 [tool.ruff.lint]
 select = ["ALL"]

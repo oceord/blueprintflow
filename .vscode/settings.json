@@ -36,6 +36,8 @@
     "notebook.defaultFormatter": "charliermarsh.ruff",
     "cSpell.words": [
         "blueprintflow",
-        "Kùzu"
+        "Kùzu",
+        "pypi",
+        "testpypi"
     ],
 }
