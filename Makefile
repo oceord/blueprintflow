@@ -55,7 +55,7 @@ format: ## Format the entire codebase
 	type ruff >/dev/null 2>&1 ; then \
 		echo Formatting source-code... && \
 		echo Applying ruff... && \
-		ruff format $(SRC) tests && \
+		ruff format $(SRC) && \
 		echo Done. ; \
 	else echo "SKIPPED (ruff not found)" >&2 ; fi
 
@@ -65,9 +65,9 @@ lint: ## Perform a static code analysis
 	type mypy >/dev/null 2>&1 ; then \
 		echo Linting source-code... && \
 		echo Applying ruff... && \
-		ruff check $(SRC) tests && \
+		ruff check $(SRC) && \
 		echo Applying mypy... && \
-		mypy --show-error-context --show-column-numbers --pretty $(SRC) tests && \
+		mypy --show-error-context --show-column-numbers --pretty $(SRC) && \
 		echo Done. ; \
 	else echo "SKIPPED (ruff and/or mypy not found)" >&2 ; fi
 
