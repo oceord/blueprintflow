@@ -1,6 +1,9 @@
 {
     /** On Save **/
     "editor.formatOnSave": true,
+    "files.exclude": {
+        ".githooks/": true
+    },
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
