@@ -5,6 +5,7 @@ set -o nounset
 set -o pipefail
 
 SYS_COMMON_PACKAGES=(
+    gnupg2
     make
 )
 PIP_BUILD_PACKAGES=(
