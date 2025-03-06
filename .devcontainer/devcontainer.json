@@ -33,6 +33,7 @@
     "containerEnv": {
         "LANG": "${localEnv:LANG}",
         "PIPENV_VENV_IN_PROJECT": "1",
+        "PIPENV_VERBOSITY": "-1",
         "ZSH_CUSTOM": "${localEnv:ZSH_CUSTOM}"
     },
     "onCreateCommand": "./.devcontainer/onCreateCommand.sh",

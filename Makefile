@@ -100,9 +100,9 @@ lint: ## Perform a static code analysis
 	else echo "SKIPPED (ruff and/or mypy not found)" >&2 ; fi
 
 pipenv-dev-install: ## Create dev venv
-	@PIPENV_VERBOSITY=-1 pipenv run pip install --upgrade pip
+	@pipenv run pip install --upgrade pip
 	@if [ -f "Pipfile.lock" ] ; then \
-		PIPENV_VERBOSITY=-1 pipenv install --dev --ignore-pipfile --deploy ; \
+		pipenv install --dev --ignore-pipfile --deploy ; \
 	else \
-		PIPENV_VERBOSITY=-1 pipenv install --dev ; \
+		pipenv install --dev ; \
 	fi
