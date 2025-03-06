@@ -39,6 +39,7 @@
         "envlist",
         "Kùzu",
         "pypi",
-        "testpypi"
+        "testpypi",
+        "tomli"
     ],
 }

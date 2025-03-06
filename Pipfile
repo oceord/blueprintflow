@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 incremental = "*"
 pydantic = "<3.0.0,>=2.0.0"
+tomli-w = "*"
 
 [dev-packages]
 blueprintflow = {editable = true, path = "."}
