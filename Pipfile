@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+incremental = "*"
+pydantic = "<3.0.0,>=2.0.0"
 
 [dev-packages]
 blueprintflow = {editable = true, path = "."}

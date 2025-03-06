@@ -16,13 +16,9 @@
     "notebook.output.wordWrap": true,
     /* Extensions **/
     "material-icon-theme.folders.associations": {
-        "blueprintflow": "src"
+        "blueprintflow": "src",
+        "defaults": "base",
     },
-    "mypy-type-checker.args": [
-        "--ignore-missing-imports",
-        "--show-column-numbers",
-        "--config-file=pyproject.toml"
-    ],
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     /* Editor settings for Python **/
     "[python]": {
@@ -39,6 +35,8 @@
     "notebook.defaultFormatter": "charliermarsh.ruff",
     "cSpell.words": [
         "blueprintflow",
+        "doctest",
+        "envlist",
         "Kùzu",
         "pypi",
         "testpypi"
