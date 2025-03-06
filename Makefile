@@ -52,7 +52,7 @@ validate-publish: ## Validate if the current distribution can be published
 		exit 1; \
 	else echo "Publish OK: the distribution can be published to PyPI."; fi
 
-publish-testpypi: validate-publish ## Publish the dist to TestPyPI
+publish-testpypi: ## Publish the dist to TestPyPI
 	$(info Publishing distribution to TestPyPI...)
 	@twine upload -r testpypi dist/* --verbose
 	@echo Done.

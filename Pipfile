@@ -11,3 +11,4 @@ tomli-w = "*"
 [dev-packages]
 blueprintflow = {editable = true, path = "."}
 build = "*"
+click = "*"
