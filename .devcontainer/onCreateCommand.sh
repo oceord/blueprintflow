@@ -13,3 +13,5 @@ sudo ./scripts/install_meta_packages.sh \
     --install-pip-dev-packages
 
 make set-up-git-hooks
+
+./scripts/install_meta_packages.sh --install-pyenv

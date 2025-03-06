@@ -99,6 +99,9 @@ lint: ## Perform a static code analysis
 		echo Done. ; \
 	else echo "SKIPPED (ruff and/or mypy not found)" >&2 ; fi
 
+test: ## Run tests
+	@python -m doctest src/blueprintflow/**/*.py && echo "Tests passed."
+
 pipenv-dev-install: ## Create dev venv
 	@pipenv run pip install --upgrade pip
 	@if [ -f "Pipfile.lock" ] ; then \
