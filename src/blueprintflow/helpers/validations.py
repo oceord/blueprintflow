@@ -1,13 +1,17 @@
 def eq_struct(src_dict: dict, tgt_dict: dict) -> bool:
     """Compare the structural compatibility of two dictionaries.
 
+    This function checks if two dictionaries have the same structure, meaning they have
+    the same keys and the corresponding values have the same types.
+    The function does not compare the actual values, only their types.
+
     Args:
-        src_dict (dict): Source dictionary to compare with
-        tgt_dict (dict): Target dictionary to compare to
+        src_dict (dict): The source dictionary to compare.
+        tgt_dict (dict): The target dictionary to compare against.
 
     Returns:
         bool: True if both dictionaries have identical structure (same keys and types),
-              False otherwise
+            False otherwise.
 
     Examples:
         >>> eq_struct({}, {})

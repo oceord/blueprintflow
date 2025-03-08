@@ -17,15 +17,19 @@ with resources.files(defaults).joinpath("settings.toml").open("rb") as file:
 
 
 def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
-    """Load blueprintflow settings.
+    """Load BlueprintFlow settings from a specified file or use default settings.
+
+    This function loads the BlueprintFlow settings from the provided file path.
+    If no file path is provided, it uses the default settings.
+    The function validates the file path and the settings dictionary before
+    returning the settings as a `BlueprintFlowSettings` object.
 
     Args:
-        filepath (Path | None, optional): The filepath to load.
-            If not provided the default settings will be used.
-            Defaults to None.
+        filepath (Optional[Path], optional): The file path to load the settings from.
+            If not provided, the default settings will be used. Defaults to None.
 
     Returns:
-        BlueprintFlowSettings: pydantic objective with the settings
+        BlueprintFlowSettings: A Pydantic object containing the loaded settings.
     """
     __validate_settings_filepath(filepath)
     base_config_filepath = get_main_config_file()
@@ -42,14 +46,18 @@ def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
 
 
 def __validate_settings_filepath(filepath: Path | None) -> None:
-    """Validate the filepath provided.
+    """Validate the provided settings file path.
+
+    This function checks if the provided file path is a valid TOML file and exists.
+    If the file path is invalid, it raises a ValueError with an appropriate error
+    message.
 
     Args:
-        filepath (Path | None): the settings filepath
+        filepath (Optional[Path]): The settings file path to validate.
 
     Raises:
-        ArgumentError: the file must be TOML
-        ArgumentError: the path provided must be a file
+        ValueError: If the file path is not an existing file.
+        ValueError: If the file path does not point to a TOML file.
 
     Examples:
         >>> __validate_settings_filepath(None)
@@ -81,6 +89,18 @@ def __validate_settings_filepath(filepath: Path | None) -> None:
 
 
 def __validate_settings_dict(settings: dict[str, Any]) -> None:
+    """Validate the structure of the settings dictionary.
+
+    This function checks if the provided settings dictionary has the same structure as
+    the default settings. If the structures do not match, it raises a ValueError.
+
+    Args:
+        settings (dict[str, Any]): The settings dictionary to validate.
+
+    Raises:
+        ValueError: If the structure of the settings dictionary is different from the
+            default settings.
+    """
     if not eq_struct(default_settings, settings):
         msg = "Loaded settings are structurally different from the default settings."
         raise ValueError(msg)
