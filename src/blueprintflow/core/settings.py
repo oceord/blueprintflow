@@ -5,12 +5,12 @@ from typing import Any
 
 from blueprintflow.core import defaults
 from blueprintflow.core.model.settings import BlueprintFlowSettings
-from blueprintflow.helpers.sys_io.config import (
-    get_main_config_file,
-    read_config_file,
-    save_main_config_file,
-)
 from blueprintflow.helpers.validations import eq_struct
+from blueprintflow.helpers.xdg.config import (
+    get_user_config_file,
+    read_user_config_file,
+    save_user_config_file,
+)
 
 with resources.files(defaults).joinpath("settings.toml").open("rb") as file:
     default_settings = tomllib.load(file)
@@ -32,12 +32,12 @@ def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
         BlueprintFlowSettings: A Pydantic object containing the loaded settings.
     """
     __validate_settings_filepath(filepath)
-    base_config_filepath = get_main_config_file()
-    if not base_config_filepath.exists():
-        save_main_config_file(default_settings)
-    config_filepath = filepath or base_config_filepath
+    user_config_filepath = get_user_config_file()
+    if not user_config_filepath.exists():
+        save_user_config_file(default_settings)
+    config_filepath = filepath or user_config_filepath
     settings_buffer = (
-        read_config_file(config_filepath)
+        read_user_config_file(config_filepath)
         if config_filepath is not None
         else default_settings
     )
