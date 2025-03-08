@@ -25,7 +25,7 @@ def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
     returning the settings as a `BlueprintFlowSettings` object.
 
     Args:
-        filepath (Optional[Path], optional): The file path to load the settings from.
+        filepath (Path, optional): The file path to load the settings from.
             If not provided, the default settings will be used. Defaults to None.
 
     Returns:
@@ -53,7 +53,7 @@ def __validate_settings_filepath(filepath: Path | None) -> None:
     message.
 
     Args:
-        filepath (Optional[Path]): The settings file path to validate.
+        filepath (Path, optional): The settings file path to validate.
 
     Raises:
         ValueError: If the file path is not an existing file.
