@@ -85,19 +85,23 @@ def get_user_config_file() -> Path:
     return get_user_config_dir() / BPF_USER_SETTINGS_FILE_NAME
 
 
-def read_user_config_file(filepath: Path) -> dict[str, Any]:
-    """Read the BlueprintFlow user settings file.
+def read_user_config_file(filepath: Path | None) -> dict[str, Any]:
+    """Read the user configuration file and return its contents as a dictionary.
 
-    This function reads the user settings file at the specified path and returns the
-    settings as a dictionary.
+    This function reads the configuration file specified by `filepath`.
+    If `filepath` is not provided, it defaults to the user's configuration file path.
+    The file is expected to be in TOML format.
+    The contents of the file are parsed and returned as a dictionary.
 
     Args:
-        filepath (Path): The path to the user settings file.
+        filepath (Path, optional): The path to the configuration file. If not provided,
+            the default user configuration file path is used. Defaults to None.
 
     Returns:
-        dict[str, Any]: A dictionary containing the settings.
+        dict[str, Any]: A dictionary containing the parsed configuration settings.
     """
-    with filepath.open("rb") as file:
+    config_file = filepath or get_user_config_file()
+    with config_file.open("rb") as file:
         return tomllib.load(file)
 
 
