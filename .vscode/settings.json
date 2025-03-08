@@ -39,6 +39,9 @@
         "envlist",
         "gpgsign",
         "Kùzu",
+        "kuzudb",
+        "lancedb",
+        "LOCALAPPDATA",
         "pypi",
         "testpypi",
         "tomli"
