@@ -23,7 +23,7 @@ def get_system_config_dir() -> Path:
         ValueError: system not supported
 
     Returns:
-        Path: system config directory
+        Path: system config directory path
     """
     match SYSTEM:
         case "Darwin":
@@ -38,11 +38,11 @@ def get_system_config_dir() -> Path:
     return config_dir
 
 
-def get_config_dir() -> Path:
-    """Get the config directory for blueprintflow.
+def get_main_config_dir() -> Path:
+    """Get the blueprintflow main config directory according to the system.
 
     Returns:
-        Path: config directory
+        Path: main config directory path
     """
     config_dir = get_system_config_dir() / BPF_CONFIG_DIR_NAME
     if not config_dir.exists():
@@ -55,33 +55,33 @@ def _init_config_dir(config_dir: Path) -> None:
     config_dir.mkdir(parents=True, exist_ok=True)
 
 
-def get_config_file() -> Path:
-    """Get blueprintflow settings file.
+def get_main_config_file() -> Path:
+    """Get the blueprintflow main settings file according to the system.
 
     Returns:
-        Path | None: The path to the settings file or None if it does not exists.
+        Path: settings filepath
     """
-    return get_config_dir() / BPF_SETTINGS_FILE_NAME
+    return get_main_config_dir() / BPF_SETTINGS_FILE_NAME
 
 
 def read_config_file(filepath: Path) -> dict[str, Any]:
-    """Read the blueprintflow config file provided.
+    """Read the blueprintflow settings file provided.
 
     Args:
-        filepath (Path): the config filepath
+        filepath (Path): settings filepath
 
     Returns:
-        dict[str, Any]: the settings dictionary
+        dict[str, Any]: settings dictionary
     """
     with filepath.open("rb") as file:
         return tomllib.load(file)
 
 
-def save_config_file(settings: dict) -> None:
+def save_main_config_file(settings: dict) -> None:
     """Save blueprintflow settings according to the system.
 
     Args:
-        settings (dict): settings dict to save
+        settings (dict): settings dictionary to save
     """
-    with get_config_file().open("wb") as file:
+    with get_main_config_file().open("wb") as file:
         tomli_w.dump(settings, file)

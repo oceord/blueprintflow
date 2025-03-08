@@ -5,10 +5,10 @@ from typing import Any
 
 from blueprintflow.core import defaults
 from blueprintflow.core.model.settings import BlueprintFlowSettings
-from blueprintflow.helpers.sys_io import (
-    get_config_file,
+from blueprintflow.helpers.sys_io.config import (
+    get_main_config_file,
     read_config_file,
-    save_config_file,
+    save_main_config_file,
 )
 from blueprintflow.helpers.validations import eq_struct
 
@@ -28,9 +28,9 @@ def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
         BlueprintFlowSettings: pydantic objective with the settings
     """
     __validate_settings_filepath(filepath)
-    base_config_filepath = get_config_file()
+    base_config_filepath = get_main_config_file()
     if not base_config_filepath.exists():
-        save_config_file(default_settings)
+        save_main_config_file(default_settings)
     config_filepath = filepath or base_config_filepath
     settings_buffer = (
         read_config_file(config_filepath)
