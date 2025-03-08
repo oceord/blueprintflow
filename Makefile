@@ -1,6 +1,6 @@
 # Makefile to gather common commands
 
-.PHONY: build check clean format help lint pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git-hooks validate-publish version-bump version-bump-dev version-bump-patch version-bump-post version-bump-rc
+.PHONY: build check clean format help lint pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git validate-publish version-bump version-bump-dev version-bump-patch version-bump-post version-bump-rc
 .DEFAULT_GOAL := help
 
 help: ## Show this help menu
@@ -16,7 +16,8 @@ print-phony:
 		awk 'BEGIN {FS=":.*"}; {printf "%s ", $$1};'
 	@echo "\n"
 
-set-up-git-hooks:
+set-up-git:
+	@git config commit.gpgsign true
 	@mkdir -p .git/hooks
 	@cp .githooks/* .git/hooks
 

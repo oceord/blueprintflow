@@ -37,6 +37,7 @@
         "blueprintflow",
         "doctest",
         "envlist",
+        "gpgsign",
         "Kùzu",
         "pypi",
         "testpypi",
