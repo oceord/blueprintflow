@@ -15,6 +15,7 @@ WINDOWS_USER_DATA_DIR = Path(
 ).expanduser()
 
 BPF_USER_DATA_DIR_NAME = "blueprintflow"
+BPF_LOG_FILE_NAME = "blueprintflow.log"
 
 
 def get_platform_user_data_dir() -> Path:
@@ -86,3 +87,16 @@ def get_user_data_file(datafile: EmbeddedDataEnum) -> Path:
         Path: The path to the specified user data file.
     """
     return get_user_data_dir() / datafile
+
+
+def get_user_log_file() -> Path:
+    """Retrieve the path to the log file in the user data directory.
+
+    This function constructs the path to the log file by combining the user data
+    directory with the predefined log file name. The resulting path points to the
+    location of the log file within the user's data directory.
+
+    Returns:
+        Path: The path to the log file in the user data directory.
+    """
+    return get_user_data_dir() / BPF_LOG_FILE_NAME
