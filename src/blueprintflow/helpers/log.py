@@ -4,16 +4,6 @@ from contextlib import contextmanager
 from functools import wraps
 from typing import Any
 
-from blueprintflow.helpers.xdg.data import get_user_log_file
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler(get_user_log_file()),
-    ],
-)
 logger = logging.getLogger()
 
 
