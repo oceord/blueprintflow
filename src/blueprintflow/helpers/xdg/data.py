@@ -1,27 +1,20 @@
-import os
-import platform
 from pathlib import Path
 
 from blueprintflow.core.model.embedded_data import EmbeddedDataEnum
-
-SYSTEM = platform.system()
-
-LINUX_USER_DATA_DIR = Path(
-    os.environ.get("XDG_DATA_HOME", "~/.local/share")
-).expanduser()
-MACOS_USER_DATA_DIR = Path("~/Library").expanduser()
-WINDOWS_USER_DATA_DIR = Path(
-    os.environ.get("LOCALAPPDATA", "~/AppData/Local")
-).expanduser()
-
-BPF_USER_DATA_DIR_NAME = "blueprintflow"
-BPF_LOG_FILE_NAME = "blueprintflow.log"
+from blueprintflow.helpers.xdg.constants import (
+    BPF_LOG_FILE_NAME,
+    BPF_USER_DATA_DIR_NAME,
+    LINUX_USER_DATA_DIR,
+    MACOS_USER_DATA_DIR,
+    SYSTEM,
+    WINDOWS_USER_DATA_DIR,
+)
 
 
 def get_platform_user_data_dir() -> Path:
     """Retrieve the user data directory for the current platform.
 
-    This function determines the appropriate data directory for the
+    This function determines the appropriate user data directory for the
     current operating system. If the operating system is not supported, a
     ValueError is raised.
 
@@ -44,22 +37,7 @@ def get_platform_user_data_dir() -> Path:
     return data_dir
 
 
-def get_user_data_dir() -> Path:
-    """Retrieve the user data directory for blueprintflow.
-
-    This function returns the user data directory for blueprintflow. If the
-    directory does not exist, it is initialized.
-
-    Returns:
-        Path: The path to the user data directory.
-    """
-    data_dir = get_platform_user_data_dir() / BPF_USER_DATA_DIR_NAME
-    if not data_dir.exists():
-        _init_user_data_dir(data_dir)
-    return data_dir
-
-
-def _init_user_data_dir(data_dir: Path) -> None:
+def init_user_data_dir(data_dir: Path) -> None:
     """Initialize the user data directory.
 
     This function ensures that the user data directory exists by creating it
@@ -68,35 +46,41 @@ def _init_user_data_dir(data_dir: Path) -> None:
     Args:
         data_dir (Path): The path to the user data directory.
     """
-    # NOTE: ensure data_dir exists from this point forward
     data_dir.mkdir(parents=True, exist_ok=True)
 
 
-def get_user_data_file(datafile: EmbeddedDataEnum) -> Path:
-    """Retrieve the path to a specific user data file based on the provided enum.
+class UserData:
+    """Manages user data directories and files.
 
-    This function constructs the path to a user data file by combining the user data
-    directory with the specified data file enum. The resulting path points to the
-    location of the data file within the user's data directory.
+    This class handles the initialization and management of user data directories
+    and files, including the log file and embedded data files. It ensures that
+    the necessary directories and files are created and accessible.
 
-    Args:
-        datafile (EmbeddedDataEnum): An enum representing the specific data file to
-            retrieve.
-
-    Returns:
-        Path: The path to the specified user data file.
+    Attributes:
+        _user_data_dir (Path): The path to the user data directory.
+        log_file (Path): The path to the log file within the user data directory.
+        lancedb_file (Path): The path to the LanceDB file within the user data
+            directory.
+        kuzu_file (Path): The path to the Kuzu file within the user data directory.
     """
-    return get_user_data_dir() / datafile
 
+    def __init__(self, user_data_dir: Path | None = None) -> None:
+        """Initialize the UserData instance.
 
-def get_user_log_file() -> Path:
-    """Retrieve the path to the log file in the user data directory.
+        This constructor initializes the user data directory and ensures that
+        the necessary files and subdirectories are created. If a user data directory
+        is not provided, it defaults to the platform-specific user data directory.
 
-    This function constructs the path to the log file by combining the user data
-    directory with the predefined log file name. The resulting path points to the
-    location of the log file within the user's data directory.
-
-    Returns:
-        Path: The path to the log file in the user data directory.
-    """
-    return get_user_data_dir() / BPF_LOG_FILE_NAME
+        Args:
+            user_data_dir (Path | None, optional): The path to the user data directory.
+                If not provided, the default platform-specific user data directory is
+                used. Defaults to None.
+        """
+        self._user_data_dir = (
+            user_data_dir or get_platform_user_data_dir() / BPF_USER_DATA_DIR_NAME
+        )
+        if not self._user_data_dir.exists():
+            init_user_data_dir(self._user_data_dir)
+        self.log_file = self._user_data_dir / BPF_LOG_FILE_NAME
+        self.lancedb_file = self._user_data_dir / EmbeddedDataEnum.lancedb
+        self.kuzu_file = self._user_data_dir / EmbeddedDataEnum.kuzu

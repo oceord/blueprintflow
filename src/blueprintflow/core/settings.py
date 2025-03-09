@@ -6,11 +6,7 @@ from typing import Any
 from blueprintflow.core import defaults
 from blueprintflow.core.model.settings import BlueprintFlowSettings
 from blueprintflow.helpers.validations import eq_struct
-from blueprintflow.helpers.xdg.config import (
-    get_user_config_file,
-    read_user_config_file,
-    save_user_config_file,
-)
+from blueprintflow.helpers.xdg.config import UserConfig
 
 with resources.files(defaults).joinpath("settings.toml").open("rb") as file:
     default_settings = tomllib.load(file)
@@ -30,14 +26,21 @@ def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
 
     Returns:
         BlueprintFlowSettings: A Pydantic object containing the loaded settings.
+
+    Examples:
+        >>> user_settings = load_settings()
+
+        >>> file_settings = load_settings(
+        ...     Path("src/blueprintflow/core/defaults/settings.toml")
+        ... )
     """
     __validate_settings_filepath(filepath)
-    user_config_filepath = get_user_config_file()
-    if not user_config_filepath.exists():
-        save_user_config_file(default_settings)
-    config_filepath = filepath or user_config_filepath
+    user_config = UserConfig()
+    if not user_config.user_config_file.exists():
+        user_config.save_user_config_file(default_settings)
+    config_filepath = filepath or user_config.user_config_file
     settings_buffer = (
-        read_user_config_file(config_filepath)
+        user_config.read_user_config_file(config_filepath)
         if config_filepath is not None
         else default_settings
     )
@@ -100,7 +103,15 @@ def __validate_settings_dict(settings: dict[str, Any]) -> None:
     Raises:
         ValueError: If the structure of the settings dictionary is different from the
             default settings.
-    """
+
+    Examples:
+        >>> __validate_settings_dict(default_settings)
+
+        >>> __validate_settings_dict({})
+        Traceback (most recent call last):
+            ...
+        ValueError: Loaded settings are structurally different from the default settings.
+    """  # noqa: E501
     if not eq_struct(default_settings, settings):
         msg = "Loaded settings are structurally different from the default settings."
         raise ValueError(msg)
