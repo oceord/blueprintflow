@@ -72,7 +72,7 @@ class UserData:
         is not provided, it defaults to the platform-specific user data directory.
 
         Args:
-            user_data_dir (Path | None, optional): The path to the user data directory.
+            user_data_dir (Path, optional): The path to the user data directory.
                 If not provided, the default platform-specific user data directory is
                 used. Defaults to None.
         """
