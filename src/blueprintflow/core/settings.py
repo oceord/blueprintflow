@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from blueprintflow.core import defaults
-from blueprintflow.core.model.settings import BlueprintFlowSettings
+from blueprintflow.core.models.settings import BlueprintFlowSettings
 from blueprintflow.helpers.validations import eq_struct
 from blueprintflow.helpers.xdg.config import UserConfig
 

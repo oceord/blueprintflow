@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from blueprintflow.core.model.embedded_data import EmbeddedDataEnum
+from blueprintflow.core.models.data import EmbeddedDataEnum
 from blueprintflow.helpers.xdg.constants import (
     BPF_LOG_FILE_NAME,
     BPF_USER_DATA_DIR_NAME,
