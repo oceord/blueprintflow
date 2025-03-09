@@ -4,7 +4,7 @@ from typing import Any, ClassVar, Optional
 from pydantic import BaseModel
 
 
-class ModelTask(str, Enum):
+class ModelTaskEnum(str, Enum):
     """Enumeration of supported LLM tasks.
 
     This enum defines the various tasks that an LLM can perform.
@@ -23,7 +23,7 @@ class ModelTask(str, Enum):
 
 
 class ModelConfig(BaseModel):
-    """Represents the configuration for an LLM model.
+    """Represents the configuration for an LLM.
 
     Attributes:
         identifier (str): The unique identifier for the model.
@@ -52,7 +52,7 @@ class BlueprintFlowSettings(BaseModel):
             initialized.
     """
 
-    models: dict[ModelTask, ModelConfig]
+    models: dict[ModelTaskEnum, ModelConfig]
 
     _instance: ClassVar[Optional["BlueprintFlowSettings"]] = None
     initialized: ClassVar[bool] = False
