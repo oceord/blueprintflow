@@ -1,6 +1,6 @@
 # Makefile to gather common commands
 
-.PHONY: build check clean format help lint pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git validate-publish version-bump version-bump-dev version-bump-patch version-bump-post version-bump-rc
+.PHONY: build check clean format help lint pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git test tox validate-publish verify version-bump version-bump-dev version-bump-patch version-bump-post version-bump-rc
 .DEFAULT_GOAL := help
 
 help: ## Show this help menu
@@ -65,10 +65,6 @@ publish-pypi: validate-publish ## Publish the dist to PyPI
 
 ####### COMMANDS #######################################################################
 
-check: ## Check source-code for known security vulnerabilities
-	$(info Checking code for known security vulnerabilities...)
-	@pipenv check
-	@echo Done.
 
 clean: ## Clean up auxiliary and temporary files from the workspace
 	$(info Cleaning auxiliary and temporary files...)
@@ -100,8 +96,18 @@ lint: ## Perform a static code analysis
 		echo Done. ; \
 	else echo "SKIPPED (ruff and/or mypy not found)" >&2 ; fi
 
+check: ## Check source-code for known security vulnerabilities
+	$(info Checking code for known security vulnerabilities...)
+	@pipenv check
+	@echo Done.
+
 test: ## Run tests
 	@python -m doctest src/blueprintflow/**/*.py && echo "Tests passed."
+
+tox: ## Run tox tests
+	@tox
+
+verify: format lint check tox ## Run all verification commands
 
 pipenv-dev-install: ## Create dev venv
 	@pipenv run pip install --upgrade pip
