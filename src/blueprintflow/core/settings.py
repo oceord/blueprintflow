@@ -12,7 +12,9 @@ with resources.files(defaults).joinpath("settings.toml").open("rb") as file:
     default_settings = tomllib.load(file)
 
 
-def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
+def load_settings(
+    user_config: UserConfig | None = None, filepath: Path | None = None
+) -> BlueprintFlowSettings:
     """Load BlueprintFlow settings from a specified file or use default settings.
 
     This function loads the BlueprintFlow settings from the provided file path.
@@ -21,6 +23,9 @@ def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
     returning the settings as a `BlueprintFlowSettings` object.
 
     Args:
+        user_config(UserConfig, optional): An optional UserConfig instance that
+            specifies the user configuration directory and file. If not provided,
+            a default UserConfig instance will be used. Defaults to None.
         filepath (Path, optional): The file path to load the settings from.
             If not provided, the default settings will be used. Defaults to None.
 
@@ -31,17 +36,21 @@ def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
         >>> user_settings = load_settings()
 
         >>> file_settings = load_settings(
-        ...     Path("src/blueprintflow/core/defaults/settings.toml")
+        ...     user_config=UserConfig(Path("~/.config/blueprintflow"))
+        ... )
+
+        >>> file_settings = load_settings(
+        ...     filepath=Path("src/blueprintflow/core/defaults/settings.toml")
         ... )
     """
     __validate_settings_filepath(filepath)
-    user_config = UserConfig()
-    if not user_config.user_config_file.exists():
-        user_config.save_user_config_file(default_settings)
-    config_filepath = filepath or user_config.user_config_file
+    _user_config = user_config or UserConfig()
+    if not _user_config.user_config_file.exists():
+        _user_config.save_user_config_file(default_settings)
+    settings_file = filepath or _user_config.user_config_file
     settings_buffer = (
-        user_config.read_user_config_file(config_filepath)
-        if config_filepath is not None
+        _user_config.read_user_config_file(settings_file)
+        if settings_file is not None
         else default_settings
     )
     __validate_settings_dict(settings_buffer)
