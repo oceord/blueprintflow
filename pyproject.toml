@@ -44,7 +44,8 @@ warn_unused_ignores = true
 
 [tool.ruff]
 exclude = [
-    "src/blueprintflow/_version.py", # handled by incremental
+    ".venv",                         # not our code
+    "src/blueprintflow/_version.py", # auto-generated
 ]
 
 [tool.ruff.lint]
