@@ -1,11 +1,11 @@
 from enum import Enum
 
 
-class EmbeddedDataEnum(str, Enum):
-    """Enumeration of supported embedded data items.
+class DataStoreEnum(str, Enum):
+    """Enumeration of supported data stores.
 
-    This enum defines the names of the embedded data items supported by BlueprintFlow.
-    Each member of the enum represents a specific embedded data item.
+    This enum defines the names of the data stores used by BlueprintFlow.
+    Each member of the enum represents a specific store.
     """
 
     lancedb = "lancedb"

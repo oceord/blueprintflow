@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from blueprintflow.core.models.data import EmbeddedDataEnum
+from blueprintflow.core.models.data import DataStoreEnum
 from blueprintflow.helpers.xdg.constants import (
     BPF_LOG_FILE_NAME,
     BPF_USER_DATA_DIR_NAME,
@@ -82,5 +82,5 @@ class UserData:
         if not self._user_data_dir.exists():
             init_user_data_dir(self._user_data_dir)
         self.log_file = self._user_data_dir / BPF_LOG_FILE_NAME
-        self.lancedb_file = self._user_data_dir / EmbeddedDataEnum.lancedb
-        self.kuzu_file = self._user_data_dir / EmbeddedDataEnum.kuzu
+        self.lancedb_file = self._user_data_dir / DataStoreEnum.lancedb
+        self.kuzu_file = self._user_data_dir / DataStoreEnum.kuzu
