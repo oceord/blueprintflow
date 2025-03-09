@@ -19,6 +19,7 @@ class ModelTask(str, Enum):
     rag = "rag"
     summarization = "summarization"
     text_classification = "text_classification"
+    thinking = "thinking"
 
 
 class ModelConfig(BaseModel):

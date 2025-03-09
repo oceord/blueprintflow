@@ -33,12 +33,12 @@ identifier = "ollama/granite3.2:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
-[models.thinking]
+[models.text_classification]
 identifier = "ollama/granite3.2:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
-[models.text_classification]
+[models.thinking]
 identifier = "ollama/granite3.2:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
