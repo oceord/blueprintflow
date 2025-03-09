@@ -6,7 +6,8 @@ name = "pypi"
 [packages]
 incremental = "*"
 lancedb = "*"
-pydantic = "<3.0.0,>=2.0.0"
+litellm = "*"
+pydantic = "*"
 tomli-w = "*"
 
 [dev-packages]

@@ -42,6 +42,7 @@
         "kuzudb",
         "lancedb",
         "levelname",
+        "litellm",
         "LOCALAPPDATA",
         "pypi",
         "testpypi",
