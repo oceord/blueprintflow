@@ -65,16 +65,21 @@ class UserConfig:
             configuration directory.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, user_config_dir: Path | None = None) -> None:
         """Initialize the UserConfig instance.
 
         This constructor initializes the user configuration directory and ensures that
         the necessary files and subdirectories are created. If a user configuration
         directory is not provided, it defaults to the platform-specific user
         configuration directory.
+
+        Args:
+            user_config_dir (Path, optional): The path to the user config directory.
+                If not provided, the default platform-specific user config directory is
+                used. Defaults to None.
         """
         self._user_config_dir = (
-            get_platform_user_config_dir() / BPF_USER_CONFIG_DIR_NAME
+            user_config_dir or get_platform_user_config_dir() / BPF_USER_CONFIG_DIR_NAME
         )
         if not self._user_config_dir.exists():
             init_user_config_dir(self._user_config_dir)
