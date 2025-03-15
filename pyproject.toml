@@ -19,7 +19,14 @@ classifiers = [
 ]
 authors = [{ name = "oceord" }]
 requires-python = ">=3.12,<3.14"
-dependencies = ["incremental", "lancedb", "litellm", "pydantic", "tomli-w"]
+dependencies = [
+    "incremental",
+    "kuzu",
+    "lancedb",
+    "litellm",
+    "pydantic",
+    "tomli-w",
+]
 
 [project.urls]
 Repository = "https://github.com/oceord/blueprintflow"
