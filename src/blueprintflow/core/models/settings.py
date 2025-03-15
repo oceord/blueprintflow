@@ -19,6 +19,7 @@ class ModelTaskEnum(str, Enum):
     rag = "rag"
     summarization = "summarization"
     text_classification = "text_classification"
+    text_extraction = "text_extraction"
     thinking = "thinking"
 
 
