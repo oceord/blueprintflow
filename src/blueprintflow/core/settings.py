@@ -36,23 +36,14 @@ def load_settings(
         >>> user_settings = load_settings()
 
         >>> file_settings = load_settings(
-        ...     user_config=UserConfig(Path("~/.config/blueprintflow"))
-        ... )
-
-        >>> file_settings = load_settings(
-        ...     filepath=Path("src/blueprintflow/core/defaults/settings.toml")
+        ...     user_config=UserConfig(Path("~/.config/blueprintflow").expanduser())
         ... )
     """
     __validate_settings_filepath(filepath)
     _user_config = user_config or UserConfig()
     if not _user_config.user_config_file.exists():
         _user_config.save_user_config_file(default_settings)
-    settings_file = filepath or _user_config.user_config_file
-    settings_buffer = (
-        _user_config.read_user_config_file(settings_file)
-        if settings_file is not None
-        else default_settings
-    )
+    settings_buffer = _user_config.read_user_config_file()
     __validate_settings_dict(settings_buffer)
     return BlueprintFlowSettings(**settings_buffer)
 

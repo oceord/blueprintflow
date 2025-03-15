@@ -85,23 +85,16 @@ class UserConfig:
             init_user_config_dir(self._user_config_dir)
         self.user_config_file = self._user_config_dir / BPF_USER_SETTINGS_FILE_NAME
 
-    def read_user_config_file(self, filepath: Path | None = None) -> dict[str, Any]:
+    def read_user_config_file(self) -> dict[str, Any]:
         """Read the user configuration file and return its contents as a dictionary.
 
         This method reads the user configuration file and parses its contents using the
-        TOML format. The contents are returned as a dictionary. If no file path is
-        provided, it defaults to the user configuration file path.
-
-        Args:
-            filepath (Path, optional): The path to the configuration file.
-                If not provided, the default user configuration file path is used.
-                Defaults to None.
+        TOML format. The contents are returned as a dictionary.
 
         Returns:
             dict[str, Any]: A dictionary containing the parsed configuration settings.
         """
-        config_file = filepath or self.user_config_file
-        with config_file.open("rb") as file:
+        with self.user_config_file.open("rb") as file:
             return tomllib.load(file)
 
     def save_user_config_file(self, settings: dict) -> None:
