@@ -82,5 +82,5 @@ class UserData:
         if not self._user_data_dir.exists():
             init_user_data_dir(self._user_data_dir)
         self.log_file = self._user_data_dir / BPF_LOG_FILE_NAME
-        self.lancedb_file = self._user_data_dir / DataStoreEnum.lancedb
-        self.kuzu_file = self._user_data_dir / DataStoreEnum.kuzu
+        self.lancedb_file = self._user_data_dir / DataStoreEnum.LANCEDB
+        self.kuzu_file = self._user_data_dir / DataStoreEnum.KUZU

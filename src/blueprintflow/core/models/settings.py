@@ -11,16 +11,16 @@ class ModelTaskEnum(str, Enum):
     Each member of the enum represents a specific task supported by the LLM.
     """
 
-    chat = "chat"
-    embedding = "embedding"
-    function_calling = "function_calling"
-    long_context = "long_context"
-    question_answering = "question_answering"
-    rag = "rag"
-    summarization = "summarization"
-    text_classification = "text_classification"
-    text_extraction = "text_extraction"
-    thinking = "thinking"
+    CHAT = "chat"
+    EMBEDDING = "embedding"
+    FUNCTION_CALLING = "function_calling"
+    LONG_CONTEXT = "long_context"
+    QUESTION_ANSWERING = "question_answering"
+    RAG = "rag"
+    SUMMARIZATION = "summarization"
+    TEXT_CLASSIFICATION = "text_classification"
+    TEXT_EXTRACTION = "text_extraction"
+    THINKING = "thinking"
 
 
 class ModelConfig(BaseModel):

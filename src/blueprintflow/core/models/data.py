@@ -8,5 +8,5 @@ class DataStoreEnum(str, Enum):
     Each member of the enum represents a specific store.
     """
 
-    lancedb = "lancedb"
-    kuzu = "kuzudb"
+    LANCEDB = "lancedb"
+    KUZU = "kuzudb"
