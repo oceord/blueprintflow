@@ -125,5 +125,3 @@ KUZU_RELATIONSHIPS = [
         to_node="SourceStructure",
     ),
 ]
-
-DICT_KUZU_TABLES = {n.name: n for n in KUZU_NODES + KUZU_RELATIONSHIPS}
