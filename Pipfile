@@ -15,4 +15,5 @@ tomli-w = "*"
 blueprintflow = {editable = true, path = "."}
 build = "*"
 click = "*"
+ipykernel = "*"
 twine = "*"

@@ -38,6 +38,7 @@
         "doctest",
         "envlist",
         "gpgsign",
+        "ipykernel",
         "Kùzu",
         "kuzudb",
         "lancedb",
