@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+blueprintflow = {file = ".", editable = true}
 incremental = "*"
 kuzu = "*"
 lancedb = "*"
@@ -12,7 +13,6 @@ pydantic = "*"
 tomli-w = "*"
 
 [dev-packages]
-blueprintflow = {editable = true, path = "."}
 build = "*"
 click = "*"
 ipykernel = "*"
