@@ -16,28 +16,20 @@ def eq_struct(src_dict: dict, tgt_dict: dict) -> bool:
     Examples:
         >>> eq_struct({}, {})
         True
-
         >>> eq_struct({'a': 1}, {'a': 2})
         True
-
         >>> eq_struct({'a': 1, 'b': 'foo'}, {'a': 2, 'b': 'bar'})
         True
-
         >>> eq_struct({'a': 1}, {})
         False
-
         >>> eq_struct({'a': 1}, {'b': 1})
         False
-
         >>> eq_struct({'a': 1}, {'a': 1, 'b': 1})
         False
-
         >>> eq_struct({'a': [1]}, {'a': [2]})
         True
-
         >>> eq_struct({'a': [1]}, {'a': ['foo', 'waldo']})
         True
-
         >>> eq_struct({'a': {'b': 1}}, {'a': {'b': 2}})
         True
     """

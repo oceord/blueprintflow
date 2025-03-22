@@ -34,7 +34,6 @@ def load_settings(
 
     Examples:
         >>> user_settings = load_settings()
-
         >>> file_settings = load_settings(
         ...     user_config=UserConfig(Path("~/.config/blueprintflow").expanduser())
         ... )
@@ -64,18 +63,15 @@ def __validate_settings_filepath(filepath: Path | None) -> None:
 
     Examples:
         >>> __validate_settings_filepath(None)
-
         >>> __validate_settings_filepath(
         ...     Path("src/blueprintflow/core/defaults/settings.toml")
         ... )
-
         >>> __validate_settings_filepath(
         ...     Path("foo.toml")
         ... )
         Traceback (most recent call last):
             ...
         ValueError: 'filepath' must be an existing filepath
-
         >>> __validate_settings_filepath(
         ...     Path("src/blueprintflow/core/defaults/__init__.py")
         ... )
@@ -106,7 +102,6 @@ def __validate_settings_dict(settings: dict[str, Any]) -> None:
 
     Examples:
         >>> __validate_settings_dict(default_settings)
-
         >>> __validate_settings_dict({})
         Traceback (most recent call last):
             ...
