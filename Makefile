@@ -128,5 +128,5 @@ del-app-state: del-user-config del-user-data ## Delete user state
 
 ####### UTILITY COMMANDS #######################################################################
 
-explore-kuzudb: ## Run container for kuzudb/explorer
+explore-kuzudb: ## Run kuzudb/explorer container for .shared/user-data/kuzudb
 	@docker run --rm -p 8000:8000 -v "$(shell pwd)"/.shared/user-data/kuzudb:/database kuzudb/explorer:latest
