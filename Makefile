@@ -65,7 +65,6 @@ publish-pypi: validate-publish ## Publish the dist to PyPI
 
 ####### COMMANDS #######################################################################
 
-
 clean: ## Clean up auxiliary and temporary files from the workspace
 	$(info Cleaning auxiliary and temporary files...)
 	@find . -maxdepth 1 -type d -name '.mypy_cache' -exec rm -r {} +
@@ -116,3 +115,13 @@ pipenv-dev-install: ## Create dev venv
 	else \
 		pipenv install --dev ; \
 	fi
+
+####### RESET COMMANDS #######################################################################
+
+del-user-config: ## Delete user config
+	@rm -rf ~/config/blueprintflow/*
+
+del-user-data: ## Delete user data
+	@rm -rf ~/.local/share/blueprintflow/*
+
+del-app-state: del-user-config del-user-data ## Delete user state
