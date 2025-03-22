@@ -3,7 +3,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-sudo chown vscode:vscode .venv/
+sudo chown vscode:vscode .venv
+sudo chown -R vscode:vscode /home/vscode
 
 sudo ./scripts/install_meta_packages.sh \
     --install-system-common-packages \

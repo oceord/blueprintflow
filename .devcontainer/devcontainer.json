@@ -27,7 +27,9 @@
         // The directory is generated at container creation
         //  and, therefore, belongs to root
         //  DEP: "onCreateCommand" changes .venv/ owner to vscode
-        "type=volume,target=${containerWorkspaceFolder}/.venv/"
+        "type=volume,target=${containerWorkspaceFolder}/.venv/",
+        "type=bind,source=${localWorkspaceFolder}/.shared/user-config,target=/home/vscode/.config/blueprintflow/",
+        "type=bind,source=${localWorkspaceFolder}/.shared/user-data,target=/home/vscode/.local/share/blueprintflow/"
     ],
     "remoteUser": "vscode",
     "containerEnv": {
@@ -36,6 +38,7 @@
         "PIPENV_VERBOSITY": "-1",
         "ZSH_CUSTOM": "${localEnv:ZSH_CUSTOM}"
     },
+    "initializeCommand": "./.devcontainer/initializeCommand.sh",
     "onCreateCommand": "./.devcontainer/onCreateCommand.sh",
     "postStartCommand": "./.devcontainer/postStartCommand.sh",
     "customizations": {
