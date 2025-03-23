@@ -11,8 +11,8 @@ from blueprintflow.core.models.store import (
 from blueprintflow.helpers.store import gen_cs_properties
 from blueprintflow.helpers.xdg.data import UserData
 from blueprintflow.store.handlers.stmt import (
-    TMPL_CYPHER_CREATE_NODE,
-    TMPL_CYPHER_CREATE_REL,
+    TMPL_CYPHER_CREATE_NODE_TABLE,
+    TMPL_CYPHER_CREATE_REL_TABLE,
 )
 
 
@@ -75,19 +75,19 @@ class KuzuHandler:
         """
         conn = self.get_connection(read_only=False)
         for pending in KUZU_NODES:
-            KuzuHandler.create_node(conn, pending)
+            KuzuHandler.create_node_table(conn, pending)
         for pending in KUZU_RELATIONSHIPS:
-            KuzuHandler.create_relationship(conn, pending)
+            KuzuHandler.create_rel_table(conn, pending)
 
     @staticmethod
-    def create_node(conn: Connection, node: KuzuNode) -> None:
+    def create_node_table(conn: Connection, node: KuzuNode) -> None:
         """Create a node in the Kuzu database.
 
         Args:
             conn (Connection): A connection to the Kuzu database.
             node (KuzuNode): An instance of KuzuNode containing the node definition.
         """
-        query = TMPL_CYPHER_CREATE_NODE.substitute(
+        query = TMPL_CYPHER_CREATE_NODE_TABLE.substitute(
             name=node.name,
             cs_properties=gen_cs_properties(node.properties),
             cs_primary_key=", ".join(node.primary_key),
@@ -95,15 +95,15 @@ class KuzuHandler:
         KuzuHandler.execute(conn, query)
 
     @staticmethod
-    def create_relationship(conn: Connection, rel: KuzuRelationship) -> None:
-        """Create a relationship in the Kuzu database.
+    def create_rel_table(conn: Connection, rel: KuzuRelationship) -> None:
+        """Create a relationship table in the Kuzu database.
 
         Args:
             conn (Connection): A connection to the Kuzu database.
             rel (KuzuRelationship): An instance of KuzuRelationship containing the
                 relationship definition.
         """
-        query = TMPL_CYPHER_CREATE_REL.substitute(
+        query = TMPL_CYPHER_CREATE_REL_TABLE.substitute(
             name=rel.name,
             from_node=rel.from_node,
             to_node=rel.to_node,
