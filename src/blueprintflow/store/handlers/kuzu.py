@@ -75,40 +75,32 @@ class KuzuHandler:
         """
         conn = self.get_connection(read_only=False)
         for pending in KUZU_NODES:
-            KuzuHandler.create_node_table(conn, pending)
+            KuzuHandler.create_table(conn, pending)
         for pending in KUZU_RELATIONSHIPS:
-            KuzuHandler.create_rel_table(conn, pending)
+            KuzuHandler.create_table(conn, pending)
 
     @staticmethod
-    def create_node_table(conn: Connection, node: KuzuNode) -> None:
-        """Create a node in the Kuzu database.
+    def create_table(conn: Connection, table: KuzuNode | KuzuRelationship) -> None:
+        """Create a node or relationship table in the Kuzu database.
 
         Args:
             conn (Connection): A connection to the Kuzu database.
-            node (KuzuNode): An instance of KuzuNode containing the node definition.
+            table (KuzuNode | KuzuRelationship): An instance of KuzuNode or
+                KuzuRelationship containing the table definition.
         """
-        query = TMPL_CYPHER_CREATE_NODE_TABLE.substitute(
-            name=node.name,
-            cs_properties=gen_cs_properties(node.properties),
-            cs_primary_key=", ".join(node.primary_key),
-        )
-        KuzuHandler.execute(conn, query)
-
-    @staticmethod
-    def create_rel_table(conn: Connection, rel: KuzuRelationship) -> None:
-        """Create a relationship table in the Kuzu database.
-
-        Args:
-            conn (Connection): A connection to the Kuzu database.
-            rel (KuzuRelationship): An instance of KuzuRelationship containing the
-                relationship definition.
-        """
-        query = TMPL_CYPHER_CREATE_REL_TABLE.substitute(
-            name=rel.name,
-            from_node=rel.from_node,
-            to_node=rel.to_node,
-            cs_properties=gen_cs_properties(rel.properties),
-        )
+        if isinstance(table, KuzuNode):
+            query = TMPL_CYPHER_CREATE_NODE_TABLE.substitute(
+                name=table.name,
+                cs_properties=gen_cs_properties(table.properties),
+                cs_primary_key=", ".join(table.primary_key),
+            )
+        elif isinstance(table, KuzuRelationship):
+            query = TMPL_CYPHER_CREATE_REL_TABLE.substitute(
+                name=table.name,
+                from_node=table.from_node,
+                to_node=table.to_node,
+                cs_properties=gen_cs_properties(table.properties),
+            )
         KuzuHandler.execute(conn, query)
 
     @staticmethod
