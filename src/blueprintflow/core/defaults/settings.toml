@@ -1,5 +1,5 @@
 [models.chat]
-identifier = "ollama_chat/granite3.2:2b"
+identifier = "ollama_chat/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
@@ -9,41 +9,41 @@ provider = "ollama"
 api_base = "http://localhost:11434/"
 
 [models.function_calling]
-identifier = "ollama/granite3.2:2b"
+identifier = "ollama/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
 [models.long_context]
-identifier = "ollama/granite3.2:2b"
+identifier = "ollama/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
 [models.question_answering]
-identifier = "ollama/granite3.2:2b"
+identifier = "ollama/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
 [models.rag]
-identifier = "ollama/granite3.2:2b"
+identifier = "ollama/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
 [models.summarization]
-identifier = "ollama/granite3.2:2b"
+identifier = "ollama/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
 [models.text_classification]
-identifier = "ollama/granite3.2:2b"
+identifier = "ollama/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
 [models.text_extraction]
-identifier = "ollama/granite3.2:2b"
+identifier = "ollama/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
 
 [models.thinking]
-identifier = "ollama/granite3.2:2b"
+identifier = "ollama/granite3.3:2b"
 provider = "ollama"
 api_base = "http://localhost:11434/"
