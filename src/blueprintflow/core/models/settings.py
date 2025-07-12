@@ -1,10 +1,10 @@
-from enum import Enum
+from enum import StrEnum
 from typing import Any, ClassVar
 
 from pydantic import BaseModel
 
 
-class ModelTaskEnum(str, Enum):
+class ModelTaskEnum(StrEnum):
     """Enumeration of supported LLM tasks.
 
     This enum defines the various tasks that an LLM can perform.

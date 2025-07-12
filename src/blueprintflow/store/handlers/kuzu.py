@@ -16,7 +16,7 @@ from blueprintflow.helpers.cypher import (
     gen_match_condition,
 )
 from blueprintflow.helpers.xdg.data import UserData
-from blueprintflow.store.handlers.stmt import (
+from blueprintflow.store.handlers._stmts import (
     TMPL_CYPHER_CREATE_NODE,
     TMPL_CYPHER_CREATE_NODE_TABLE,
     TMPL_CYPHER_CREATE_REL_TABLE,

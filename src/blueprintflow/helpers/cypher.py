@@ -78,7 +78,7 @@ def gen_match_condition(
     from_conditions: list[MatchCondition],
     to_conditions: list[MatchCondition],
 ) -> str:
-    r"""Generate a string of match conditions for a Cypher query.
+    """Generate a string of match conditions for a Cypher query.
 
     This function takes lists of match conditions for source and target nodes and
     generates a string representation of these conditions, joined by AND operators.
