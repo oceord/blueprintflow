@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, ClassVar, Optional
+from typing import Any, ClassVar
 
 from pydantic import BaseModel
 
@@ -47,15 +47,15 @@ class BlueprintFlowSettings(BaseModel):
     Attributes:
         models (dict[ModelTask, ModelConfig]): A dictionary mapping model tasks to their
             configurations.
-        _instance (ClassVar[Optional["BlueprintFlowSettings"]]): The singleton instance
+        _instance (BlueprintFlowSettings | None): The singleton instance
             of BlueprintFlowSettings.
-        initialized (ClassVar[bool]): A flag indicating whether the settings have been
+        initialized (bool): A flag indicating whether the settings have been
             initialized.
     """
 
     models: dict[ModelTaskEnum, ModelConfig]
 
-    _instance: ClassVar[Optional["BlueprintFlowSettings"]] = None
+    _instance: ClassVar["BlueprintFlowSettings | None"] = None
     initialized: ClassVar[bool] = False
 
     def __new__(cls, *_: Any, **__: Any) -> "BlueprintFlowSettings":
