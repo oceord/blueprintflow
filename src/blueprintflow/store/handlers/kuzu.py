@@ -5,14 +5,22 @@ from kuzu import Connection, Database, PreparedStatement, QueryResult
 from blueprintflow.core.models.store import (
     KUZU_NODE_TABLES,
     KUZU_RELATIONSHIP_TABLES,
+    KuzuNode,
     KuzuNodeTable,
+    KuzuRelationship,
     KuzuRelationshipTable,
 )
-from blueprintflow.helpers.store import gen_cs_table_properties
+from blueprintflow.helpers.cypher import (
+    gen_cs_real_properties,
+    gen_cs_table_properties,
+    gen_match_condition,
+)
 from blueprintflow.helpers.xdg.data import UserData
 from blueprintflow.store.handlers.stmt import (
+    TMPL_CYPHER_CREATE_NODE,
     TMPL_CYPHER_CREATE_NODE_TABLE,
     TMPL_CYPHER_CREATE_REL_TABLE,
+    TMPL_CYPHER_CREATE_RELATIONSHIP,
 )
 
 
@@ -42,9 +50,20 @@ class KuzuHandler:
             db_read_write (Database): A read-write instance of the Kuzu database.
         """
         self.uri = user_data.kuzu_path
-        self.db_read_only = Database(self.uri, read_only=True, lazy_init=True)
-        self.db_read_write = Database(self.uri, lazy_init=True)
         self._init_bpf_tables()
+
+    def get_db(self, *, read_only: bool = True) -> Database:
+        """Retrieve a database instance connected to the specified URI.
+
+        Args:
+            read_only (bool, optional): If True, the database is opened in read-only
+                mode. Defaults to True.
+
+        Returns:
+            Database: An instance of the Database class connected to the URI specified
+                in the object.
+        """
+        return Database(self.uri, read_only=read_only)
 
     def get_connection(self, *, read_only: bool = True) -> "Connection":
         """Get a connection to the Kuzu database.
@@ -58,14 +77,14 @@ class KuzuHandler:
 
         Examples:
             >>> kuzu = Kuzu(user_data)
-            >>> conn = kuzu.get_connection(read_only=False)
-            >>> isinstance(conn, Connection)
+            >>> with kuzu.get_connection(read_only=False) as conn:
+            >>>     isinstance(conn, Connection)
             True
-            >>> conn = kuzu.get_connection(read_only=True)
-            >>> isinstance(conn, Connection)
+            >>> with kuzu.get_connection(read_only=True) as conn:
+            >>>     isinstance(conn, Connection)
             True
         """
-        return Connection(self.db_read_only if read_only else self.db_read_write)
+        return Connection(self.get_db(read_only=read_only))
 
     def _init_bpf_tables(self) -> None:
         """Initialize BlueprintFlow tables in the Kuzu database.
@@ -94,12 +113,58 @@ class KuzuHandler:
         elif isinstance(table, KuzuRelationshipTable):
             query = TMPL_CYPHER_CREATE_REL_TABLE.substitute(
                 name=table.name,
-                from_table_node=table.from_table_node,
-                to_table_node=table.to_table_node,
+                from_node_table=table.from_node_table,
+                to_node_table=table.to_node_table,
                 cs_properties=gen_cs_table_properties(table.properties),
             )
-        conn = self.get_connection(read_only=False)
-        KuzuHandler.execute(conn, query)
+        with self.get_connection(read_only=False) as conn:
+            KuzuHandler.execute(conn, query)
+
+    def create_node(self, node: KuzuNode) -> None:
+        """Create a node in the Kuzu database.
+
+        Args:
+            node (KuzuNode): An instance of KuzuNode containing the node definition.
+
+        This method generates a Cypher query to create a node with the specified
+        properties and executes it against the Kuzu database.
+        """
+        query = TMPL_CYPHER_CREATE_NODE.substitute(
+            table_alias="n",
+            table_name=node.table_name,
+            cs_properties=gen_cs_real_properties(node.properties),
+        )
+        with self.get_connection(read_only=False) as conn:
+            KuzuHandler.execute(conn, query)
+
+    def create_relationship(self, rel: KuzuRelationship) -> None:
+        """Create a relationship between nodes in the Kuzu database.
+
+        Args:
+            rel (KuzuRelationship): An instance of KuzuRelationship containing the
+                relationship definition.
+
+        This method generates a Cypher query to create a relationship with the specified
+            properties and match conditions, then executes it against the Kuzu database.
+        """
+        from_alias = "n1"
+        to_alias = "n2"
+        query = TMPL_CYPHER_CREATE_RELATIONSHIP.substitute(
+            from_alias=from_alias,
+            from_node_table=rel.from_node_table,
+            to_alias=to_alias,
+            to_node_table=rel.to_node_table,
+            match_condition=gen_match_condition(
+                from_alias,
+                to_alias,
+                rel.from_match_conditions,
+                rel.to_match_conditions,
+            ),
+            rel=rel.relationship_name,
+            rel_properties=gen_cs_real_properties(rel.properties, curlies=True),
+        )
+        with self.get_connection(read_only=False) as conn:
+            KuzuHandler.execute(conn, query)
 
     @staticmethod
     def execute(

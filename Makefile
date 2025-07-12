@@ -75,13 +75,13 @@ clean: ## Clean up auxiliary and temporary files from the workspace
 	@echo Done.
 
 format: ## Format the entire codebase
-	echo Formatting source-code... && \
+	@echo Formatting source-code... && \
 	echo Applying ruff... && \
 	ruff format $(SRC) && \
 	echo Done. ;
 
 lint: ## Perform a static code analysis
-	echo Linting source-code... && \
+	@echo Linting source-code... && \
 	echo Applying ruff... && \
 	ruff check $(SRC) && \
 	echo Applying mypy... && \
