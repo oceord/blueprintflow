@@ -3,12 +3,12 @@ from typing import Any
 from kuzu import Connection, Database, PreparedStatement, QueryResult
 
 from blueprintflow.core.models.store import (
-    KUZU_NODES,
-    KUZU_RELATIONSHIPS,
-    KuzuNode,
-    KuzuRelationship,
+    KUZU_NODE_TABLES,
+    KUZU_RELATIONSHIP_TABLES,
+    KuzuNodeTable,
+    KuzuRelationshipTable,
 )
-from blueprintflow.helpers.store import gen_cs_properties
+from blueprintflow.helpers.store import gen_cs_table_properties
 from blueprintflow.helpers.xdg.data import UserData
 from blueprintflow.store.handlers.stmt import (
     TMPL_CYPHER_CREATE_NODE_TABLE,
@@ -73,34 +73,32 @@ class KuzuHandler:
         This method creates the necessary nodes and relationships in the Kuzu database
         based on the predefined KUZU_NODES and KUZU_RELATIONSHIPS.
         """
-        conn = self.get_connection(read_only=False)
-        for pending in KUZU_NODES:
-            KuzuHandler.create_table(conn, pending)
-        for pending in KUZU_RELATIONSHIPS:
-            KuzuHandler.create_table(conn, pending)
+        for pending in KUZU_NODE_TABLES:
+            self.create_table(pending)
+        for pending in KUZU_RELATIONSHIP_TABLES:
+            self.create_table(pending)
 
-    @staticmethod
-    def create_table(conn: Connection, table: KuzuNode | KuzuRelationship) -> None:
+    def create_table(self, table: KuzuNodeTable | KuzuRelationshipTable) -> None:
         """Create a node or relationship table in the Kuzu database.
 
         Args:
-            conn (Connection): A connection to the Kuzu database.
             table (KuzuNode | KuzuRelationship): An instance of KuzuNode or
                 KuzuRelationship containing the table definition.
         """
-        if isinstance(table, KuzuNode):
+        if isinstance(table, KuzuNodeTable):
             query = TMPL_CYPHER_CREATE_NODE_TABLE.substitute(
                 name=table.name,
-                cs_properties=gen_cs_properties(table.properties),
+                cs_properties=gen_cs_table_properties(table.properties),
                 cs_primary_key=", ".join(table.primary_key),
             )
-        elif isinstance(table, KuzuRelationship):
+        elif isinstance(table, KuzuRelationshipTable):
             query = TMPL_CYPHER_CREATE_REL_TABLE.substitute(
                 name=table.name,
                 from_node=table.from_node,
                 to_node=table.to_node,
-                cs_properties=gen_cs_properties(table.properties),
+                cs_properties=gen_cs_table_properties(table.properties),
             )
+        conn = self.get_connection(read_only=False)
         KuzuHandler.execute(conn, query)
 
     @staticmethod

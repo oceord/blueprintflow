@@ -1,8 +1,8 @@
-from blueprintflow.core.models.store import KuzuProperty
+from blueprintflow.core.models.store import KuzuTableProperty
 
 
-def gen_cs_properties(properties: list[KuzuProperty]) -> str:
-    """Generate a comma-separated string of properties for a Kuzu node or relationship.
+def gen_cs_table_properties(properties: list[KuzuTableProperty]) -> str:
+    """Generate a comma-separated string of properties for a Kuzu table.
 
     This function takes a list of KuzuProperty objects and generates a string
     representation of the properties, including their names, types, and default values.

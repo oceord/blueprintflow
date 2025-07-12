@@ -3,8 +3,8 @@ from typing import NamedTuple
 from pydantic import BaseModel
 
 
-class KuzuProperty(NamedTuple):
-    """A named tuple representing a property in a Kuzu node or relationship.
+class KuzuTableProperty(NamedTuple):
+    """A named tuple representing a table property in a Kuzu node or relationship.
 
     Attributes:
         name (str): The name of the property.
@@ -18,8 +18,8 @@ class KuzuProperty(NamedTuple):
     default: str | None = None
 
 
-class KuzuNode(BaseModel):
-    """A model representing a node in the Kuzu database.
+class KuzuNodeTable(BaseModel):
+    """A model representing a node table in the Kuzu database.
 
     Attributes:
         name (str): The name of the node.
@@ -29,12 +29,12 @@ class KuzuNode(BaseModel):
     """
 
     name: str
-    properties: list[KuzuProperty]
+    properties: list[KuzuTableProperty]
     primary_key: list[str]
 
 
-class KuzuRelationship(BaseModel):
-    """A model representing a relationship between nodes in the Kuzu database.
+class KuzuRelationshipTable(BaseModel):
+    """A model representing a relationship table between nodes in the Kuzu database.
 
     Attributes:
         name (str): The name of the relationship.
@@ -45,82 +45,82 @@ class KuzuRelationship(BaseModel):
     """
 
     name: str
-    properties: list[KuzuProperty]
+    properties: list[KuzuTableProperty]
     from_node: str
     to_node: str
 
 
-KUZU_NODES = [
-    KuzuNode(
+KUZU_NODE_TABLES = [
+    KuzuNodeTable(
         name="LanguageContext",
         properties=[
-            KuzuProperty("n_id", "SERIAL"),
-            KuzuProperty("name", "STRING"),
-            KuzuProperty("description", "STRING"),
-            KuzuProperty("context", "STRING"),
+            KuzuTableProperty("n_id", "SERIAL"),
+            KuzuTableProperty("name", "STRING"),
+            KuzuTableProperty("description", "STRING"),
+            KuzuTableProperty("context", "STRING"),
         ],
         primary_key=["n_id"],
     ),
-    KuzuNode(
+    KuzuNodeTable(
         name="Preference",
         properties=[
-            KuzuProperty("n_id", "SERIAL"),
-            KuzuProperty("name", "STRING"),
-            KuzuProperty("description", "STRING"),
+            KuzuTableProperty("n_id", "SERIAL"),
+            KuzuTableProperty("name", "STRING"),
+            KuzuTableProperty("description", "STRING"),
         ],
         primary_key=["n_id"],
     ),
-    KuzuNode(
+    KuzuNodeTable(
         name="Guideline",
         properties=[
-            KuzuProperty("n_id", "SERIAL"),
-            KuzuProperty("name", "STRING"),
-            KuzuProperty("description", "STRING"),
+            KuzuTableProperty("n_id", "SERIAL"),
+            KuzuTableProperty("name", "STRING"),
+            KuzuTableProperty("description", "STRING"),
         ],
         primary_key=["n_id"],
     ),
-    KuzuNode(
+    KuzuNodeTable(
         name="Rule",
         properties=[
-            KuzuProperty("n_id", "SERIAL"),
-            KuzuProperty("name", "STRING"),
-            KuzuProperty("description", "STRING"),
-            KuzuProperty("enforcement_level", "UINT8"),
+            KuzuTableProperty("n_id", "SERIAL"),
+            KuzuTableProperty("name", "STRING"),
+            KuzuTableProperty("description", "STRING"),
+            KuzuTableProperty("enforcement_level", "UINT8"),
         ],
         primary_key=["n_id"],
     ),
-    KuzuNode(
+    KuzuNodeTable(
         name="SourceStructure",
         properties=[
-            KuzuProperty("n_id", "SERIAL"),
-            KuzuProperty("name", "STRING"),
-            KuzuProperty("type", "STRING"),
+            KuzuTableProperty("n_id", "SERIAL"),
+            KuzuTableProperty("name", "STRING"),
+            KuzuTableProperty("type", "STRING"),
         ],
         primary_key=["n_id"],
     ),
 ]
-KUZU_RELATIONSHIPS = [
-    KuzuRelationship(
+KUZU_RELATIONSHIP_TABLES = [
+    KuzuRelationshipTable(
         name="PREFERS_TOOL",
-        properties=[KuzuProperty("r_id", "SERIAL")],
+        properties=[KuzuTableProperty("r_id", "SERIAL")],
         from_node="LanguageContext",
         to_node="Preference",
     ),
-    KuzuRelationship(
+    KuzuRelationshipTable(
         name="FOLLOWS_GUIDELINE",
-        properties=[KuzuProperty("r_id", "SERIAL")],
+        properties=[KuzuTableProperty("r_id", "SERIAL")],
         from_node="LanguageContext",
         to_node="Guideline",
     ),
-    KuzuRelationship(
+    KuzuRelationshipTable(
         name="ENFORCES_RULE",
-        properties=[KuzuProperty("r_id", "SERIAL")],
+        properties=[KuzuTableProperty("r_id", "SERIAL")],
         from_node="LanguageContext",
         to_node="Rule",
     ),
-    KuzuRelationship(
+    KuzuRelationshipTable(
         name="CONTAINS_STRUCTURE",
-        properties=[KuzuProperty("r_id", "SERIAL")],
+        properties=[KuzuTableProperty("r_id", "SERIAL")],
         from_node="LanguageContext",
         to_node="SourceStructure",
     ),
