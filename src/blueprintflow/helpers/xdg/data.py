@@ -59,9 +59,9 @@ class UserData:
     Attributes:
         _user_data_dir (Path): The path to the user data directory.
         log_file (Path): The path to the log file within the user data directory.
-        lancedb_file (Path): The path to the LanceDB file within the user data
+        lancedb_path (Path): The path to the LanceDB file within the user data
             directory.
-        kuzu_file (Path): The path to the Kuzu file within the user data directory.
+        kuzu_path (Path): The path to the Kuzu directory within the user data directory.
     """
 
     def __init__(self, user_data_dir: Path | None = None) -> None:
@@ -82,5 +82,5 @@ class UserData:
         if not self._user_data_dir.exists():
             init_user_data_dir(self._user_data_dir)
         self.log_file = self._user_data_dir / BPF_LOG_FILE_NAME
-        self.lancedb_file = self._user_data_dir / DataStoreEnum.LANCEDB
-        self.kuzu_file = self._user_data_dir / DataStoreEnum.KUZU
+        self.lancedb_path = self._user_data_dir / DataStoreEnum.LANCEDB
+        self.kuzu_path = self._user_data_dir / DataStoreEnum.KUZU

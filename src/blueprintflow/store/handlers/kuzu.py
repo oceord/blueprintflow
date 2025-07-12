@@ -41,7 +41,7 @@ class KuzuHandler:
             db_read_only (Database): A read-only instance of the Kuzu database.
             db_read_write (Database): A read-write instance of the Kuzu database.
         """
-        self.uri = user_data.kuzu_file
+        self.uri = user_data.kuzu_path
         self.db_read_only = Database(self.uri, read_only=True, lazy_init=True)
         self.db_read_write = Database(self.uri, lazy_init=True)
         self._init_bpf_tables()
