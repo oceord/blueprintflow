@@ -40,14 +40,14 @@ class KuzuRelationshipTable(BaseModel):
         name (str): The name of the relationship.
         properties (list[KuzuProperty]): A list of properties associated with the
             relationship.
-        from_node (str): The name of the source node in the relationship.
-        to_node (str): The name of the target node in the relationship.
+        from_table_node (str): The name of the source table node in the relationship.
+        to_table_node (str): The name of the target table node in the relationship.
     """
 
     name: str
     properties: list[KuzuTableProperty]
-    from_node: str
-    to_node: str
+    from_table_node: str
+    to_table_node: str
 
 
 KUZU_NODE_TABLES = [
@@ -103,25 +103,25 @@ KUZU_RELATIONSHIP_TABLES = [
     KuzuRelationshipTable(
         name="PREFERS_TOOL",
         properties=[KuzuTableProperty("r_id", "SERIAL")],
-        from_node="LanguageContext",
-        to_node="Preference",
+        from_table_node="LanguageContext",
+        to_table_node="Preference",
     ),
     KuzuRelationshipTable(
         name="FOLLOWS_GUIDELINE",
         properties=[KuzuTableProperty("r_id", "SERIAL")],
-        from_node="LanguageContext",
-        to_node="Guideline",
+        from_table_node="LanguageContext",
+        to_table_node="Guideline",
     ),
     KuzuRelationshipTable(
         name="ENFORCES_RULE",
         properties=[KuzuTableProperty("r_id", "SERIAL")],
-        from_node="LanguageContext",
-        to_node="Rule",
+        from_table_node="LanguageContext",
+        to_table_node="Rule",
     ),
     KuzuRelationshipTable(
         name="CONTAINS_STRUCTURE",
         properties=[KuzuTableProperty("r_id", "SERIAL")],
-        from_node="LanguageContext",
-        to_node="SourceStructure",
+        from_table_node="LanguageContext",
+        to_table_node="SourceStructure",
     ),
 ]

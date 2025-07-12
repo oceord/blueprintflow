@@ -94,8 +94,8 @@ class KuzuHandler:
         elif isinstance(table, KuzuRelationshipTable):
             query = TMPL_CYPHER_CREATE_REL_TABLE.substitute(
                 name=table.name,
-                from_node=table.from_node,
-                to_node=table.to_node,
+                from_table_node=table.from_table_node,
+                to_table_node=table.to_table_node,
                 cs_properties=gen_cs_table_properties(table.properties),
             )
         conn = self.get_connection(read_only=False)
