@@ -63,7 +63,7 @@ ignore = [
     "D104", # undocumented-public-package
     # Ignore rules fixed by the formatter
     "COM812", # missing-trailing-comma
-    # Allow missing author in TODO
+    # Allow missing author in TODOs
     "TD002",
 ]
 
