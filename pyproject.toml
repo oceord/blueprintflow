@@ -80,6 +80,8 @@ ignore = [
     "D107", # undocumented-public-init
     # Allow print statements
     "T201",
+    # Allow using generic name df
+    "PD901",
 ]
 
 [tool.ruff.lint.flake8-annotations]
