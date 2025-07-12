@@ -76,6 +76,8 @@ ignore = [
     "D105", # undocumented-magic-method
     "D106", # undocumented-public-nested-class
     "D107", # undocumented-public-init
+    # Allow print statements
+    "T201",
 ]
 
 [tool.ruff.lint.flake8-annotations]

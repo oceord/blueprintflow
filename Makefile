@@ -75,25 +75,18 @@ clean: ## Clean up auxiliary and temporary files from the workspace
 	@echo Done.
 
 format: ## Format the entire codebase
-	@if \
-	type ruff >/dev/null 2>&1 ; then \
-		echo Formatting source-code... && \
-		echo Applying ruff... && \
-		ruff format $(SRC) && \
-		echo Done. ; \
-	else echo "SKIPPED (ruff not found)" >&2 ; fi
+	echo Formatting source-code... && \
+	echo Applying ruff... && \
+	ruff format $(SRC) && \
+	echo Done. ;
 
 lint: ## Perform a static code analysis
-	@if \
-	type ruff >/dev/null 2>&1 && \
-	type mypy >/dev/null 2>&1 ; then \
-		echo Linting source-code... && \
-		echo Applying ruff... && \
-		ruff check $(SRC) && \
-		echo Applying mypy... && \
-		mypy --show-error-context --show-column-numbers --pretty $(SRC) && \
-		echo Done. ; \
-	else echo "SKIPPED (ruff and/or mypy not found)" >&2 ; fi
+	echo Linting source-code... && \
+	echo Applying ruff... && \
+	ruff check $(SRC) && \
+	echo Applying mypy... && \
+	pipenv run mypy --show-error-context --show-column-numbers --pretty $(SRC) && \
+	echo Done.
 
 check: ## Check source-code for known security vulnerabilities
 	$(info Checking code for known security vulnerabilities...)
