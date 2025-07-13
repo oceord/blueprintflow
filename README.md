@@ -1,58 +1,60 @@
 # BlueprintFlow
 
-BlueprintFlow aims to simplify code generation through abstractions and structured data retrieval, allowing developers to create high-quality, modularized code with reduced overhead and adherence to established standards.
+![Python](https://img.shields.io/badge/Python-3.12%2B-2a5a83?logo=python)
+![Kuzu](https://img.shields.io/badge/Kuzu-GraphDB-e9590b)
+![LanceDB](https://img.shields.io/badge/LanceDB-VectorStore-e56e4b)
+![LiteLLM](https://img.shields.io/badge/LiteLLM-LLM%20Interface-2e8555)
 
-## Overview
+BlueprintFlow is a Python package designed to simplify code generation through local solutions.
+It leverages LLMs to generate code from patterns and abstractions, adhering to predefined rules, guidelines, and preferences.
+It emphasizes modularity and simplicity while maintaining a singular focus on code generation from upstream sources.
 
-### Goals
+## Features
 
-- **Systematic Code Generation**: enable structured and consistent code generation
-- **Architecture Replication**: replicate existing architectural structures
-- **Modularity**: facilitate the creation of reusable, independent components
-- **Reduced Overhead**: minimize initial development efforts
+- **Pattern-Based Generation**: Generate code from existing patterns, abstractions, and good-quality code.
+- **Offline-First**: Works entirely locally without requiring internet connectivity or external API calls.
+- **Customizable**: Define rules, guidelines, and preferences.
+- **Modular Architecture**: Use independent, reusable components that integrate seamlessly.
+- **AI-Powered Intelligence**: Leverages LLMs to understand context and generate meaningful code.
+- **Quality Assurance**: Built-in validation and traceability features ensure code quality.
 
-### Philosophy
+## Philosophy
 
-- **Offline-First**: prioritize solutions that operate completely locally, without the need for internet connection
-- **Embedded-First**: prioritize in-process solutions
-- **Open-Source**: promote transparency, collaboration, and community-driven development
+- **Singular Focus**: Generate high-quality code from existing patterns. Nothing more, nothing less.
+- **AI-Powered Automation**: Leverage AI to generate contextually appropriate code that matches previously-defined rules.
+- **Local-First Development**: Local processing is prioritized, ensuring security and eliminating network dependencies.
+- **Unix Philosophy**: Each component excels at one specific task and integrates seamlessly through standardized interfaces.
+- **Community-Driven**: Built with transparency and collaboration in mind, empowering both contributors and users.
 
-### Generative AI
+## Usage
 
-- **Code Generation**: automate the production of efficient, modular code
-- **Abstraction Generation**: create high-level, reusable code structures using AI
+BlueprintFlow provides a Python library with intuitive APIs for code generation:
 
-### User Interaction
+- **Component Library**: Access pre-built, reusable modules for common tasks.
+- **Flexible Configuration**: Customize rules, standards, output formats, and models.
+- **Workflow Integration**: Seamlessly integrate with existing development tools and processes.
+- **Project-Specific Settings**: Tailor every aspect of code generation to match project requirements.
 
-- **Q&A**: provide question and answer mechanisms to support development needs
-- **Chat**: allow user to communicate with AI through a chat interface
-- **Configuration**: allow tool customization for tailored usage
-- **Software Library**: provide reusable components and modules
-- **Validation Checks**: ensure the code generated meets quality standards
+## Quality Assurance
 
-### Content Validation
+BlueprintFlow ensures code quality through multiple validation layers:
 
-- **Code Failure by Default**: fail code generated without human validation
-- **Function Calling**: allow custom validations through function calling
-- **Traceability**: track content generation up to its origins
-- **Watermarks**: embed identifiers for metadata purposes
+- **Human-in-the-Loop**: Generated code requires explicit human review, or it fails.
+- **Custom Validation**: Define your own validation functions for project-specific requirements.
+- **Full Traceability**: Track every piece of generated code back to its source patterns and rules.
+- **Metadata Embedding**: Watermarks and identifiers provide context about code generation origins.
 
-### Information Retrieval
+## Intelligent Search
 
-- **RAG**: use Retrieval-Augmented Generation
-- **GraphRAG**: use graph-based approaches for structured data access
-- **Contextual Retrieval**: enhance efficiency by considering retrieval context
-- **Query Expansion Retrieval**: refine search queries for more relevant results
+BlueprintFlow uses advanced retrieval techniques to understand the context and improve generation quality:
 
-### Storage
+- **Similarity Search**: Identifies similar information from its knowledge base.
+- **Contextual Analysis**: Considers surrounding information context when generating new code.
+- **Smart Search**: Automatically refines queries to find the most relevant code examples.
 
-- **VectorStore**: store abstractions and high-quality code along with their vectors
-- **GraphDB**: store guidelines and rules in graph structures
+## Storage Architecture
 
-### Tech Stack
+BlueprintFlow uses specialized storage systems optimized for different types of data:
 
-- Python
-- [LiteLLM](https://github.com/BerriAI/litellm)
-- [Pydantic](https://github.com/pydantic/pydantic)
-- [LanceDB](https://github.com/lancedb/lancedb)
-- [Kùzu](https://github.com/kuzudb/kuzu)
+- **Graph Database (Kuzu)**: Stores interconnected guidelines, rules, and preferences, enabling complex relationship queries.
+- **Vector Database (LanceDB)**: Stores patterns, abstractions, and boilerplate for efficient similarity-based retrieval.
