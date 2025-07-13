@@ -94,7 +94,8 @@ check: ## Check source-code for known security vulnerabilities
 	@echo Done.
 
 test: ## Run tests
-	@python -m doctest src/blueprintflow/**/*.py && echo "Tests passed."
+	@bash -c 'shopt -s globstar; python -m doctest src/blueprintflow/**/*.py' && \
+		echo "Tests passed."
 
 tox: ## Run tox tests
 	@tox
