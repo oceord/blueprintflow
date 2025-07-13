@@ -65,7 +65,7 @@ class Kuzu:
         """
         return Database(self.uri, read_only=read_only)
 
-    def get_connection(self, *, read_only: bool = True) -> "Connection":
+    def get_connection(self, *, read_only: bool = True) -> Connection:
         """Get a connection to the Kuzu database.
 
         Args:
@@ -94,11 +94,11 @@ class Kuzu:
         based on the predefined KUZU_NODES and KUZU_RELATIONSHIPS.
         """
         for pending in KUZU_NODE_TABLES:
-            self.create_table(pending)
+            self._create_table(pending)
         for pending in KUZU_RELATIONSHIP_TABLES:
-            self.create_table(pending)
+            self._create_table(pending)
 
-    def create_table(self, table: KuzuNodeTable | KuzuRelTable) -> None:
+    def _create_table(self, table: KuzuNodeTable | KuzuRelTable) -> None:
         """Create a node or relationship table in the Kuzu database.
 
         Args:
@@ -265,7 +265,7 @@ class Kuzu:
 
     @staticmethod
     def execute(
-        conn: "Connection",
+        conn: Connection,
         query: str | PreparedStatement,
         parameters: dict[str, Any] | None = None,
     ) -> QueryResult:
