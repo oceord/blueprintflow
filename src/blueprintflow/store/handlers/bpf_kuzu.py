@@ -24,7 +24,7 @@ from blueprintflow.store.handlers._stmts import (
 )
 
 
-class KuzuHandler:
+class Kuzu:
     """A handler for interacting with the Kuzu database.
 
     This class provides methods to initialize the database, create nodes and
@@ -76,12 +76,13 @@ class KuzuHandler:
             Connection: A connection to the Kuzu database.
 
         Examples:
+            >>> user_data = UserData()
             >>> kuzu = Kuzu(user_data)
             >>> with kuzu.get_connection(read_only=False) as conn:
-            >>>     isinstance(conn, Connection)
+            ...     isinstance(conn, Connection)
             True
             >>> with kuzu.get_connection(read_only=True) as conn:
-            >>>     isinstance(conn, Connection)
+            ...     isinstance(conn, Connection)
             True
         """
         return Connection(self.get_db(read_only=read_only))
@@ -118,9 +119,9 @@ class KuzuHandler:
                 cs_properties=gen_cs_table_properties(table.properties),
             )
         with self.get_connection(read_only=False) as conn:
-            KuzuHandler.execute(conn, query)
+            Kuzu.execute(conn, query)
 
-    def create_node(self, node: KuzuNode) -> None:
+    def create_node(self, node: KuzuNode) -> bool:
         """Create a node in the Kuzu database.
 
         This method generates a Cypher query to create a node with the specified
@@ -128,16 +129,44 @@ class KuzuHandler:
 
         Args:
             node (KuzuNode): An instance of KuzuNode containing the node definition.
-        """
+
+        Returns:
+            bool: True if the node was successfully created.
+
+        Examples:
+            >>> from blueprintflow.core.models.store import (
+            ...     KuzuNode,
+            ...     KuzuNodeTableNameEnum,
+            ...     KuzuProperty,
+            ...     KuzuPropertyNameEnum,
+            ... )
+            >>> from blueprintflow.helpers.xdg.data import UserData
+            >>> user_data = UserData()
+            >>> kuzu_handler = Kuzu(user_data)
+            >>> language_context_node = KuzuNode(
+            ...     table_name=KuzuNodeTableNameEnum.LANG_CONTEXT,
+            ...     properties=[
+            ...         KuzuProperty(name=KuzuPropertyNameEnum.LANGUAGE, value="python"),
+            ...         KuzuProperty(name=KuzuPropertyNameEnum.CONTEXT, value="data"),
+            ...         KuzuProperty(
+            ...             name=KuzuPropertyNameEnum.DESCRIPTION,
+            ...             value="The language that even your cat can use for data science.",
+            ...         ),
+            ...     ],
+            ... )
+            >>> kuzu_handler.create_node(language_context_node)
+            True
+        """  # noqa: E501
         query = TMPL_CYPHER_CREATE_NODE.substitute(
             table_alias="n",
             table_name=node.table_name,
             cs_properties=gen_cs_real_properties(node.properties),
         )
         with self.get_connection(read_only=False) as conn:
-            KuzuHandler.execute(conn, query)
+            Kuzu.execute(conn, query)
+            return True
 
-    def create_relationship(self, rel: KuzuRel) -> None:
+    def create_relationship(self, rel: KuzuRel) -> bool:
         """Create a relationship between nodes in the Kuzu database.
 
         This method generates a Cypher query to create a relationship with the specified
@@ -146,7 +175,72 @@ class KuzuHandler:
         Args:
             rel (KuzuRel): An instance of KuzuRel containing the relationship
                 definition.
-        """
+
+        Returns:
+            bool: True if the relationship was successfully created.
+
+        Examples:
+            >>> from blueprintflow.core.models.store import (
+            ...     KuzuMatchCondition,
+            ...     KuzuMatchOpEnum,
+            ...     KuzuNode,
+            ...     KuzuNodeTableNameEnum,
+            ...     KuzuProperty,
+            ...     KuzuPropertyNameEnum,
+            ...     KuzuRel,
+            ...     KuzuRelTableNameEnum,
+            ... )
+            >>> from blueprintflow.helpers.xdg.data import UserData
+            >>> user_data = UserData()
+            >>> kuzu_handler = Kuzu(user_data)
+            >>> language_context_node = KuzuNode(
+            ...     table_name=KuzuNodeTableNameEnum.LANG_CONTEXT,
+            ...     properties=[
+            ...         KuzuProperty(name=KuzuPropertyNameEnum.LANGUAGE, value="python"),
+            ...         KuzuProperty(name=KuzuPropertyNameEnum.CONTEXT, value="data"),
+            ...         KuzuProperty(
+            ...             name=KuzuPropertyNameEnum.DESCRIPTION,
+            ...             value="So versatile, it probably does your laundry too.",
+            ...         ),
+            ...     ],
+            ... )
+            >>> preference_node = KuzuNode(
+            ...     table_name=KuzuNodeTableNameEnum.PREF,
+            ...     properties=[
+            ...         KuzuProperty(name=KuzuPropertyNameEnum.NAME, value="polars"),
+            ...         KuzuProperty(
+            ...             name=KuzuPropertyNameEnum.DESCRIPTION,
+            ...             value="The Usain Bolt of data manipulation libraries.",
+            ...         ),
+            ...     ],
+            ... )
+            >>> prefers_tool_relationship = KuzuRel(
+            ...     rel_name=KuzuRelTableNameEnum.PREFERS_TOOL,
+            ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+            ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+            ...     properties=None,
+            ...     from_match_conditions=[
+            ...         KuzuMatchCondition(
+            ...             property=KuzuPropertyNameEnum.LANGUAGE,
+            ...             operation=KuzuMatchOpEnum.EQUAL,
+            ...             value="python",
+            ...         )
+            ...     ],
+            ...     to_match_conditions=[
+            ...         KuzuMatchCondition(
+            ...             property=KuzuPropertyNameEnum.NAME,
+            ...             operation=KuzuMatchOpEnum.EQUAL,
+            ...             value="polars",
+            ...         )
+            ...     ],
+            ... )
+            >>> kuzu_handler.create_node(language_context_node)
+            True
+            >>> kuzu_handler.create_node(preference_node)
+            True
+            >>> kuzu_handler.create_relationship(prefers_tool_relationship)
+            True
+        """  # noqa: E501
         from_alias = "n1"
         to_alias = "n2"
         rel_properties = gen_cs_real_properties(rel.properties, curlies=True)
@@ -166,11 +260,12 @@ class KuzuHandler:
             rel_properties=rel_properties_str,
         )
         with self.get_connection(read_only=False) as conn:
-            KuzuHandler.execute(conn, query)
+            Kuzu.execute(conn, query)
+            return True
 
     @staticmethod
     def execute(
-        conn: Connection,
+        conn: "Connection",
         query: str | PreparedStatement,
         parameters: dict[str, Any] | None = None,
     ) -> QueryResult:
