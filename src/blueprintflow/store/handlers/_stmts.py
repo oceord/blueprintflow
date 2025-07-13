@@ -19,5 +19,5 @@ TMPL_CYPHER_CREATE_NODE = Template(
 TMPL_CYPHER_CREATE_RELATIONSHIP = Template(
     "MATCH ($from_alias:$from_node_table), ($to_alias:$to_node_table) "
     "WHERE $match_condition "
-    "CREATE ($from_alias)-[:$rel $rel_properties]->($to_alias);"
+    "CREATE ($from_alias)-[:$rel$rel_properties]->($to_alias);"
 )

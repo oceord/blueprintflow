@@ -7,8 +7,8 @@ from blueprintflow.core.models.store import (
     KUZU_RELATIONSHIP_TABLES,
     KuzuNode,
     KuzuNodeTable,
-    KuzuRelationship,
-    KuzuRelationshipTable,
+    KuzuRel,
+    KuzuRelTable,
 )
 from blueprintflow.helpers.cypher import (
     gen_cs_real_properties,
@@ -97,12 +97,12 @@ class KuzuHandler:
         for pending in KUZU_RELATIONSHIP_TABLES:
             self.create_table(pending)
 
-    def create_table(self, table: KuzuNodeTable | KuzuRelationshipTable) -> None:
+    def create_table(self, table: KuzuNodeTable | KuzuRelTable) -> None:
         """Create a node or relationship table in the Kuzu database.
 
         Args:
-            table (KuzuNode | KuzuRelationship): An instance of KuzuNode or
-                KuzuRelationship containing the table definition.
+            table (KuzuNodeTable | KuzuRelTable): An instance of KuzuNodeTable or
+                KuzuRelTable containing the table definition.
         """
         if isinstance(table, KuzuNodeTable):
             query = TMPL_CYPHER_CREATE_NODE_TABLE.substitute(
@@ -110,7 +110,7 @@ class KuzuHandler:
                 cs_properties=gen_cs_table_properties(table.properties),
                 cs_primary_key=", ".join(table.primary_key),
             )
-        elif isinstance(table, KuzuRelationshipTable):
+        elif isinstance(table, KuzuRelTable):
             query = TMPL_CYPHER_CREATE_REL_TABLE.substitute(
                 name=table.name,
                 from_node_table=table.from_node_table,
@@ -123,11 +123,11 @@ class KuzuHandler:
     def create_node(self, node: KuzuNode) -> None:
         """Create a node in the Kuzu database.
 
-        Args:
-            node (KuzuNode): An instance of KuzuNode containing the node definition.
-
         This method generates a Cypher query to create a node with the specified
         properties and executes it against the Kuzu database.
+
+        Args:
+            node (KuzuNode): An instance of KuzuNode containing the node definition.
         """
         query = TMPL_CYPHER_CREATE_NODE.substitute(
             table_alias="n",
@@ -137,18 +137,19 @@ class KuzuHandler:
         with self.get_connection(read_only=False) as conn:
             KuzuHandler.execute(conn, query)
 
-    def create_relationship(self, rel: KuzuRelationship) -> None:
+    def create_relationship(self, rel: KuzuRel) -> None:
         """Create a relationship between nodes in the Kuzu database.
-
-        Args:
-            rel (KuzuRelationship): An instance of KuzuRelationship containing the
-                relationship definition.
 
         This method generates a Cypher query to create a relationship with the specified
             properties and match conditions, then executes it against the Kuzu database.
+
+        Args:
+            rel (KuzuRel): An instance of KuzuRel containing the relationship
+                definition.
         """
         from_alias = "n1"
         to_alias = "n2"
+        rel_properties = gen_cs_real_properties(rel.properties, curlies=True)
         query = TMPL_CYPHER_CREATE_RELATIONSHIP.substitute(
             from_alias=from_alias,
             from_node_table=rel.from_node_table,
@@ -160,8 +161,8 @@ class KuzuHandler:
                 rel.from_match_conditions,
                 rel.to_match_conditions,
             ),
-            rel=rel.relationship_name,
-            rel_properties=gen_cs_real_properties(rel.properties, curlies=True),
+            rel=rel.rel_name,
+            rel_properties=f" {rel_properties}" if rel_properties else rel_properties,
         )
         with self.get_connection(read_only=False) as conn:
             KuzuHandler.execute(conn, query)

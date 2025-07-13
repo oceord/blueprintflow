@@ -2,9 +2,9 @@ from collections.abc import Iterable
 from itertools import chain
 
 from blueprintflow.core.models.store import (
+    KuzuMatchCondition,
     KuzuProperty,
     KuzuTableProperty,
-    MatchCondition,
 )
 
 
@@ -75,8 +75,8 @@ def gen_cs_real_properties(
 def gen_match_condition(
     from_alias: str,
     to_alias: str,
-    from_conditions: list[MatchCondition],
-    to_conditions: list[MatchCondition],
+    from_conditions: list[KuzuMatchCondition],
+    to_conditions: list[KuzuMatchCondition],
 ) -> str:
     """Generate a string of match conditions for a Cypher query.
 
@@ -86,9 +86,9 @@ def gen_match_condition(
     Args:
         from_alias (str): The alias for the source node.
         to_alias (str): The alias for the target node.
-        from_conditions (list[MatchCondition]): A list of match conditions for the
+        from_conditions (list[KuzuMatchCondition]): A list of match conditions for the
             source node.
-        to_conditions (list[MatchCondition]): A list of match conditions for the
+        to_conditions (list[KuzuMatchCondition]): A list of match conditions for the
             target node.
 
     Returns:
@@ -98,14 +98,14 @@ def gen_match_condition(
 
     Examples:
         >>> from_conditions = [
-        ...     MatchCondition(
+        ...     KuzuMatchCondition(
         ...         property="name",
         ...         operation="=",
         ...         value="waldo"
         ...     )
         ... ]
         >>> to_conditions = [
-        ...     MatchCondition(
+        ...     KuzuMatchCondition(
         ...         property="name",
         ...         operation="=",
         ...         value="nowhere"
@@ -116,7 +116,7 @@ def gen_match_condition(
     """
 
     def _gen_aliased_conditions(
-        alias: str, conditions: list[MatchCondition]
+        alias: str, conditions: list[KuzuMatchCondition]
     ) -> Iterable[str]:
         return (
             f"{alias}.{cond.property} {cond.operation} '{cond.value}'"

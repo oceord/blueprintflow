@@ -15,18 +15,64 @@ class DataStoreEnum(StrEnum):
     KUZU = "kuzudb"
 
 
+class KuzuNodeTableNameEnum(StrEnum):
+    """Enumeration of node table names in the Kuzu database."""
+
+    LANG_CONTEXT = "LanguageContext"
+    PREF = "Preference"
+    GUIDELINE = "Guideline"
+    RULE = "Rule"
+    SRC_STRUCTURE = "SourceStructure"
+
+
+class KuzuRelTableNameEnum(StrEnum):
+    """Enumeration of relationship table names in the Kuzu database."""
+
+    PREFERS_TOOL = "PREFERS_TOOL"
+    FOLLOWS_GUIDELINE = "FOLLOWS_GUIDELINE"
+    ENFORCES_RULE = "ENFORCES_RULE"
+    CONTAINS_STRUCTURE = "CONTAINS_STRUCTURE"
+
+
+class KuzuDataTypeEnum(StrEnum):
+    """Enumeration of data types used in the Kuzu database."""
+
+    SERIAL = "SERIAL"
+    STRING = "STRING"
+    UINT8 = "UINT8"
+
+
+class KuzuPropertyNameEnum(StrEnum):
+    """Enumeration of property names used in the Kuzu database."""
+
+    NODE_ID = "n_id"
+    LANGUAGE = "language"
+    CONTEXT = "context"
+    DESCRIPTION = "description"
+    NAME = "name"
+    ENFORCEMENT_LEVEL = "enforcement_level"
+    TYPE = "type"
+    REL_ID = "r_id"
+
+
+class KuzuMatchOpEnum(StrEnum):
+    """Enumeration of match operations used in the Kuzu database."""
+
+    EQUAL = "="
+
+
 class KuzuTableProperty(NamedTuple):
     """A named tuple representing a table property in a Kuzu node or relationship.
 
     Attributes:
-        name (str): The name of the property.
-        type (str): The data type of the property.
+        name (KuzuPropertyNameEnum): The name of the property.
+        type (KuzuDataTypeEnum): The data type of the property.
         default (str | None, optional): The default value of the property.
             Defaults to None.
     """
 
-    name: str
-    type: str
+    name: KuzuPropertyNameEnum
+    type: KuzuDataTypeEnum
     default: str | None = None
 
 
@@ -34,43 +80,46 @@ class KuzuNodeTable(BaseModel):
     """A model representing a node table in the Kuzu database.
 
     Attributes:
-        name (str): The name of the node.
-        properties (list[KuzuProperty]): A list of properties associated with the node.
-        primary_key (list[str]): A list of property names that form the primary key of
-            the node.
+        name (KuzuNodeTableEnum): The name of the node table.
+        properties (list[KuzuTableProperty]): A list of properties associated with the
+            node.
+        primary_key (list[KuzuPropertyNameEnum]): A list of property names that form
+            the primary key of the node.
     """
 
-    name: str
+    name: KuzuNodeTableNameEnum
     properties: list[KuzuTableProperty]
-    primary_key: list[str]
+    primary_key: list[KuzuPropertyNameEnum]
 
 
-class KuzuRelationshipTable(BaseModel):
+class KuzuRelTable(BaseModel):
     """A model representing a relationship table between nodes in the Kuzu database.
 
     Attributes:
-        name (str): The name of the relationship.
-        properties (list[KuzuProperty]): A list of properties associated with the
+        name (KuzuRelTableEnum): The name of the relationship.
+        properties (list[KuzuTableProperty]): A list of properties associated with the
             relationship.
-        from_node_table (str): The name of the source table node in the relationship.
-        to_node_table (str): The name of the target table node in the relationship.
+        from_node_table (KuzuNodeTableEnum): The name of the source table node in the
+            relationship.
+        to_node_table (KuzuNodeTableEnum): The name of the target table node in the
+            relationship.
     """
 
-    name: str
+    name: KuzuRelTableNameEnum
     properties: list[KuzuTableProperty]
-    from_node_table: str
-    to_node_table: str
+    from_node_table: KuzuNodeTableNameEnum
+    to_node_table: KuzuNodeTableNameEnum
 
 
 class KuzuProperty(NamedTuple):
     """A named tuple representing a property in a Kuzu node or relationship.
 
     Attributes:
-        name (str): The name of the property.
+        name (KuzuPropertyNameEnum): The name of the property.
         value (str): The value of the property.
     """
 
-    name: str
+    name: KuzuPropertyNameEnum
     value: str
 
 
@@ -78,123 +127,144 @@ class KuzuNode(BaseModel):
     """A model representing a node in the Kuzu database.
 
     Attributes:
-        table_name (str): The name of the node table.
+        table_name (KuzuNodeTableEnum): The name of the node table.
         properties (list[KuzuProperty]): A list of properties associated with the node.
     """
 
-    table_name: str
+    table_name: KuzuNodeTableNameEnum
     properties: list[KuzuProperty]
 
 
-class MatchCondition(BaseModel):
+class KuzuMatchCondition(BaseModel):
     """A model representing a match condition for filtering nodes in the Kuzu database.
 
     Attributes:
-        property (str): The name of the property to match against.
-        operation (str): The operation to perform for matching (e.g., "=").
+        property (KuzuPropertyNameEnum): The name of the property to match against.
+        operation (KuzuMatchOpEnum): The operation to perform for matching.
         value (str): The value to compare against the property.
     """
 
-    property: str
-    operation: str
+    property: KuzuPropertyNameEnum
+    operation: KuzuMatchOpEnum
     value: str
 
 
-class KuzuRelationship(BaseModel):
+class KuzuRel(BaseModel):
     """A model representing a relationship between nodes in the Kuzu database.
 
     Attributes:
-        relationship_name (str): The name of the relationship.
-        from_node_table (str): The name of the source node table in the relationship.
-        to_node_table (str): The name of the target node table in the relationship.
+        rel_name (KuzuRelTableEnum): The name of the relationship.
+        from_node_table (KuzuNodeTableEnum): The name of the source node table in the
+            relationship.
+        to_node_table (KuzuNodeTableEnum): The name of the target node table in the
+            relationship.
         properties (list[KuzuProperty] | None): A list of properties associated with
             the relationship.
-        from_match_conditions (list[MatchCondition]): A list of match conditions for
+        from_match_conditions (list[KuzuMatchCondition]): A list of match conditions for
             the source node.
-        to_match_conditions (list[MatchCondition]): A list of match conditions for
+        to_match_conditions (list[KuzuMatchCondition]): A list of match conditions for
             the target node.
     """
 
-    relationship_name: str
-    from_node_table: str
-    to_node_table: str
+    rel_name: KuzuRelTableNameEnum
+    from_node_table: KuzuNodeTableNameEnum
+    to_node_table: KuzuNodeTableNameEnum
     properties: list[KuzuProperty] | None
-    from_match_conditions: list[MatchCondition]
-    to_match_conditions: list[MatchCondition]
+    from_match_conditions: list[KuzuMatchCondition]
+    to_match_conditions: list[KuzuMatchCondition]
 
 
 KUZU_NODE_TABLES = [
     KuzuNodeTable(
-        name="LanguageContext",
+        name=KuzuNodeTableNameEnum.LANG_CONTEXT,
         properties=[
-            KuzuTableProperty("n_id", "SERIAL"),
-            KuzuTableProperty("language", "STRING"),
-            KuzuTableProperty("context", "STRING"),
-            KuzuTableProperty("description", "STRING"),
+            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
+            KuzuTableProperty(KuzuPropertyNameEnum.LANGUAGE, KuzuDataTypeEnum.STRING),
+            KuzuTableProperty(KuzuPropertyNameEnum.CONTEXT, KuzuDataTypeEnum.STRING),
+            KuzuTableProperty(
+                KuzuPropertyNameEnum.DESCRIPTION, KuzuDataTypeEnum.STRING
+            ),
         ],
-        primary_key=["n_id"],
+        primary_key=[KuzuPropertyNameEnum.NODE_ID],
     ),
     KuzuNodeTable(
-        name="Preference",
+        name=KuzuNodeTableNameEnum.PREF,
         properties=[
-            KuzuTableProperty("n_id", "SERIAL"),
-            KuzuTableProperty("name", "STRING"),
-            KuzuTableProperty("description", "STRING"),
+            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
+            KuzuTableProperty(KuzuPropertyNameEnum.NAME, KuzuDataTypeEnum.STRING),
+            KuzuTableProperty(
+                KuzuPropertyNameEnum.DESCRIPTION, KuzuDataTypeEnum.STRING
+            ),
         ],
-        primary_key=["n_id"],
+        primary_key=[KuzuPropertyNameEnum.NODE_ID],
     ),
     KuzuNodeTable(
-        name="Guideline",
+        name=KuzuNodeTableNameEnum.GUIDELINE,
         properties=[
-            KuzuTableProperty("n_id", "SERIAL"),
-            KuzuTableProperty("name", "STRING"),
-            KuzuTableProperty("description", "STRING"),
+            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
+            KuzuTableProperty(KuzuPropertyNameEnum.NAME, KuzuDataTypeEnum.STRING),
+            KuzuTableProperty(
+                KuzuPropertyNameEnum.DESCRIPTION, KuzuDataTypeEnum.STRING
+            ),
         ],
-        primary_key=["n_id"],
+        primary_key=[KuzuPropertyNameEnum.NODE_ID],
     ),
     KuzuNodeTable(
-        name="Rule",
+        name=KuzuNodeTableNameEnum.RULE,
         properties=[
-            KuzuTableProperty("n_id", "SERIAL"),
-            KuzuTableProperty("name", "STRING"),
-            KuzuTableProperty("description", "STRING"),
-            KuzuTableProperty("enforcement_level", "UINT8"),
+            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
+            KuzuTableProperty(KuzuPropertyNameEnum.NAME, KuzuDataTypeEnum.STRING),
+            KuzuTableProperty(
+                KuzuPropertyNameEnum.DESCRIPTION, KuzuDataTypeEnum.STRING
+            ),
+            KuzuTableProperty(
+                KuzuPropertyNameEnum.ENFORCEMENT_LEVEL,
+                KuzuDataTypeEnum.UINT8,
+            ),
         ],
-        primary_key=["n_id"],
+        primary_key=[KuzuPropertyNameEnum.NODE_ID],
     ),
     KuzuNodeTable(
-        name="SourceStructure",
+        name=KuzuNodeTableNameEnum.SRC_STRUCTURE,
         properties=[
-            KuzuTableProperty("n_id", "SERIAL"),
-            KuzuTableProperty("name", "STRING"),
-            KuzuTableProperty("type", "STRING"),
+            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
+            KuzuTableProperty(KuzuPropertyNameEnum.NAME, KuzuDataTypeEnum.STRING),
+            KuzuTableProperty(KuzuPropertyNameEnum.TYPE, KuzuDataTypeEnum.STRING),
         ],
-        primary_key=["n_id"],
+        primary_key=[KuzuPropertyNameEnum.NODE_ID],
     ),
 ]
 KUZU_RELATIONSHIP_TABLES = [
-    KuzuRelationshipTable(
-        name="PREFERS_TOOL",
-        properties=[KuzuTableProperty("r_id", "SERIAL")],
-        from_node_table="LanguageContext",
-        to_node_table="Preference",
+    KuzuRelTable(
+        name=KuzuRelTableNameEnum.PREFERS_TOOL,
+        properties=[
+            KuzuTableProperty(KuzuPropertyNameEnum.REL_ID, KuzuDataTypeEnum.SERIAL)
+        ],
+        from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        to_node_table=KuzuNodeTableNameEnum.PREF,
     ),
-    KuzuRelationshipTable(
-        name="FOLLOWS_GUIDELINE",
-        properties=[KuzuTableProperty("r_id", "SERIAL")],
-        from_node_table="LanguageContext",
-        to_node_table="Guideline",
+    KuzuRelTable(
+        name=KuzuRelTableNameEnum.FOLLOWS_GUIDELINE,
+        properties=[
+            KuzuTableProperty(KuzuPropertyNameEnum.REL_ID, KuzuDataTypeEnum.SERIAL)
+        ],
+        from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        to_node_table=KuzuNodeTableNameEnum.GUIDELINE,
     ),
-    KuzuRelationshipTable(
-        name="ENFORCES_RULE",
-        properties=[KuzuTableProperty("r_id", "SERIAL")],
-        from_node_table="LanguageContext",
-        to_node_table="Rule",
+    KuzuRelTable(
+        name=KuzuRelTableNameEnum.ENFORCES_RULE,
+        properties=[
+            KuzuTableProperty(KuzuPropertyNameEnum.REL_ID, KuzuDataTypeEnum.SERIAL)
+        ],
+        from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        to_node_table=KuzuNodeTableNameEnum.RULE,
     ),
-    KuzuRelationshipTable(
-        name="CONTAINS_STRUCTURE",
-        properties=[KuzuTableProperty("r_id", "SERIAL")],
-        from_node_table="LanguageContext",
-        to_node_table="SourceStructure",
+    KuzuRelTable(
+        name=KuzuRelTableNameEnum.CONTAINS_STRUCTURE,
+        properties=[
+            KuzuTableProperty(KuzuPropertyNameEnum.REL_ID, KuzuDataTypeEnum.SERIAL)
+        ],
+        from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        to_node_table=KuzuNodeTableNameEnum.SRC_STRUCTURE,
     ),
 ]
