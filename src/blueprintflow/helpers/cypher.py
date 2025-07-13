@@ -22,12 +22,23 @@ def gen_cs_table_properties(properties: list[KuzuTableProperty]) -> str:
             "<name> <type> DEFAULT <default>".
 
     Examples:
+        >>> from blueprintflow.core.models.store import (
+        ...     KuzuDataTypeEnum,
+        ...     KuzuPropertyNameEnum,
+        ... )
         >>> props = [
-        ...     KuzuTableProperty("id", "SERIAL"),
-        ...     KuzuTableProperty("name", "STRING", "default_name"),
+        ...     KuzuTableProperty(
+        ...         name=KuzuPropertyNameEnum.NODE_ID,
+        ...         type=KuzuDataTypeEnum.SERIAL,
+        ...     ),
+        ...     KuzuTableProperty(
+        ...         name=KuzuPropertyNameEnum.NAME,
+        ...         type=KuzuDataTypeEnum.STRING,
+        ...         default="default_name",
+        ...     ),
         ... ]
         >>> gen_cs_table_properties(props)
-        'id SERIAL, name STRING DEFAULT default_name'
+        'n_id SERIAL, name STRING DEFAULT default_name'
     """
 
     def format_default_property(default_prop: str | None) -> str:
@@ -59,14 +70,15 @@ def gen_cs_real_properties(
             curlies is True. Returns an empty string if properties is None.
 
     Examples:
+        >>> from blueprintflow.core.models.store import KuzuPropertyNameEnum
         >>> props = [
-        ...     KuzuProperty("id", "value1"),
-        ...     KuzuProperty("name", "value2"),
+        ...     KuzuProperty(name=KuzuPropertyNameEnum.NAME, value="sherley"),
+        ...     KuzuProperty(name=KuzuPropertyNameEnum.DESCRIPTION, value="waldo"),
         ... ]
         >>> gen_cs_real_properties(props)
-        "id: 'value1', name: 'value2'"
+        "name: 'sherley', description: 'waldo'"
         >>> gen_cs_real_properties(props, curlies=True)
-        "{id: 'value1', name: 'value2'}"
+        "{name: 'sherley', description: 'waldo'}"
     """
     if properties is None:
         return ""
@@ -105,18 +117,23 @@ def gen_match_condition(
         ...     KuzuMatchCondition(
         ...         property="name",
         ...         operation="=",
-        ...         value="waldo"
+        ...         value="python"
         ...     )
         ... ]
         >>> to_conditions = [
         ...     KuzuMatchCondition(
         ...         property="name",
         ...         operation="=",
-        ...         value="nowhere"
+        ...         value="duckdb"
         ...     )
         ... ]
-        >>> gen_match_condition("celebrity", "location", from_conditions, to_conditions)
-        "celebrity.name = 'waldo' AND location.name = 'nowhere'"
+        >>> gen_match_condition(
+        ...     "language_context",
+        ...     "preference",
+        ...     from_conditions,
+        ...     to_conditions
+        ... )
+        "language_context.name = 'python' AND preference.name = 'duckdb'"
     """
 
     def _gen_aliased_conditions(

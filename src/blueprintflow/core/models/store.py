@@ -1,5 +1,4 @@
 from enum import StrEnum
-from typing import NamedTuple
 
 from pydantic import BaseModel
 
@@ -34,14 +33,6 @@ class KuzuRelTableNameEnum(StrEnum):
     CONTAINS_STRUCTURE = "CONTAINS_STRUCTURE"
 
 
-class KuzuDataTypeEnum(StrEnum):
-    """Enumeration of data types used in the Kuzu database."""
-
-    SERIAL = "SERIAL"
-    STRING = "STRING"
-    UINT8 = "UINT8"
-
-
 class KuzuPropertyNameEnum(StrEnum):
     """Enumeration of property names used in the Kuzu database."""
 
@@ -55,20 +46,75 @@ class KuzuPropertyNameEnum(StrEnum):
     REL_ID = "r_id"
 
 
+class KuzuDataTypeEnum(StrEnum):
+    """Enumeration of data types used in the Kuzu database."""
+
+    SERIAL = "SERIAL"
+    STRING = "STRING"
+    UINT8 = "UINT8"
+
+
 class KuzuMatchOpEnum(StrEnum):
     """Enumeration of match operations used in the Kuzu database."""
 
     EQUAL = "="
 
 
-class KuzuTableProperty(NamedTuple):
-    """A named tuple representing a table property in a Kuzu node or relationship.
+class KuzuMatchCondition(BaseModel):
+    """A model representing a match condition for filtering nodes in the Kuzu database.
+
+    Attributes:
+        property (KuzuPropertyNameEnum): The name of the property to match against.
+        operation (KuzuMatchOpEnum): The operation to perform for matching.
+        value (str): The value to compare against the property.
+
+    Examples:
+        >>> match_condition = KuzuMatchCondition(
+        ...     property=KuzuPropertyNameEnum.LANGUAGE,
+        ...     operation=KuzuMatchOpEnum.EQUAL,
+        ...     value="Python"
+        ... )
+
+        Failure example when trying to pass invalid values:
+
+        >>> match_condition = KuzuMatchCondition(
+        ...     property=KuzuPropertyNameEnum.LANGUAGE,
+        ...     operation="INVALID_OP",
+        ...     value="Python"
+        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValidationError
+    """
+
+    property: KuzuPropertyNameEnum
+    operation: KuzuMatchOpEnum
+    value: str
+
+
+class KuzuTableProperty(BaseModel):
+    """A model representing a table property in a Kuzu node or relationship.
 
     Attributes:
         name (KuzuPropertyNameEnum): The name of the property.
         type (KuzuDataTypeEnum): The data type of the property.
-        default (str | None, optional): The default value of the property.
+        default (str, optional): The default value of the property.
             Defaults to None.
+
+    Examples:
+        >>> prop = KuzuTableProperty(
+        ...     name=KuzuPropertyNameEnum.NODE_ID,
+        ...     type=KuzuDataTypeEnum.SERIAL,
+        ... )
+
+        Failure example when trying to pass invalid values:
+
+        >>> prop = KuzuTableProperty(
+        ...     name=KuzuPropertyNameEnum.NAME,
+        ...     type="NONEXISTENT_TYPE",
+        ...     default="default_name",
+        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValidationError
     """
 
     name: KuzuPropertyNameEnum
@@ -85,6 +131,41 @@ class KuzuNodeTable(BaseModel):
             node.
         primary_key (list[KuzuPropertyNameEnum]): A list of property names that form
             the primary key of the node.
+
+    Examples:
+        >>> node_table = KuzuNodeTable(
+        ...     name=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        ...     properties=[
+        ...         KuzuTableProperty(
+        ...             name=KuzuPropertyNameEnum.NODE_ID,
+        ...             type=KuzuDataTypeEnum.SERIAL,
+        ...         ),
+        ...         KuzuTableProperty(
+        ...             name=KuzuPropertyNameEnum.LANGUAGE,
+        ...             type=KuzuDataTypeEnum.STRING,
+        ...         ),
+        ...     ],
+        ...     primary_key=[KuzuPropertyNameEnum.NODE_ID],
+        ... )
+
+        Failure example when trying to pass invalid values:
+
+        >>> node_table = KuzuNodeTable(
+        ...     name="NONEXISTENT_NODE_TABLE",
+        ...     properties=[
+        ...         KuzuTableProperty(
+        ...             name=KuzuPropertyNameEnum.NODE_ID,
+        ...             type=KuzuDataTypeEnum.SERIAL,
+        ...         ),
+        ...         KuzuTableProperty(
+        ...             name=KuzuPropertyNameEnum.LANGUAGE,
+        ...             type=KuzuDataTypeEnum.STRING,
+        ...         ),
+        ...     ],
+        ...     primary_key=[KuzuPropertyNameEnum.NODE_ID],
+        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValidationError
     """
 
     name: KuzuNodeTableNameEnum
@@ -103,6 +184,35 @@ class KuzuRelTable(BaseModel):
             relationship.
         to_node_table (KuzuNodeTableEnum): The name of the target table node in the
             relationship.
+
+    Examples:
+        >>> rel_table = KuzuRelTable(
+        ...     name=KuzuRelTableNameEnum.PREFERS_TOOL,
+        ...     properties=[
+        ...         KuzuTableProperty(
+        ...             name=KuzuPropertyNameEnum.REL_ID,
+        ...             type=KuzuDataTypeEnum.SERIAL,
+        ...         ),
+        ...     ],
+        ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+        ... )
+
+        Failure example when trying to pass invalid values:
+
+        >>> rel_table = KuzuRelTable(
+        ...     name="NONEXISTENT_REL_TABLE",
+        ...     properties=[
+        ...         KuzuTableProperty(
+        ...             name=KuzuPropertyNameEnum.REL_ID,
+        ...             type=KuzuDataTypeEnum.SERIAL,
+        ...         ),
+        ...     ],
+        ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValidationError
     """
 
     name: KuzuRelTableNameEnum
@@ -111,12 +221,27 @@ class KuzuRelTable(BaseModel):
     to_node_table: KuzuNodeTableNameEnum
 
 
-class KuzuProperty(NamedTuple):
-    """A named tuple representing a property in a Kuzu node or relationship.
+class KuzuProperty(BaseModel):
+    """A model representing a property in a Kuzu node or relationship.
 
     Attributes:
         name (KuzuPropertyNameEnum): The name of the property.
         value (str): The value of the property.
+
+    Examples:
+        >>> property = KuzuProperty(
+        ...     name=KuzuPropertyNameEnum.NAME,
+        ...     value="python"
+        ... )
+
+        Failure example when trying to pass invalid values:
+
+        >>> property = KuzuProperty(
+        ...     name="NONEXISTENT_PROPERTY",
+        ...     value="python"
+        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValidationError
     """
 
     name: KuzuPropertyNameEnum
@@ -129,24 +254,32 @@ class KuzuNode(BaseModel):
     Attributes:
         table_name (KuzuNodeTableEnum): The name of the node table.
         properties (list[KuzuProperty]): A list of properties associated with the node.
+
+    Examples:
+        >>> node = KuzuNode(
+        ...     table_name=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        ...     properties=[
+        ...         KuzuProperty(name=KuzuPropertyNameEnum.NAME, value="python"),
+        ...     ]
+        ... )
+
+        Failure example when trying to pass invalid values:
+
+        >>> node = KuzuNode(
+        ...     table_name="NONEXISTENT_NODE",
+        ...     properties=[
+        ...         KuzuProperty(
+        ...         name=KuzuPropertyNameEnum.NAME,
+        ...         value="python",
+        ...         ),
+        ...     ]
+        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValidationError
     """
 
     table_name: KuzuNodeTableNameEnum
     properties: list[KuzuProperty]
-
-
-class KuzuMatchCondition(BaseModel):
-    """A model representing a match condition for filtering nodes in the Kuzu database.
-
-    Attributes:
-        property (KuzuPropertyNameEnum): The name of the property to match against.
-        operation (KuzuMatchOpEnum): The operation to perform for matching.
-        value (str): The value to compare against the property.
-    """
-
-    property: KuzuPropertyNameEnum
-    operation: KuzuMatchOpEnum
-    value: str
 
 
 class KuzuRel(BaseModel):
@@ -158,18 +291,65 @@ class KuzuRel(BaseModel):
             relationship.
         to_node_table (KuzuNodeTableEnum): The name of the target node table in the
             relationship.
-        properties (list[KuzuProperty] | None): A list of properties associated with
-            the relationship.
+        properties (list[KuzuProperty], optional): A list of properties associated with
+            the relationship. Defaults to None.
         from_match_conditions (list[KuzuMatchCondition]): A list of match conditions for
             the source node.
         to_match_conditions (list[KuzuMatchCondition]): A list of match conditions for
             the target node.
+
+    Examples:
+        >>> prefers_tool_relationship = KuzuRel(
+        ...     rel_name=KuzuRelTableNameEnum.PREFERS_TOOL,
+        ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+        ...     properties=None,
+        ...     from_match_conditions=[
+        ...         KuzuMatchCondition(
+        ...             property=KuzuPropertyNameEnum.LANGUAGE,
+        ...             operation=KuzuMatchOpEnum.EQUAL,
+        ...             value="python",
+        ...         )
+        ...     ],
+        ...     to_match_conditions=[
+        ...         KuzuMatchCondition(
+        ...             property=KuzuPropertyNameEnum.NAME,
+        ...             operation=KuzuMatchOpEnum.EQUAL,
+        ...             value="polars",
+        ...         )
+        ...     ],
+        ... )
+
+        Failure example when trying to pass invalid values:
+
+        >>> prefers_tool_relationship = KuzuRel(
+        ...     rel_name="NONEXISTENT_REL",
+        ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
+        ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+        ...     properties=None,
+        ...     from_match_conditions=[
+        ...         KuzuMatchCondition(
+        ...             property=KuzuPropertyNameEnum.LANGUAGE,
+        ...             operation=KuzuMatchOpEnum.EQUAL,
+        ...             value="python",
+        ...         )
+        ...     ],
+        ...     to_match_conditions=[
+        ...         KuzuMatchCondition(
+        ...             property=KuzuPropertyNameEnum.NAME,
+        ...             operation=KuzuMatchOpEnum.EQUAL,
+        ...             value="polars",
+        ...         )
+        ...     ],
+        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValidationError
     """
 
     rel_name: KuzuRelTableNameEnum
     from_node_table: KuzuNodeTableNameEnum
     to_node_table: KuzuNodeTableNameEnum
-    properties: list[KuzuProperty] | None
+    properties: list[KuzuProperty] | None = None
     from_match_conditions: list[KuzuMatchCondition]
     to_match_conditions: list[KuzuMatchCondition]
 
@@ -178,11 +358,17 @@ KUZU_NODE_TABLES = [
     KuzuNodeTable(
         name=KuzuNodeTableNameEnum.LANG_CONTEXT,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
-            KuzuTableProperty(KuzuPropertyNameEnum.LANGUAGE, KuzuDataTypeEnum.STRING),
-            KuzuTableProperty(KuzuPropertyNameEnum.CONTEXT, KuzuDataTypeEnum.STRING),
             KuzuTableProperty(
-                KuzuPropertyNameEnum.DESCRIPTION, KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.LANGUAGE, type=KuzuDataTypeEnum.STRING
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.CONTEXT, type=KuzuDataTypeEnum.STRING
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
@@ -190,10 +376,14 @@ KUZU_NODE_TABLES = [
     KuzuNodeTable(
         name=KuzuNodeTableNameEnum.PREF,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
-            KuzuTableProperty(KuzuPropertyNameEnum.NAME, KuzuDataTypeEnum.STRING),
             KuzuTableProperty(
-                KuzuPropertyNameEnum.DESCRIPTION, KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.NAME, type=KuzuDataTypeEnum.STRING
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
@@ -201,10 +391,14 @@ KUZU_NODE_TABLES = [
     KuzuNodeTable(
         name=KuzuNodeTableNameEnum.GUIDELINE,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
-            KuzuTableProperty(KuzuPropertyNameEnum.NAME, KuzuDataTypeEnum.STRING),
             KuzuTableProperty(
-                KuzuPropertyNameEnum.DESCRIPTION, KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.NAME, type=KuzuDataTypeEnum.STRING
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
@@ -212,14 +406,18 @@ KUZU_NODE_TABLES = [
     KuzuNodeTable(
         name=KuzuNodeTableNameEnum.RULE,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
-            KuzuTableProperty(KuzuPropertyNameEnum.NAME, KuzuDataTypeEnum.STRING),
             KuzuTableProperty(
-                KuzuPropertyNameEnum.DESCRIPTION, KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
             ),
             KuzuTableProperty(
-                KuzuPropertyNameEnum.ENFORCEMENT_LEVEL,
-                KuzuDataTypeEnum.UINT8,
+                name=KuzuPropertyNameEnum.NAME, type=KuzuDataTypeEnum.STRING
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.ENFORCEMENT_LEVEL,
+                type=KuzuDataTypeEnum.UINT8,
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
@@ -227,18 +425,27 @@ KUZU_NODE_TABLES = [
     KuzuNodeTable(
         name=KuzuNodeTableNameEnum.SRC_STRUCTURE,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.NODE_ID, KuzuDataTypeEnum.SERIAL),
-            KuzuTableProperty(KuzuPropertyNameEnum.NAME, KuzuDataTypeEnum.STRING),
-            KuzuTableProperty(KuzuPropertyNameEnum.TYPE, KuzuDataTypeEnum.STRING),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.NAME, type=KuzuDataTypeEnum.STRING
+            ),
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.TYPE, type=KuzuDataTypeEnum.STRING
+            ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
     ),
 ]
+
 KUZU_RELATIONSHIP_TABLES = [
     KuzuRelTable(
         name=KuzuRelTableNameEnum.PREFERS_TOOL,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.REL_ID, KuzuDataTypeEnum.SERIAL)
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.REL_ID, type=KuzuDataTypeEnum.SERIAL
+            )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
         to_node_table=KuzuNodeTableNameEnum.PREF,
@@ -246,7 +453,9 @@ KUZU_RELATIONSHIP_TABLES = [
     KuzuRelTable(
         name=KuzuRelTableNameEnum.FOLLOWS_GUIDELINE,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.REL_ID, KuzuDataTypeEnum.SERIAL)
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.REL_ID, type=KuzuDataTypeEnum.SERIAL
+            )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
         to_node_table=KuzuNodeTableNameEnum.GUIDELINE,
@@ -254,7 +463,9 @@ KUZU_RELATIONSHIP_TABLES = [
     KuzuRelTable(
         name=KuzuRelTableNameEnum.ENFORCES_RULE,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.REL_ID, KuzuDataTypeEnum.SERIAL)
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.REL_ID, type=KuzuDataTypeEnum.SERIAL
+            )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
         to_node_table=KuzuNodeTableNameEnum.RULE,
@@ -262,9 +473,16 @@ KUZU_RELATIONSHIP_TABLES = [
     KuzuRelTable(
         name=KuzuRelTableNameEnum.CONTAINS_STRUCTURE,
         properties=[
-            KuzuTableProperty(KuzuPropertyNameEnum.REL_ID, KuzuDataTypeEnum.SERIAL)
+            KuzuTableProperty(
+                name=KuzuPropertyNameEnum.REL_ID, type=KuzuDataTypeEnum.SERIAL
+            )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
         to_node_table=KuzuNodeTableNameEnum.SRC_STRUCTURE,
     ),
 ]
+
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()
