@@ -29,8 +29,12 @@ def gen_cs_table_properties(properties: list[KuzuTableProperty]) -> str:
         >>> gen_cs_table_properties(props)
         'id SERIAL, name STRING DEFAULT default_name'
     """
+
+    def format_default_property(default_prop: str | None) -> str:
+        return f" DEFAULT {default_prop}" if default_prop else ""
+
     return ", ".join(
-        f"{prop.name} {prop.type}{f' DEFAULT {prop.default}' if prop.default else ''}"
+        f"{prop.name} {prop.type}{format_default_property(prop.default)}"
         for prop in properties
     )
 

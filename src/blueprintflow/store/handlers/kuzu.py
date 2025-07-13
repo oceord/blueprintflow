@@ -150,6 +150,7 @@ class KuzuHandler:
         from_alias = "n1"
         to_alias = "n2"
         rel_properties = gen_cs_real_properties(rel.properties, curlies=True)
+        rel_properties_str = f" {rel_properties}" if rel_properties else rel_properties
         query = TMPL_CYPHER_CREATE_RELATIONSHIP.substitute(
             from_alias=from_alias,
             from_node_table=rel.from_node_table,
@@ -162,7 +163,7 @@ class KuzuHandler:
                 rel.to_match_conditions,
             ),
             rel=rel.rel_name,
-            rel_properties=f" {rel_properties}" if rel_properties else rel_properties,
+            rel_properties=rel_properties_str,
         )
         with self.get_connection(read_only=False) as conn:
             KuzuHandler.execute(conn, query)
