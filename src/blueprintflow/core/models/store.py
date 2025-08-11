@@ -18,7 +18,7 @@ class KuzuNodeTableNameEnum(StrEnum):
     """Enumeration of node table names in the Kuzu database."""
 
     LANG_CONTEXT = "LanguageContext"
-    PREF = "Preference"
+    PREFERENCE = "Preference"
     GUIDELINE = "Guideline"
     RULE = "Rule"
     SRC_STRUCTURE = "SourceStructure"
@@ -195,7 +195,7 @@ class KuzuRelTable(BaseModel):
         ...         ),
         ...     ],
         ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+        ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
         ... )
 
         Failure example when trying to pass invalid values:
@@ -209,7 +209,7 @@ class KuzuRelTable(BaseModel):
         ...         ),
         ...     ],
         ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+        ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
         ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
         ValidationError
@@ -302,7 +302,7 @@ class KuzuRel(BaseModel):
         >>> prefers_tool_relationship = KuzuRel(
         ...     rel_name=KuzuRelTableNameEnum.PREFERS_TOOL,
         ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+        ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
         ...     properties=None,
         ...     from_match_conditions=[
         ...         KuzuMatchCondition(
@@ -325,7 +325,7 @@ class KuzuRel(BaseModel):
         >>> prefers_tool_relationship = KuzuRel(
         ...     rel_name="NONEXISTENT_REL",
         ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+        ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
         ...     properties=None,
         ...     from_match_conditions=[
         ...         KuzuMatchCondition(
@@ -374,7 +374,7 @@ KUZU_NODE_TABLES = [
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
     ),
     KuzuNodeTable(
-        name=KuzuNodeTableNameEnum.PREF,
+        name=KuzuNodeTableNameEnum.PREFERENCE,
         properties=[
             KuzuTableProperty(
                 name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
@@ -448,7 +448,7 @@ KUZU_RELATIONSHIP_TABLES = [
             )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        to_node_table=KuzuNodeTableNameEnum.PREF,
+        to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
     ),
     KuzuRelTable(
         name=KuzuRelTableNameEnum.FOLLOWS_GUIDELINE,
@@ -481,8 +481,3 @@ KUZU_RELATIONSHIP_TABLES = [
         to_node_table=KuzuNodeTableNameEnum.SRC_STRUCTURE,
     ),
 ]
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

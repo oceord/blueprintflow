@@ -205,7 +205,7 @@ class Kuzu:
             ...     ],
             ... )
             >>> preference_node = KuzuNode(
-            ...     table_name=KuzuNodeTableNameEnum.PREF,
+            ...     table_name=KuzuNodeTableNameEnum.PREFERENCE,
             ...     properties=[
             ...         KuzuProperty(name=KuzuPropertyNameEnum.NAME, value="polars"),
             ...         KuzuProperty(
@@ -217,7 +217,7 @@ class Kuzu:
             >>> prefers_tool_relationship = KuzuRel(
             ...     rel_name=KuzuRelTableNameEnum.PREFERS_TOOL,
             ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-            ...     to_node_table=KuzuNodeTableNameEnum.PREF,
+            ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
             ...     properties=None,
             ...     from_match_conditions=[
             ...         KuzuMatchCondition(
