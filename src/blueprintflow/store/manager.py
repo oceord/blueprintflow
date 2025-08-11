@@ -58,6 +58,54 @@ class StoreManager:
         """
         self.kuzu_handler = Kuzu(user_data)
 
+    def create(  # noqa: PLR0911
+        self,
+        task: CreateLanguageContextTask
+        | CreatePreferenceTask
+        | CreateGuidelineTask
+        | CreateRuleTask
+        | CreateSrcStructureTask
+        | CreateAstractionTask
+        | CreateCodeTask,
+    ) -> TaskStatusEnum:
+        """Execute a creation task based on its type.
+
+        This method uses pattern matching to determine the type of task and delegates
+        the creation operation to the appropriate specialized method. It supports
+        various task types including language contexts, preferences, guidelines, rules,
+        source structures, abstractions, and code elements.
+
+        The method follows a dispatcher pattern, routing each task type to its
+        corresponding handler method while maintaining a consistent interface for all
+        task types.
+
+        Arguments:
+            task (Task):
+                A task object representing what entity to create. The task must be one
+                of the supported types, each containing the necessary information for
+                creating its specific entity type.
+
+        Returns:
+            TaskStatusEnum:
+                The status of the operation, typically SUCCESS or FAILURE, indicating
+                whether the creation was successful or encountered an error.
+        """
+        match task:
+            case CreateLanguageContextTask() as t:
+                return self.create_lang_context(t)
+            case CreatePreferenceTask() as t:
+                return self.create_preference(t)
+            case CreateGuidelineTask() as t:
+                return self.create_guideline(t)
+            case CreateRuleTask() as t:
+                return self.create_rule(t)
+            case CreateSrcStructureTask() as t:
+                return self.create_src_structure(t)
+            case CreateAstractionTask() as t:
+                return self.create_abstraction(t)
+            case CreateCodeTask() as t:
+                return self.create_code(t)
+
     def create_lang_context(
         self, lang_context_task: CreateLanguageContextTask
     ) -> TaskStatusEnum:
@@ -147,3 +195,11 @@ class StoreManager:
         ):
             return TaskStatusEnum.FAILURE
         return TaskStatusEnum.SUCCESS
+
+    def create_abstraction(
+        self, abstraction_task: CreateAstractionTask
+    ) -> TaskStatusEnum:
+        raise NotImplementedError
+
+    def create_code(self, code_task: CreateCodeTask) -> TaskStatusEnum:
+        raise NotImplementedError

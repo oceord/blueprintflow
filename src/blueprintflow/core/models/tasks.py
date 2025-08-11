@@ -12,20 +12,22 @@ class TaskStatusEnum(StrEnum):
     whether it was successful, failed, or is in progress.
 
     Members:
-        SUCCESS: The task completed successfully.
+        CANCELLED: The task was cancelled before completion.
         FAILURE: The task failed to complete.
         IN_PROGRESS: The task is currently in progress.
         PENDING: The task is pending and has not started yet.
-        CANCELLED: The task was cancelled before completion.
+        SKIPPED: The task was skipped.
+        SUCCESS: The task completed successfully.
         TIMED_OUT: The task timed out before completion.
         UNKNOWN: The status of the task is unknown.
     """
 
-    SUCCESS = "success"
+    CANCELLED = "cancelled"
     FAILURE = "failure"
     IN_PROGRESS = "in_progress"
     PENDING = "pending"
-    CANCELLED = "cancelled"
+    SKIPPED = "unknown"
+    SUCCESS = "success"
     TIMED_OUT = "timed_out"
     UNKNOWN = "unknown"
 
@@ -90,3 +92,11 @@ class CreateSrcStructureTask(BaseModel):
 
     src_structure: KuzuNode
     language_context_rel: KuzuRel
+
+
+class CreateCodeTask(BaseModel):
+    pass
+
+
+class CreateAstractionTask(BaseModel):
+    pass

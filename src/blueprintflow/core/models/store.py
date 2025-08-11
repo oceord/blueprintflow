@@ -10,16 +10,16 @@ class DataStoreEnum(StrEnum):
     Each member of the enum represents a specific store.
     """
 
-    LANCEDB = "lancedb"
     KUZU = "kuzudb"
+    LANCEDB = "lancedb"
 
 
 class KuzuNodeTableNameEnum(StrEnum):
     """Enumeration of node table names in the Kuzu database."""
 
+    GUIDELINE = "Guideline"
     LANG_CONTEXT = "LanguageContext"
     PREFERENCE = "Preference"
-    GUIDELINE = "Guideline"
     RULE = "Rule"
     SRC_STRUCTURE = "SourceStructure"
 
@@ -27,23 +27,24 @@ class KuzuNodeTableNameEnum(StrEnum):
 class KuzuRelTableNameEnum(StrEnum):
     """Enumeration of relationship table names in the Kuzu database."""
 
-    PREFERS_TOOL = "PREFERS_TOOL"
-    FOLLOWS_GUIDELINE = "FOLLOWS_GUIDELINE"
-    ENFORCES_RULE = "ENFORCES_RULE"
     CONTAINS_STRUCTURE = "CONTAINS_STRUCTURE"
+    ENFORCES_RULE = "ENFORCES_RULE"
+    FOLLOWS_GUIDELINE = "FOLLOWS_GUIDELINE"
+    PREFERS_TOOL = "PREFERS_TOOL"
 
 
 class KuzuPropertyNameEnum(StrEnum):
     """Enumeration of property names used in the Kuzu database."""
 
-    NODE_ID = "n_id"
-    LANGUAGE = "language"
     CONTEXT = "context"
     DESCRIPTION = "description"
-    NAME = "name"
     ENFORCEMENT_LEVEL = "enforcement_level"
-    TYPE = "type"
+    LANGUAGE = "language"
+    NAME = "name"
+    NODE_ID = "n_id"
+    PATH = "path"
     REL_ID = "r_id"
+    TYPE = "type"
 
 
 class KuzuDataTypeEnum(StrEnum):
@@ -268,9 +269,9 @@ class KuzuNode(BaseModel):
         >>> node = KuzuNode(
         ...     table_name="NONEXISTENT_NODE",
         ...     properties=[
-        ...         KuzuProperty(
-        ...         name=KuzuPropertyNameEnum.NAME,
-        ...         value="python",
+        ...             KuzuProperty(
+        ...             name=KuzuPropertyNameEnum.NAME,
+        ...             value="python",
         ...         ),
         ...     ]
         ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
@@ -429,10 +430,10 @@ KUZU_NODE_TABLES = [
                 name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NAME, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.PATH, type=KuzuDataTypeEnum.STRING
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.TYPE, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
