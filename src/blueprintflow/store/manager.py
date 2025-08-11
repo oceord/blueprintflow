@@ -58,7 +58,7 @@ class StoreManager:
         """
         self.kuzu_handler = Kuzu(user_data)
 
-    def create(  # noqa: PLR0911
+    def dispatch_task(  # noqa: PLR0911
         self,
         task: CreateLanguageContextTask
         | CreatePreferenceTask
@@ -68,27 +68,23 @@ class StoreManager:
         | CreateAstractionTask
         | CreateCodeTask,
     ) -> TaskStatusEnum:
-        """Execute a creation task based on its type.
+        """Dispatch a task to its corresponding handler based on the task type.
 
-        This method uses pattern matching to determine the type of task and delegates
-        the creation operation to the appropriate specialized method. It supports
-        various task types including language contexts, preferences, guidelines, rules,
-        source structures, abstractions, and code elements.
+        This function acts as a dispatcher, routing each task to its specific handler
+        method based on the task's type. It supports various task types including
+        language contexts, preferences, guidelines, rules, source structures,
+        abstractions, and code elements. The function leverages a dictionary to map task
+        types to their respective handlers, ensuring efficient and direct execution of
+        the appropriate method.
 
-        The method follows a dispatcher pattern, routing each task type to its
-        corresponding handler method while maintaining a consistent interface for all
-        task types.
-
-        Arguments:
-            task (Task):
-                A task object representing what entity to create. The task must be one
-                of the supported types, each containing the necessary information for
-                creating its specific entity type.
+        Args:
+            task: A task object representing the entity to be created. The task must be
+                one of the supported types, each containing necessary information for
+                creating its specific entity.
 
         Returns:
-            TaskStatusEnum:
-                The status of the operation, typically SUCCESS or FAILURE, indicating
-                whether the creation was successful or encountered an error.
+            TaskStatusEnum: The status of the task execution, indicating success or
+                failure.
         """
         match task:
             case CreateLanguageContextTask() as t:

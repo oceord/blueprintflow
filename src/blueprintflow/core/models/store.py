@@ -360,16 +360,20 @@ KUZU_NODE_TABLES = [
         name=KuzuNodeTableNameEnum.LANG_CONTEXT,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.NODE_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.LANGUAGE, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.LANGUAGE,
+                type=KuzuDataTypeEnum.STRING,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.CONTEXT, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.CONTEXT,
+                type=KuzuDataTypeEnum.STRING,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.DESCRIPTION,
+                type=KuzuDataTypeEnum.STRING,
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
@@ -378,13 +382,16 @@ KUZU_NODE_TABLES = [
         name=KuzuNodeTableNameEnum.PREFERENCE,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.NODE_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NAME, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.NAME,
+                type=KuzuDataTypeEnum.STRING,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.DESCRIPTION,
+                type=KuzuDataTypeEnum.STRING,
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
@@ -393,13 +400,16 @@ KUZU_NODE_TABLES = [
         name=KuzuNodeTableNameEnum.GUIDELINE,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.NODE_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NAME, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.NAME,
+                type=KuzuDataTypeEnum.STRING,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.DESCRIPTION,
+                type=KuzuDataTypeEnum.STRING,
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
@@ -408,13 +418,16 @@ KUZU_NODE_TABLES = [
         name=KuzuNodeTableNameEnum.RULE,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.NODE_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NAME, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.NAME,
+                type=KuzuDataTypeEnum.STRING,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.DESCRIPTION,
+                type=KuzuDataTypeEnum.STRING,
             ),
             KuzuTableProperty(
                 name=KuzuPropertyNameEnum.ENFORCEMENT_LEVEL,
@@ -427,13 +440,16 @@ KUZU_NODE_TABLES = [
         name=KuzuNodeTableNameEnum.SRC_STRUCTURE,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.NODE_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.PATH, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.PATH,
+                type=KuzuDataTypeEnum.STRING,
             ),
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION, type=KuzuDataTypeEnum.STRING
+                name=KuzuPropertyNameEnum.DESCRIPTION,
+                type=KuzuDataTypeEnum.STRING,
             ),
         ],
         primary_key=[KuzuPropertyNameEnum.NODE_ID],
@@ -445,7 +461,8 @@ KUZU_RELATIONSHIP_TABLES = [
         name=KuzuRelTableNameEnum.PREFERS_TOOL,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.REL_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.REL_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
@@ -455,7 +472,8 @@ KUZU_RELATIONSHIP_TABLES = [
         name=KuzuRelTableNameEnum.FOLLOWS_GUIDELINE,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.REL_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.REL_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
@@ -465,7 +483,8 @@ KUZU_RELATIONSHIP_TABLES = [
         name=KuzuRelTableNameEnum.ENFORCES_RULE,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.REL_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.REL_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
@@ -475,7 +494,8 @@ KUZU_RELATIONSHIP_TABLES = [
         name=KuzuRelTableNameEnum.CONTAINS_STRUCTURE,
         properties=[
             KuzuTableProperty(
-                name=KuzuPropertyNameEnum.REL_ID, type=KuzuDataTypeEnum.SERIAL
+                name=KuzuPropertyNameEnum.REL_ID,
+                type=KuzuDataTypeEnum.SERIAL,
             )
         ],
         from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
