@@ -37,18 +37,6 @@ def get_platform_user_data_dir() -> Path:
     return data_dir
 
 
-def init_user_data_dir(data_dir: Path) -> None:
-    """Initialize the user data directory.
-
-    This function ensures that the user data directory exists by creating it
-    if it does not already exist.
-
-    Args:
-        data_dir (Path): The path to the user data directory.
-    """
-    data_dir.mkdir(parents=True, exist_ok=True)
-
-
 class UserData:
     """Manages user data directories and files.
 
@@ -80,7 +68,18 @@ class UserData:
             user_data_dir or get_platform_user_data_dir() / BPF_USER_DATA_DIR_NAME
         )
         if not self._user_data_dir.exists():
-            init_user_data_dir(self._user_data_dir)
+            self._init_user_data_dir()
         self.log_file = self._user_data_dir / BPF_LOG_FILE_NAME
         self.lancedb_path = self._user_data_dir / DataStoreEnum.LANCEDB
         self.kuzu_path = self._user_data_dir / DataStoreEnum.KUZU
+
+    def _init_user_data_dir(self) -> None:
+        """Initialize the user data directory.
+
+        This function ensures that the user data directory exists by creating it
+        if it does not already exist.
+
+        Args:
+            data_dir (Path): The path to the user data directory.
+        """
+        self._user_data_dir.mkdir(parents=True, exist_ok=True)
