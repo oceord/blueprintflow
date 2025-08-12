@@ -2,7 +2,15 @@ from enum import StrEnum
 
 from pydantic import BaseModel
 
-from blueprintflow.core.models.store import KuzuNode, KuzuRel
+from blueprintflow.core.models.store import (
+    Abstraction,
+    Code,
+    Guideline,
+    LanguageContext,
+    Preference,
+    Rule,
+    SourceStructure,
+)
 
 
 class TaskStatusEnum(StrEnum):
@@ -26,77 +34,77 @@ class TaskStatusEnum(StrEnum):
     FAILURE = "failure"
     IN_PROGRESS = "in_progress"
     PENDING = "pending"
-    SKIPPED = "unknown"
+    SKIPPED = "skipped"
     SUCCESS = "success"
     TIMED_OUT = "timed_out"
     UNKNOWN = "unknown"
 
 
 class CreateLanguageContextTask(BaseModel):
-    """A task for creating a language context node in the database.
+    """A task for creating a language context record in the database.
 
     Attributes:
-        language_context (KuzuNode): The language context node to be created.
+        language_context (LanguageContext): The language context to be created.
     """
 
-    language_context: KuzuNode
+    language_context: LanguageContext
 
 
 class CreatePreferenceTask(BaseModel):
-    """A task for creating a preference node.
+    """A task for creating a preference record.
 
     Attributes:
-        preference (KuzuNode): The preference node to be created.
-        language_context_rel (KuzuRel): The relationship between the preference and a
-            language context.
+        preference (Preference): The preference to be created.
     """
 
-    preference: KuzuNode
-    language_context_rel: KuzuRel
+    preference: Preference
 
 
 class CreateGuidelineTask(BaseModel):
-    """A task for creating a guideline node.
+    """A task for creating a guideline record.
 
     Attributes:
-        guideline (KuzuNode): The guideline node to be created.
-        language_context_rel (KuzuRel): The relationship between the guideline and a
-            language context.
+        guideline (Guideline): The guideline to be created.
     """
 
-    guideline: KuzuNode
-    language_context_rel: KuzuRel
+    guideline: Guideline
 
 
 class CreateRuleTask(BaseModel):
-    """A task for creating a rule node.
+    """A task for creating a rule record.
 
     Attributes:
-        rule (KuzuNode): The rule node to be created.
-        language_context_rel (KuzuRel): The relationship between the rule and a language
-            context.
+        rule (Rule): The rule to be created.
     """
 
-    rule: KuzuNode
-    language_context_rel: KuzuRel
+    rule: Rule
 
 
 class CreateSrcStructureTask(BaseModel):
-    """A task for creating a src structure node.
+    """A task for creating a src structure record.
 
     Attributes:
-        src_structure (KuzuNode): The source structure node to be created.
-        language_context_rel (KuzuRel): The relationship between the source structure
-            and a language context.
+        src_structure (SourceStructure): The source structure to be created.
     """
 
-    src_structure: KuzuNode
-    language_context_rel: KuzuRel
+    src_structure: SourceStructure
 
 
 class CreateCodeTask(BaseModel):
-    pass
+    """A task for creating a code record.
+
+    Attributes:
+        code (Code): The code to be created.
+    """
+
+    code: Code
 
 
 class CreateAstractionTask(BaseModel):
-    pass
+    """A task for creating an abstraction record.
+
+    Attributes:
+        abstraction (Abstraction): The abstraction to be created.
+    """
+
+    abstraction: Abstraction

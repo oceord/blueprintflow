@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 blueprintflow = {file = ".", editable = true}
 incremental = "*"
-kuzu = "*"
 lancedb = "*"
 litellm = "*"
 pydantic = "*"

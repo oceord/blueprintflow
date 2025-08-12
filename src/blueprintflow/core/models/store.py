@@ -1,504 +1,351 @@
 from enum import StrEnum
 
+import pyarrow as pa
 from pydantic import BaseModel
 
 
-class DataStoreEnum(StrEnum):
-    """Enumeration of supported data stores.
+class TableNameEnum(StrEnum):
+    """Enumeration of table names in the LanceDB database."""
 
-    This enum defines the names of the data stores used by BlueprintFlow.
-    Each member of the enum represents a specific store.
-    """
-
-    KUZU = "kuzudb"
-    LANCEDB = "lancedb"
-
-
-class KuzuNodeTableNameEnum(StrEnum):
-    """Enumeration of node table names in the Kuzu database."""
-
-    GUIDELINE = "Guideline"
-    LANG_CONTEXT = "LanguageContext"
-    PREFERENCE = "Preference"
-    RULE = "Rule"
-    SRC_STRUCTURE = "SourceStructure"
+    GUIDELINE = "guidelines"
+    LANG_CONTEXT = "language_contexts"
+    PREFERENCE = "preferences"
+    RULE = "rules"
+    SRC_STRUCTURE = "source_structures"
+    CODE = "code"
+    ABSTRACTION = "abstractions"
 
 
-class KuzuRelTableNameEnum(StrEnum):
-    """Enumeration of relationship table names in the Kuzu database."""
-
-    CONTAINS_STRUCTURE = "CONTAINS_STRUCTURE"
-    ENFORCES_RULE = "ENFORCES_RULE"
-    FOLLOWS_GUIDELINE = "FOLLOWS_GUIDELINE"
-    PREFERS_TOOL = "PREFERS_TOOL"
-
-
-class KuzuPropertyNameEnum(StrEnum):
-    """Enumeration of property names used in the Kuzu database."""
-
-    CONTEXT = "context"
-    DESCRIPTION = "description"
-    ENFORCEMENT_LEVEL = "enforcement_level"
-    LANGUAGE = "language"
-    NAME = "name"
-    NODE_ID = "n_id"
-    PATH = "path"
-    REL_ID = "r_id"
-    TYPE = "type"
-
-
-class KuzuDataTypeEnum(StrEnum):
-    """Enumeration of data types used in the Kuzu database."""
-
-    SERIAL = "SERIAL"
-    STRING = "STRING"
-    UINT8 = "UINT8"
-
-
-class KuzuMatchOpEnum(StrEnum):
-    """Enumeration of match operations used in the Kuzu database."""
-
-    EQUAL = "="
-
-
-class KuzuMatchCondition(BaseModel):
-    """A model representing a match condition for filtering nodes in the Kuzu database.
+class LanguageContext(BaseModel):
+    """A model representing a language context in LanceDB.
 
     Attributes:
-        property (KuzuPropertyNameEnum): The name of the property to match against.
-        operation (KuzuMatchOpEnum): The operation to perform for matching.
-        value (str): The value to compare against the property.
+        key (str): Key identifier for the language context.
+        language (str): The programming language (e.g., "python", "javascript").
+        context (str): The context or domain (e.g., "data", "web", "ml").
+        description (str): A detailed description of the language context.
+        embedding (list[float], optional): Vector embedding for similarity search.
 
     Examples:
-        >>> match_condition = KuzuMatchCondition(
-        ...     property=KuzuPropertyNameEnum.LANGUAGE,
-        ...     operation=KuzuMatchOpEnum.EQUAL,
-        ...     value="Python"
+        >>> lang_context = LanguageContext(
+        ...     key="python_data_001",
+        ...     language="python",
+        ...     context="data",
+        ...     description="Python for data science and analysis",
         ... )
-
-        Failure example when trying to pass invalid values:
-
-        >>> match_condition = KuzuMatchCondition(
-        ...     property=KuzuPropertyNameEnum.LANGUAGE,
-        ...     operation="INVALID_OP",
-        ...     value="Python"
-        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValidationError
+        >>> lang_context.key
+        'python_data_001'
+        >>> lang_context.language
+        'python'
+        >>> lang_context.context
+        'data'
     """
 
-    property: KuzuPropertyNameEnum
-    operation: KuzuMatchOpEnum
-    value: str
+    key: str
+    language: str
+    context: str
+    description: str
+    embedding: list[float] | None = None
 
 
-class KuzuTableProperty(BaseModel):
-    """A model representing a table property in a Kuzu node or relationship.
+class Preference(BaseModel):
+    """A model representing a preference in LanceDB.
 
     Attributes:
-        name (KuzuPropertyNameEnum): The name of the property.
-        type (KuzuDataTypeEnum): The data type of the property.
-        default (str, optional): The default value of the property.
-            Defaults to None.
+        key (str): Key identifier for the preference.
+        name (str): Name of the preferred tool or library.
+        description (str): Description of the preference.
+        language_context_key (str): Reference to the associated language context.
+        priority (int, optional): Priority level (1-10, higher is more important).
+        tags (list[str], optional): Tags for categorization.
 
     Examples:
-        >>> prop = KuzuTableProperty(
-        ...     name=KuzuPropertyNameEnum.NODE_ID,
-        ...     type=KuzuDataTypeEnum.SERIAL,
+        >>> preference = Preference(
+        ...     key="pref_001",
+        ...     name="polars",
+        ...     description="Fast DataFrame library for Python",
+        ...     language_context_key="python_data_001",
+        ...     priority=9,
         ... )
-
-        Failure example when trying to pass invalid values:
-
-        >>> prop = KuzuTableProperty(
-        ...     name=KuzuPropertyNameEnum.NAME,
-        ...     type="NONEXISTENT_TYPE",
-        ...     default="default_name",
-        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValidationError
+        >>> preference.name
+        'polars'
     """
 
-    name: KuzuPropertyNameEnum
-    type: KuzuDataTypeEnum
-    default: str | None = None
+    key: str
+    name: str
+    description: str
+    language_context_key: str
+    priority: int
+    tags: list[str] | None = None
 
 
-class KuzuNodeTable(BaseModel):
-    """A model representing a node table in the Kuzu database.
+class Guideline(BaseModel):
+    """A model representing a guideline in LanceDB.
 
     Attributes:
-        name (KuzuNodeTableEnum): The name of the node table.
-        properties (list[KuzuTableProperty]): A list of properties associated with the
-            node.
-        primary_key (list[KuzuPropertyNameEnum]): A list of property names that form
-            the primary key of the node.
+        key (str): Key identifier for the guideline.
+        name (str): Name of the guideline.
+        description (str): Detailed description of the guideline.
+        language_context_key (str): Reference to the associated language context.
+        category (str, optional): Category of the guideline.
+        examples (list[str], optional): Example implementations.
 
     Examples:
-        >>> node_table = KuzuNodeTable(
-        ...     name=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     properties=[
-        ...         KuzuTableProperty(
-        ...             name=KuzuPropertyNameEnum.NODE_ID,
-        ...             type=KuzuDataTypeEnum.SERIAL,
-        ...         ),
-        ...         KuzuTableProperty(
-        ...             name=KuzuPropertyNameEnum.LANGUAGE,
-        ...             type=KuzuDataTypeEnum.STRING,
-        ...         ),
-        ...     ],
-        ...     primary_key=[KuzuPropertyNameEnum.NODE_ID],
+        >>> guideline = Guideline(
+        ...     key="guide_001",
+        ...     name="Use type hints",
+        ...     description="Always use type hints in Python functions",
+        ...     language_context_key="python_data_001",
+        ...     category="code_quality",
         ... )
-
-        Failure example when trying to pass invalid values:
-
-        >>> node_table = KuzuNodeTable(
-        ...     name="NONEXISTENT_NODE_TABLE",
-        ...     properties=[
-        ...         KuzuTableProperty(
-        ...             name=KuzuPropertyNameEnum.NODE_ID,
-        ...             type=KuzuDataTypeEnum.SERIAL,
-        ...         ),
-        ...         KuzuTableProperty(
-        ...             name=KuzuPropertyNameEnum.LANGUAGE,
-        ...             type=KuzuDataTypeEnum.STRING,
-        ...         ),
-        ...     ],
-        ...     primary_key=[KuzuPropertyNameEnum.NODE_ID],
-        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValidationError
+        >>> guideline.name
+        'Use type hints'
     """
 
-    name: KuzuNodeTableNameEnum
-    properties: list[KuzuTableProperty]
-    primary_key: list[KuzuPropertyNameEnum]
+    key: str
+    name: str
+    description: str
+    language_context_key: str
+    category: str | None = None
+    examples: list[str] | None = None
 
 
-class KuzuRelTable(BaseModel):
-    """A model representing a relationship table between nodes in the Kuzu database.
+class Rule(BaseModel):
+    """A model representing a rule in LanceDB.
 
     Attributes:
-        name (KuzuRelTableEnum): The name of the relationship.
-        properties (list[KuzuTableProperty]): A list of properties associated with the
-            relationship.
-        from_node_table (KuzuNodeTableEnum): The name of the source table node in the
-            relationship.
-        to_node_table (KuzuNodeTableEnum): The name of the target table node in the
-            relationship.
+        key (str): Key identifier for the rule.
+        name (str): Name of the rule.
+        description (str): Description of the rule.
+        language_context_key (str): Reference to the associated language context.
+        enforcement_level (int): Enforcement level (1-10, higher is stricter).
+        rule_type (str, optional): Type of rule (e.g., "style", "security").
+        violations_action (str, optional): Action to take on violations.
 
     Examples:
-        >>> rel_table = KuzuRelTable(
-        ...     name=KuzuRelTableNameEnum.PREFERS_TOOL,
-        ...     properties=[
-        ...         KuzuTableProperty(
-        ...             name=KuzuPropertyNameEnum.REL_ID,
-        ...             type=KuzuDataTypeEnum.SERIAL,
-        ...         ),
-        ...     ],
-        ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
+        >>> rule = Rule(
+        ...     key="rule_001",
+        ...     name="No global variables",
+        ...     description="Avoid using global variables",
+        ...     language_context_key="python_data_001",
+        ...     enforcement_level=8,
+        ...     rule_type="best_practice",
         ... )
-
-        Failure example when trying to pass invalid values:
-
-        >>> rel_table = KuzuRelTable(
-        ...     name="NONEXISTENT_REL_TABLE",
-        ...     properties=[
-        ...         KuzuTableProperty(
-        ...             name=KuzuPropertyNameEnum.REL_ID,
-        ...             type=KuzuDataTypeEnum.SERIAL,
-        ...         ),
-        ...     ],
-        ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
-        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValidationError
+        >>> rule.name
+        'No global variables'
+        >>> rule.enforcement_level
+        8
     """
 
-    name: KuzuRelTableNameEnum
-    properties: list[KuzuTableProperty]
-    from_node_table: KuzuNodeTableNameEnum
-    to_node_table: KuzuNodeTableNameEnum
+    key: str
+    name: str
+    description: str
+    language_context_key: str
+    enforcement_level: int
+    rule_type: str | None = None
+    violations_action: str | None = None
 
 
-class KuzuProperty(BaseModel):
-    """A model representing a property in a Kuzu node or relationship.
+class SourceStructure(BaseModel):
+    """A model representing a source structure in LanceDB.
 
     Attributes:
-        name (KuzuPropertyNameEnum): The name of the property.
-        value (str): The value of the property.
+        key (str): Key identifier for the source structure.
+        path (str): File or directory path.
+        description (str): Description of the structure.
+        language_context_key (str): Reference to the associated language context.
+        structure_type (str, optional): Type of structure (e.g., "module", "package").
 
     Examples:
-        >>> property = KuzuProperty(
-        ...     name=KuzuPropertyNameEnum.NAME,
-        ...     value="python"
+        >>> src_structure = SourceStructure(
+        ...     key="struct_001",
+        ...     path="src/data_processing",
+        ...     description="Data processing module",
+        ...     language_context_key="python_data_001",
+        ...     structure_type="module",
         ... )
-
-        Failure example when trying to pass invalid values:
-
-        >>> property = KuzuProperty(
-        ...     name="NONEXISTENT_PROPERTY",
-        ...     value="python"
-        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValidationError
+        >>> src_structure.path
+        'src/data_processing'
     """
 
-    name: KuzuPropertyNameEnum
-    value: str
+    key: str
+    path: str
+    description: str
+    language_context_key: str
+    structure_type: str | None = None
 
 
-class KuzuNode(BaseModel):
-    """A model representing a node in the Kuzu database.
+class Code(BaseModel):
+    """A model representing code snippets in LanceDB.
 
     Attributes:
-        table_name (KuzuNodeTableEnum): The name of the node table.
-        properties (list[KuzuProperty]): A list of properties associated with the node.
+        key (str): Key identifier for the code.
+        name (str): Name or title of the code.
+        content (str): The actual code content.
+        language_context_key (str): Reference to the associated language context.
+        description (str, optional): Description of what the code does.
+        tags (list[str], optional): Tags for categorization.
+        embedding (list[float], optional): Vector embedding for similarity search.
 
     Examples:
-        >>> node = KuzuNode(
-        ...     table_name=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     properties=[
-        ...         KuzuProperty(name=KuzuPropertyNameEnum.NAME, value="python"),
-        ...     ]
+        >>> code = Code(
+        ...     key="code_001",
+        ...     name="data_loader",
+        ...     content="def load_data(path): ...",
+        ...     language_context_key="python_data_001",
+        ...     description="Function to load data from file",
         ... )
-
-        Failure example when trying to pass invalid values:
-
-        >>> node = KuzuNode(
-        ...     table_name="NONEXISTENT_NODE",
-        ...     properties=[
-        ...             KuzuProperty(
-        ...             name=KuzuPropertyNameEnum.NAME,
-        ...             value="python",
-        ...         ),
-        ...     ]
-        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValidationError
+        >>> code.name
+        'data_loader'
+        >>> code.content
+        'def load_data(path): ...'
     """
 
-    table_name: KuzuNodeTableNameEnum
-    properties: list[KuzuProperty]
+    key: str
+    name: str
+    content: str
+    language_context_key: str
+    description: str | None = None
+    tags: list[str] | None = None
+    embedding: list[float] | None = None
 
 
-class KuzuRel(BaseModel):
-    """A model representing a relationship between nodes in the Kuzu database.
+class Abstraction(BaseModel):
+    """A model representing abstractions in LanceDB.
 
     Attributes:
-        rel_name (KuzuRelTableEnum): The name of the relationship.
-        from_node_table (KuzuNodeTableEnum): The name of the source node table in the
-            relationship.
-        to_node_table (KuzuNodeTableEnum): The name of the target node table in the
-            relationship.
-        properties (list[KuzuProperty], optional): A list of properties associated with
-            the relationship. Defaults to None.
-        from_match_conditions (list[KuzuMatchCondition]): A list of match conditions for
-            the source node.
-        to_match_conditions (list[KuzuMatchCondition]): A list of match conditions for
-            the target node.
+        key (str): Key identifier for the abstraction.
+        name (str): Name of the abstraction.
+        description (str): Description of the abstraction.
+        language_context_key (str): Reference to the associated language context.
+        abstraction_type (str, optional): Type of abstraction
+            (e.g., "pattern", "template").
+        content (str, optional): Content or implementation of the abstraction.
+        related_code_keys (list[str], optional): Related code snippet IDs.
+        embedding (list[float], optional): Vector embedding for similarity search.
 
     Examples:
-        >>> prefers_tool_relationship = KuzuRel(
-        ...     rel_name=KuzuRelTableNameEnum.PREFERS_TOOL,
-        ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
-        ...     properties=None,
-        ...     from_match_conditions=[
-        ...         KuzuMatchCondition(
-        ...             property=KuzuPropertyNameEnum.LANGUAGE,
-        ...             operation=KuzuMatchOpEnum.EQUAL,
-        ...             value="python",
-        ...         )
-        ...     ],
-        ...     to_match_conditions=[
-        ...         KuzuMatchCondition(
-        ...             property=KuzuPropertyNameEnum.NAME,
-        ...             operation=KuzuMatchOpEnum.EQUAL,
-        ...             value="polars",
-        ...         )
-        ...     ],
+        >>> abstraction = Abstraction(
+        ...     key="abs_001",
+        ...     name="Repository Pattern",
+        ...     description="Data access abstraction pattern",
+        ...     language_context_key="python_data_001",
+        ...     abstraction_type="pattern",
         ... )
-
-        Failure example when trying to pass invalid values:
-
-        >>> prefers_tool_relationship = KuzuRel(
-        ...     rel_name="NONEXISTENT_REL",
-        ...     from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        ...     to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
-        ...     properties=None,
-        ...     from_match_conditions=[
-        ...         KuzuMatchCondition(
-        ...             property=KuzuPropertyNameEnum.LANGUAGE,
-        ...             operation=KuzuMatchOpEnum.EQUAL,
-        ...             value="python",
-        ...         )
-        ...     ],
-        ...     to_match_conditions=[
-        ...         KuzuMatchCondition(
-        ...             property=KuzuPropertyNameEnum.NAME,
-        ...             operation=KuzuMatchOpEnum.EQUAL,
-        ...             value="polars",
-        ...         )
-        ...     ],
-        ... )  # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValidationError
+        >>> abstraction.abstraction_type
+        'pattern'
+        >>> abstraction.name
+        'Repository Pattern'
     """
 
-    rel_name: KuzuRelTableNameEnum
-    from_node_table: KuzuNodeTableNameEnum
-    to_node_table: KuzuNodeTableNameEnum
-    properties: list[KuzuProperty] | None = None
-    from_match_conditions: list[KuzuMatchCondition]
-    to_match_conditions: list[KuzuMatchCondition]
+    key: str
+    name: str
+    description: str
+    language_context_key: str
+    abstraction_type: str | None = None
+    content: str | None = None
+    related_code_keys: list[str] | None = None
+    embedding: list[float] | None = None
 
 
-KUZU_NODE_TABLES = [
-    KuzuNodeTable(
-        name=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.LANGUAGE,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.CONTEXT,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-        ],
-        primary_key=[KuzuPropertyNameEnum.NODE_ID],
-    ),
-    KuzuNodeTable(
-        name=KuzuNodeTableNameEnum.PREFERENCE,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NAME,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-        ],
-        primary_key=[KuzuPropertyNameEnum.NODE_ID],
-    ),
-    KuzuNodeTable(
-        name=KuzuNodeTableNameEnum.GUIDELINE,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NAME,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-        ],
-        primary_key=[KuzuPropertyNameEnum.NODE_ID],
-    ),
-    KuzuNodeTable(
-        name=KuzuNodeTableNameEnum.RULE,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NAME,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.ENFORCEMENT_LEVEL,
-                type=KuzuDataTypeEnum.UINT8,
-            ),
-        ],
-        primary_key=[KuzuPropertyNameEnum.NODE_ID],
-    ),
-    KuzuNodeTable(
-        name=KuzuNodeTableNameEnum.SRC_STRUCTURE,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.NODE_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.PATH,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.DESCRIPTION,
-                type=KuzuDataTypeEnum.STRING,
-            ),
-        ],
-        primary_key=[KuzuPropertyNameEnum.NODE_ID],
-    ),
-]
+class QueryFilter(BaseModel):
+    """A model for querying LanceDB tables.
 
-KUZU_RELATIONSHIP_TABLES = [
-    KuzuRelTable(
-        name=KuzuRelTableNameEnum.PREFERS_TOOL,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.REL_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            )
-        ],
-        from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        to_node_table=KuzuNodeTableNameEnum.PREFERENCE,
+    Attributes:
+        table (TableNameEnum): The table to query.
+        filter_conditions (dict, optional): Filter conditions for the query.
+        limit (int, optional): Maximum number of results.
+        offset (int, optional): Number of results to skip.
+
+    Examples:
+        >>> query = QueryFilter(
+        ...     table=TableNameEnum.PREFERENCE,
+        ...     filter_conditions={"language_context_key": "python_data_001"},
+        ...     limit=10
+        ... )
+        >>> query.table
+        <TableNameEnum.PREFERENCE: 'preferences'>
+        >>> query.filter_conditions
+        {'language_context_key': 'python_data_001'}
+    """
+
+    table: TableNameEnum
+    filter_conditions: dict | None = None
+    limit: int | None = None
+    offset: int | None = None
+
+
+SCHEMAS = {
+    TableNameEnum.LANG_CONTEXT: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("language", pa.string()),
+            pa.field("context", pa.string()),
+            pa.field("description", pa.string()),
+            pa.field("embedding", pa.list_(pa.float64())),
+        ]
     ),
-    KuzuRelTable(
-        name=KuzuRelTableNameEnum.FOLLOWS_GUIDELINE,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.REL_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            )
-        ],
-        from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        to_node_table=KuzuNodeTableNameEnum.GUIDELINE,
+    TableNameEnum.PREFERENCE: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("name", pa.string()),
+            pa.field("description", pa.string()),
+            pa.field("language_context_key", pa.string()),
+            pa.field("priority", pa.int32()),
+            pa.field("tags", pa.list_(pa.string())),
+        ]
     ),
-    KuzuRelTable(
-        name=KuzuRelTableNameEnum.ENFORCES_RULE,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.REL_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            )
-        ],
-        from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        to_node_table=KuzuNodeTableNameEnum.RULE,
+    TableNameEnum.GUIDELINE: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("name", pa.string()),
+            pa.field("description", pa.string()),
+            pa.field("language_context_key", pa.string()),
+            pa.field("category", pa.string()),
+            pa.field("examples", pa.list_(pa.string())),
+        ]
     ),
-    KuzuRelTable(
-        name=KuzuRelTableNameEnum.CONTAINS_STRUCTURE,
-        properties=[
-            KuzuTableProperty(
-                name=KuzuPropertyNameEnum.REL_ID,
-                type=KuzuDataTypeEnum.SERIAL,
-            )
-        ],
-        from_node_table=KuzuNodeTableNameEnum.LANG_CONTEXT,
-        to_node_table=KuzuNodeTableNameEnum.SRC_STRUCTURE,
+    TableNameEnum.RULE: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("name", pa.string()),
+            pa.field("description", pa.string()),
+            pa.field("language_context_key", pa.string()),
+            pa.field("enforcement_level", pa.int32()),
+            pa.field("rule_type", pa.string()),
+            pa.field("violations_action", pa.string()),
+        ]
     ),
-]
+    TableNameEnum.SRC_STRUCTURE: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("path", pa.string()),
+            pa.field("description", pa.string()),
+            pa.field("language_context_key", pa.string()),
+            pa.field("structure_type", pa.string()),
+        ]
+    ),
+    TableNameEnum.CODE: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("name", pa.string()),
+            pa.field("content", pa.string()),
+            pa.field("language_context_key", pa.string()),
+            pa.field("description", pa.string()),
+            pa.field("tags", pa.list_(pa.string())),
+            pa.field("embedding", pa.list_(pa.float64())),
+        ]
+    ),
+    TableNameEnum.ABSTRACTION: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("name", pa.string()),
+            pa.field("description", pa.string()),
+            pa.field("language_context_key", pa.string()),
+            pa.field("abstraction_type", pa.string()),
+            pa.field("content", pa.string()),
+            pa.field("related_code_keys", pa.list_(pa.string())),
+            pa.field("embedding", pa.list_(pa.float64())),
+        ]
+    ),
+}

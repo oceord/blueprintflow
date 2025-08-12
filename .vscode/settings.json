@@ -39,8 +39,6 @@
         "envlist",
         "gpgsign",
         "ipykernel",
-        "Kùzu",
-        "kuzudb",
         "lancedb",
         "levelname",
         "litellm",

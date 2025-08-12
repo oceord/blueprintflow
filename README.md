@@ -1,7 +1,6 @@
 # BlueprintFlow
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-2a5a83?logo=python)
-![Kuzu](https://img.shields.io/badge/Kuzu-GraphDB-e9590b)
 ![LanceDB](https://img.shields.io/badge/LanceDB-VectorStore-e56e4b)
 ![LiteLLM](https://img.shields.io/badge/LiteLLM-LLM%20Interface-2e8555)
 
@@ -54,7 +53,7 @@ BlueprintFlow uses advanced retrieval techniques to understand the context and i
 
 ## Storage Architecture
 
-BlueprintFlow uses specialized storage systems optimized for different types of data:
+BlueprintFlow uses a unified vector database (LanceDB) for all data storage, combining the benefits of both relational and similarity-based retrieval:
 
-- **Graph Database (Kuzu)**: Stores interconnected guidelines, rules, and preferences, enabling complex relationship queries.
-- **Vector Database (LanceDB)**: Stores patterns, abstractions, and boilerplate for efficient similarity-based retrieval.
+- **Data Storage**: All entities (guidelines, rules, preferences, patterns, abstractions, and code snippets) are stored as records in LanceDB.
+- **Vector Search Capabilities**: Patterns, abstractions, and code snippets leverage LanceDB's vector search capabilities for efficient similarity-based retrieval.
