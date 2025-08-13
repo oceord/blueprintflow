@@ -17,7 +17,7 @@ from blueprintflow.core.models.data_store import (
     SourceStructure,
     TableNameEnum,
 )
-from blueprintflow.helpers.xdg.data import UserData
+from blueprintflow.utils.xdg.data import UserData
 
 
 class LanceDB:

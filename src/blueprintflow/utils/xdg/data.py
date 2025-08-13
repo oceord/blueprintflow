@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from blueprintflow.helpers.xdg.constants import (
+from blueprintflow.utils.xdg.constants import (
     BPF_LOG_FILE_NAME,
     BPF_USER_DATA_DIR_NAME,
     LINUX_USER_DATA_DIR,

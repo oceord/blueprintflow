@@ -4,7 +4,7 @@ from typing import Any
 
 import tomli_w
 
-from blueprintflow.helpers.xdg.constants import (
+from blueprintflow.utils.xdg.constants import (
     BPF_USER_CONFIG_DIR_NAME,
     BPF_USER_SETTINGS_FILE_NAME,
     LINUX_USER_CONFIG_DIR,

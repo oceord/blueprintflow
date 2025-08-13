@@ -9,8 +9,8 @@ from blueprintflow.core.models.tasks import (
     CreateSrcStructureTask,
     TaskStatusEnum,
 )
-from blueprintflow.helpers.xdg.data import UserData
 from blueprintflow.store.lancedb_handler import LanceDB
+from blueprintflow.utils.xdg.data import UserData
 
 
 class StoreManager:

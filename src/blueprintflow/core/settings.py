@@ -5,8 +5,8 @@ from typing import Any
 
 from blueprintflow.core import defaults
 from blueprintflow.core.models.settings import BlueprintFlowSettings
-from blueprintflow.helpers.validations import eq_struct
-from blueprintflow.helpers.xdg.config import UserConfig
+from blueprintflow.utils.validations import eq_struct
+from blueprintflow.utils.xdg.config import UserConfig
 
 with resources.files(defaults).joinpath("settings.toml").open("rb") as file:
     default_settings = tomllib.load(file)
