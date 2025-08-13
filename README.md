@@ -22,7 +22,6 @@ It emphasizes modularity and simplicity while maintaining a singular focus on co
 - **Singular Focus**: Generate high-quality code from existing patterns. Nothing more, nothing less.
 - **AI-Powered Automation**: Leverage AI to generate contextually appropriate code that matches previously-defined rules.
 - **Local-First Development**: Local processing is prioritized, ensuring security and eliminating network dependencies.
-- **Unix Philosophy**: Each component excels at one specific task and integrates seamlessly through standardized interfaces.
 - **Community-Driven**: Built with transparency and collaboration in mind, empowering both contributors and users.
 
 ## Usage
