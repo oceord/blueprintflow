@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from blueprintflow.utils.xdg.constants import (
+    BPF_LANCEDB_DIR_NAME,
     BPF_LOG_FILE_NAME,
     BPF_USER_DATA_DIR_NAME,
     LINUX_USER_DATA_DIR,
@@ -68,7 +69,7 @@ class UserData:
         if not self._user_data_dir.exists():
             self._init_user_data_dir()
         self.log_file = self._user_data_dir / BPF_LOG_FILE_NAME
-        self.lancedb_path = self._user_data_dir / "data-lancedb"
+        self.lancedb_path = self._user_data_dir / BPF_LANCEDB_DIR_NAME
 
     def _init_user_data_dir(self) -> None:
         """Initialize the user data directory.

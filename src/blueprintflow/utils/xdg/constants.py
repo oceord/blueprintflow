@@ -29,3 +29,5 @@ WINDOWS_USER_DATA_DIR = Path(
 
 BPF_USER_DATA_DIR_NAME = "blueprintflow"
 BPF_LOG_FILE_NAME = "blueprintflow.log"
+
+BPF_LANCEDB_DIR_NAME = "lancedb_blueprintflow"

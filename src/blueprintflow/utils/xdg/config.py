@@ -40,18 +40,6 @@ def get_platform_user_config_dir() -> Path:
     return config_dir
 
 
-def init_user_config_dir(config_dir: Path) -> None:
-    """Initialize the user configuration directory.
-
-    This function ensures that the user configuration directory exists by creating it
-    if it does not already exist.
-
-    Args:
-        config_dir (Path): The path to the user configuration directory.
-    """
-    config_dir.mkdir(parents=True, exist_ok=True)
-
-
 class UserConfig:
     """Manages user configuration directories and files.
 
@@ -82,7 +70,7 @@ class UserConfig:
             user_config_dir or get_platform_user_config_dir() / BPF_USER_CONFIG_DIR_NAME
         )
         if not self._user_config_dir.exists():
-            init_user_config_dir(self._user_config_dir)
+            self._user_config_dir.mkdir(parents=True, exist_ok=True)
         self.user_config_file = self._user_config_dir / BPF_USER_SETTINGS_FILE_NAME
 
     def read_user_config_file(self) -> dict[str, Any]:

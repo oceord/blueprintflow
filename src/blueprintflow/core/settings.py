@@ -6,15 +6,12 @@ from typing import Any
 from blueprintflow.core import defaults
 from blueprintflow.core.models.settings import BlueprintFlowSettings
 from blueprintflow.utils.validations import eq_struct
-from blueprintflow.utils.xdg.config import UserConfig
 
 with resources.files(defaults).joinpath("settings.toml").open("rb") as file:
     default_settings = tomllib.load(file)
 
 
-def load_settings(
-    user_config: UserConfig | None = None, filepath: Path | None = None
-) -> BlueprintFlowSettings:
+def load_settings(filepath: Path) -> BlueprintFlowSettings:
     """Load BlueprintFlow settings from a specified file or use default settings.
 
     This function loads the BlueprintFlow settings from the provided file path.
@@ -23,9 +20,6 @@ def load_settings(
     returning the settings as a `BlueprintFlowSettings` object.
 
     Args:
-        user_config(UserConfig, optional): An optional UserConfig instance that
-            specifies the user configuration directory and file. If not provided,
-            a default UserConfig instance will be used. Defaults to None.
         filepath (Path, optional): The file path to load the settings from.
             If not provided, the default settings will be used. Defaults to None.
 
@@ -33,18 +27,15 @@ def load_settings(
         BlueprintFlowSettings: A Pydantic object containing the loaded settings.
 
     Examples:
-        >>> user_settings = load_settings()
         >>> file_settings = load_settings(
         ...     user_config=UserConfig(Path("~/.config/blueprintflow").expanduser())
         ... )
     """
     __validate_settings_filepath(filepath)
-    _user_config = user_config or UserConfig()
-    if not _user_config.user_config_file.exists():
-        _user_config.save_user_config_file(default_settings)
-    settings_buffer = _user_config.read_user_config_file()
-    __validate_settings_dict(settings_buffer)
-    return BlueprintFlowSettings(**settings_buffer)
+    with filepath.open("rb") as file:
+        settings_dict = tomllib.load(file)
+    __validate_settings_dict(settings_dict)
+    return BlueprintFlowSettings(**settings_dict)
 
 
 def __validate_settings_filepath(filepath: Path | None) -> None:
