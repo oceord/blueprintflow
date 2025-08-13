@@ -5,7 +5,7 @@ import lancedb
 from lancedb import DBConnection
 from lancedb.table import Table
 
-from blueprintflow.core.models.store import (
+from blueprintflow.core.models.data_store import (
     SCHEMAS,
     Abstraction,
     Code,

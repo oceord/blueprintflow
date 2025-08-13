@@ -2,7 +2,7 @@ from enum import StrEnum
 
 from pydantic import BaseModel
 
-from blueprintflow.core.models.store import (
+from blueprintflow.core.models.data_store import (
     Abstraction,
     Code,
     Guideline,
