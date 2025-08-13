@@ -41,6 +41,7 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
+exclude = ["tests"]
 
 [tool.ruff]
 exclude = [
@@ -76,6 +77,25 @@ ignore = [
     "T201",
     # Allow using generic name df
     "PD901",
+]
+"tests/*" = [
+    # Allow public structures without docstrings
+    "D100", # undocumented-public-module
+    "D101", # undocumented-public-class
+    "D102", # undocumented-public-method
+    "D103", # undocumented-public-function
+    "D104", # undocumented-public-package
+    "D105", # undocumented-magic-method
+    "D106", # undocumented-public-nested-class
+    "D107", # undocumented-public-init
+    # Allow using assert
+    "S101",
+    # Allow magic value in comparison
+    "PLR2004",
+    # Allow missing annotations
+    "ANN",
+    # Allow missing __init__.py
+    "INP001",
 ]
 
 [tool.ruff.lint.flake8-annotations]

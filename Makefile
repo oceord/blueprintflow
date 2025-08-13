@@ -98,7 +98,7 @@ doctest: ## Run doctests
 		echo "Doctests passed."
 
 test: ## Run tests
-	@echo "No tests yet."
+	@pytest
 
 tox: ## Run tox tests
 	@tox
