@@ -27,13 +27,13 @@ class ModelConfig(BaseModel):
     """Represents the configuration for an LLM.
 
     Attributes:
-        identifier (str): The unique identifier for the model.
         provider (str): The provider of the model.
+        identifier (str): The unique identifier for the model.
         api_base (str): The base URL for the model's API.
     """
 
-    identifier: str
     provider: str
+    identifier: str
     api_base: str
 
 
@@ -49,14 +49,23 @@ class BlueprintFlowSettings(BaseModel):
             configurations.
         _instance (BlueprintFlowSettings | None): The singleton instance
             of BlueprintFlowSettings.
-        initialized (bool): A flag indicating whether the settings have been
+        _initialized (bool): A flag indicating whether the settings have been
             initialized.
     """
 
-    models: dict[ModelTaskEnum, ModelConfig]
+    chat_model: ModelConfig
+    embedding_model: ModelConfig
+    function_calling_model: ModelConfig
+    long_context_model: ModelConfig
+    question_answering_model: ModelConfig
+    rag_model: ModelConfig
+    summarization_model: ModelConfig
+    text_classification_model: ModelConfig
+    text_extraction_model: ModelConfig
+    thinking_model: ModelConfig
 
     _instance: ClassVar["BlueprintFlowSettings | None"] = None
-    initialized: ClassVar[bool] = False
+    _initialized: ClassVar[bool] = False
 
     def __new__(cls, *_: Any, **__: Any) -> "BlueprintFlowSettings":
         """Create a new instance of BlueprintFlowSettings if none exists.
@@ -80,6 +89,6 @@ class BlueprintFlowSettings(BaseModel):
         Args:
             **data (Any): The data to initialize the settings.
         """
-        if not self.__class__.initialized:
+        if not self.__class__._initialized:  # noqa: SLF001
             super().__init__(**data)
-            self.__class__.initialized = True
+            self.__class__._initialized = True  # noqa: SLF001
