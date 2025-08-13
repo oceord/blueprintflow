@@ -7,11 +7,22 @@ from blueprintflow.core import defaults
 from blueprintflow.core.models.settings import BlueprintFlowSettings
 from blueprintflow.utils.validations import eq_struct
 
-with resources.files(defaults).joinpath("settings.toml").open("rb") as file:
-    default_settings = tomllib.load(file)
+
+def _get_default_settings() -> dict[str, Any]:
+    """Loads and returns the default settings from the settings.toml file.
+
+    This function reads the default settings file located in the package's resources
+    and returns its contents as a dictionary.
+
+    Returns:
+        dict[str, Any]: A dictionary containing the default settings loaded from
+            settings.toml.
+    """
+    with resources.files(defaults).joinpath("settings.toml").open("rb") as file:
+        return tomllib.load(file)
 
 
-def load_settings(filepath: Path) -> BlueprintFlowSettings:
+def load_settings(filepath: Path | None = None) -> BlueprintFlowSettings:
     """Load BlueprintFlow settings from a specified file or use default settings.
 
     This function loads the BlueprintFlow settings from the provided file path.
@@ -32,8 +43,11 @@ def load_settings(filepath: Path) -> BlueprintFlowSettings:
         ... )
     """
     __validate_settings_filepath(filepath)
-    with filepath.open("rb") as file:
-        settings_dict = tomllib.load(file)
+    if filepath is not None:
+        with filepath.open("rb") as file:
+            settings_dict = tomllib.load(file)
+    else:
+        settings_dict = _get_default_settings()
     __validate_settings_dict(settings_dict)
     return BlueprintFlowSettings(**settings_dict)
 
@@ -98,6 +112,6 @@ def __validate_settings_dict(settings: dict[str, Any]) -> None:
             ...
         ValueError: Loaded settings are structurally different from the default settings.
     """  # noqa: E501
-    if not eq_struct(default_settings, settings):
+    if not eq_struct(_get_default_settings(), settings):
         msg = "Loaded settings are structurally different from the default settings."
         raise ValueError(msg)

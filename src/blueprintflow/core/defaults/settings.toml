@@ -1,49 +1,49 @@
 [models.chat]
 provider = "ollama"
 identifier = "ollama_chat/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.embedding]
 provider = "ollama"
 identifier = "ollama/snowflake-arctic-embed2"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.function_calling]
 provider = "ollama"
 identifier = "ollama/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.long_context]
 provider = "ollama"
 identifier = "ollama/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.question_answering]
 provider = "ollama"
 identifier = "ollama/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.rag]
 provider = "ollama"
 identifier = "ollama/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.summarization]
 provider = "ollama"
 identifier = "ollama/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.text_classification]
 provider = "ollama"
 identifier = "ollama/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.text_extraction]
 provider = "ollama"
 identifier = "ollama/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"
 
 [models.thinking]
 provider = "ollama"
 identifier = "ollama/granite3.3:2b"
-api_base = "http://localhost:11434/"
+api_base = "http://localhost:11434"

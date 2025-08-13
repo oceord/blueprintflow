@@ -32,7 +32,7 @@ class LanceDB:
         connection (Connection): Connection to the LanceDB database.
 
     Examples:
-        >>> from blueprintflow.helpers.xdg.data import UserData
+        >>> from blueprintflow.utils.xdg.data import UserData
         >>> user_data = UserData()
         >>> db_handler = LanceDB(user_data)
     """
@@ -45,7 +45,7 @@ class LanceDB:
                 database directory path.
 
         Examples:
-            >>> from blueprintflow.helpers.xdg.data import UserData
+            >>> from blueprintflow.utils.xdg.data import UserData
             >>> user_data = UserData()
             >>> db_handler = LanceDB(user_data)
         """
@@ -102,7 +102,7 @@ class LanceDB:
             Table: The requested LanceDB table.
 
         Examples:
-            >>> from blueprintflow.core.models.store import TableNameEnum
+            >>> from blueprintflow.core.models.data_store import TableNameEnum
             >>> table = db_handler.get_table(TableNameEnum.PREFERENCE)  # doctest: +SKIP
 
         Note:
@@ -123,7 +123,10 @@ class LanceDB:
             list[dict]: List of matching records.
 
         Examples:
-            >>> from blueprintflow.core.models.store import QueryFilter, TableNameEnum
+            >>> from blueprintflow.core.models.data_store import (
+            ...     QueryFilter,
+            ...     TableNameEnum,
+            ... )
             >>> query_filter = QueryFilter(
             ...     table=TableNameEnum.PREFERENCE,
             ...     filter_conditions={"language_context_key": "python_data_001"},
@@ -152,7 +155,7 @@ class LanceDB:
             Optional[dict]: The record if found, None otherwise.
 
         Examples:
-            >>> from blueprintflow.core.models.store import TableNameEnum
+            >>> from blueprintflow.core.models.data_store import TableNameEnum
             >>> record = db_handler.get_by_key(  # doctest: +SKIP
             ...     TableNameEnum.PREFERENCE,
             ...     "pref_001",
@@ -186,7 +189,7 @@ class LanceDB:
             ValueError: If the record type is not recognized.
 
         Examples:
-            >>> from blueprintflow.core.models.store import LanguageContext
+            >>> from blueprintflow.core.models.data_store import LanguageContext
             >>> lang_context = LanguageContext(
             ...     key="python_data_001",
             ...     language="python",
@@ -229,7 +232,7 @@ class LanceDB:
             bool: True if successful, False otherwise.
 
         Examples:
-            >>> from blueprintflow.core.models.store import TableNameEnum
+            >>> from blueprintflow.core.models.data_store import TableNameEnum
             >>> updates = {
             ...     "priority": 10,
             ...     "tags": ["dataframe", "performance"]
@@ -260,7 +263,7 @@ class LanceDB:
             bool: True if successful.
 
         Examples:
-            >>> from blueprintflow.core.models.store import TableNameEnum
+            >>> from blueprintflow.core.models.data_store import TableNameEnum
             >>> db_handler.delete_record(  # doctest: +SKIP
             ...     TableNameEnum.PREFERENCE,
             ...     "pref_001",
@@ -289,7 +292,7 @@ class LanceDB:
             list[dict]: List of similar records.
 
         Examples:
-            >>> from blueprintflow.core.models.store import TableNameEnum
+            >>> from blueprintflow.core.models.data_store import TableNameEnum
             >>> embedding = [0.1, 0.2, 0.3, ...]
             >>> results = db_handler.vector_search(  # doctest: +SKIP
             ...     table_name=TableNameEnum.CODE,

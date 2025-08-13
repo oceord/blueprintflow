@@ -26,18 +26,19 @@ class StoreManager:
         settings (BlueprintFlowSettings): Configuration settings for BlueprintFlow.
     """
 
-    def __init__(self, user_data: UserData, settings: BlueprintFlowSettings) -> None:
+    def __init__(self, settings: BlueprintFlowSettings, user_data: UserData) -> None:
         """Initialize the StoreManager.
 
         Args:
+            settings (BlueprintFlowSettings): Configuration settings for BlueprintFlow.
             user_data (UserData): User-specific data required for database
                 initialization.
-            settings (BlueprintFlowSettings): Configuration settings for BlueprintFlow.
 
         Example:
+            >>> from blueprintflow.core.settings import load_settings
+            >>> settings = load_settings()
             >>> user_data = UserData()
-            >>> settings = BlueprintFlowSettings()
-            >>> store_manager = StoreManager(user_data, settings)
+            >>> store_manager = StoreManager(settings, user_data)
         """
         self.lance_handler = LanceDB(user_data)
         self.settings = settings
@@ -77,7 +78,7 @@ class StoreManager:
         """
         match task:
             case CreateLanguageContextTask() as t:
-                return self.create_lang_context(t)
+                return self.create_language_context(t)
             case CreatePreferenceTask() as t:
                 return self.create_preference(t)
             case CreateGuidelineTask() as t:
@@ -91,13 +92,13 @@ class StoreManager:
             case CreateCodeTask() as t:
                 return self.create_code(t)
 
-    def create_lang_context(
-        self, lang_context_task: CreateLanguageContextTask
+    def create_language_context(
+        self, language_context_task: CreateLanguageContextTask
     ) -> TaskStatusEnum:
         """Create a language context record.
 
         Args:
-            lang_context_task (CreateLanguageContextTask): A task containing the
+            language_context_task (CreateLanguageContextTask): A task containing the
                 language context record to be created.
 
         Returns:
@@ -108,10 +109,15 @@ class StoreManager:
             >>> lang_context_task = CreateLanguageContextTask(  # doctest: +SKIP
             ...     language_context={"name": "Python", "version": "3.8"}
             ... )
-            >>> store_manager.create_lang_context(lang_context_task)  # doctest: +SKIP
+            >>> store_manager.create_language_context(  # doctest: +SKIP
+            ...     lang_context_task
+            ... )
         """
-        # TODO: gen embedding if not provided
-        if not self.lance_handler.create_record(lang_context_task.language_context):
+        if language_context_task.language_context.embedding is None:
+            # TODO: gen embedding if not provided
+            # self.settings.embedding_model
+            pass
+        if not self.lance_handler.create_record(language_context_task.language_context):
             return TaskStatusEnum.FAILURE
         return TaskStatusEnum.SUCCESS
 

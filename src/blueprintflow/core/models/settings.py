@@ -53,16 +53,7 @@ class BlueprintFlowSettings(BaseModel):
             initialized.
     """
 
-    chat_model: ModelConfig
-    embedding_model: ModelConfig
-    function_calling_model: ModelConfig
-    long_context_model: ModelConfig
-    question_answering_model: ModelConfig
-    rag_model: ModelConfig
-    summarization_model: ModelConfig
-    text_classification_model: ModelConfig
-    text_extraction_model: ModelConfig
-    thinking_model: ModelConfig
+    models: dict[ModelTaskEnum, ModelConfig]
 
     _instance: ClassVar["BlueprintFlowSettings | None"] = None
     _initialized: ClassVar[bool] = False
