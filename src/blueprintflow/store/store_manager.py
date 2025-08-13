@@ -1,3 +1,4 @@
+from blueprintflow.core.models.settings import BlueprintFlowSettings
 from blueprintflow.core.models.tasks import (
     CreateAstractionTask,
     CreateCodeTask,
@@ -13,28 +14,33 @@ from blueprintflow.store.lancedb_handler import LanceDB
 
 
 class StoreManager:
-    """High-level component that manages database interactions for BlueprintFlow.
+    """High-level component managing database interactions for BlueprintFlow.
 
-    This class facilitates the creation and management of entities and their
-    relationships that are essential for BlueprintFlow to function properly.
+    This class orchestrates the creation, storage, and retrieval of entities and their
+    relationships, ensuring seamless integration with BlueprintFlow's data workflows.
+    It abstracts low-level database operations, providing a unified interface for
+    data persistence and query execution.
 
     Attributes:
-        lance_handler (LanceDB): An instance of the LanceDB handler used to interact
-            with the LanceDB database.
+        lance_handler (LanceDB): Handler for interacting with the LanceDB vector store.
+        settings (BlueprintFlowSettings): Configuration settings for BlueprintFlow.
     """
 
-    def __init__(self, user_data: UserData) -> None:
+    def __init__(self, user_data: UserData, settings: BlueprintFlowSettings) -> None:
         """Initialize the StoreManager.
 
         Args:
-            user_data (UserData): User data containing necessary information for
-                initializing the LanceDB handler.
+            user_data (UserData): User-specific data required for database
+                initialization.
+            settings (BlueprintFlowSettings): Configuration settings for BlueprintFlow.
 
         Example:
             >>> user_data = UserData()
-            >>> store_manager = StoreManager(user_data)
+            >>> settings = BlueprintFlowSettings()
+            >>> store_manager = StoreManager(user_data, settings)
         """
         self.lance_handler = LanceDB(user_data)
+        self.settings = settings
 
     def dispatch_task(  # noqa: PLR0911
         self,
