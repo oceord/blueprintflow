@@ -123,7 +123,6 @@ class Rule(BaseModel):
         name (str): Name of the rule.
         description (str): Description of the rule.
         rule_type (str, optional): Type of rule (e.g., "style", "security").
-        enforcement_level (int): Enforcement level (1-10, higher is stricter).
         violations_action (str, optional): Action to take on violations.
         embedding (list[float]): Vector embedding for similarity search.
 
@@ -134,13 +133,10 @@ class Rule(BaseModel):
         ...     name="No global variables",
         ...     description="Avoid using global variables",
         ...     rule_type="best_practice",
-        ...     enforcement_level=8,
         ...     embedding=[1, 1, 1],
         ... )
         >>> rule.name
         'No global variables'
-        >>> rule.enforcement_level
-        8
     """
 
     key: str
@@ -148,7 +144,6 @@ class Rule(BaseModel):
     name: str
     description: str
     rule_type: str | None = None
-    enforcement_level: int
     violations_action: str | None = None
     embedding: list[float]
 
@@ -170,7 +165,7 @@ class SourceStructure(BaseModel):
         ...     language_context_key="python_data_001",
         ...     path="src/data_processing",
         ...     description="Data processing module",
-        ...     structure_type="module",
+        ...     structure_type="file",
         ...     embedding=[1, 1, 1],
         ... )
         >>> src_structure.path
@@ -324,7 +319,6 @@ SCHEMAS = {
             pa.field("language_context_key", pa.string()),
             pa.field("name", pa.string()),
             pa.field("description", pa.string()),
-            pa.field("enforcement_level", pa.int32()),
             pa.field("rule_type", pa.string()),
             pa.field("violations_action", pa.string()),
             pa.field("embedding", pa.list_(pa.float64())),

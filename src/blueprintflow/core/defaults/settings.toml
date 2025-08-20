@@ -1,6 +1,6 @@
 [models.chat]
 provider = "ollama"
-identifier = "ollama_chat/granite3.3:2b"
+identifier = "ollama/granite3.3:2b"
 api_base = "http://localhost:11434"
 
 [models.embedding]

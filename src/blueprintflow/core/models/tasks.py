@@ -166,7 +166,6 @@ class CreateRuleTask(BaseModel):
         name (str): Name of the rule.
         description (str): Description of the rule.
         rule_type (str, optional): Type of rule (e.g., "style", "security").
-        enforcement_level (int): Enforcement level (1-10, higher is stricter).
         violations_action (str, optional): Action to take on violations.
         embedding (list[float], optional): Vector embedding for similarity search.
     """
@@ -176,7 +175,6 @@ class CreateRuleTask(BaseModel):
     name: str
     description: str
     rule_type: str | None = None
-    enforcement_level: int
     violations_action: str | None = None
     embedding: list[float] | None = None
 
@@ -209,7 +207,7 @@ class CreateSrcStructureTask(BaseModel):
         language_context_key (str): Reference to the associated language context.
         path (str): File or directory path.
         description (str): Description of the structure.
-        structure_type (str, optional): Type of structure (e.g., "module", "package").
+        structure_type (str, optional): Type of structure (e.g., "directory", "file").
         embedding (list[float], optional): Vector embedding for similarity search.
     """
 

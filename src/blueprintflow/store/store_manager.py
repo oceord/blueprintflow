@@ -61,17 +61,12 @@ class StoreManager:
         embedding if not provided, and creates a corresponding record in the database.
 
         Args:
-            task (CreateTask): A task object containing the data to be stored.
-                Can be any of the supported task types representing different entities
-                in the system.
+            task: A task object containing the data to be stored. Can be any of the
+                supported task types representing different entities in the system.
 
         Returns:
             TaskStatusEnum: SUCCESS if the record was created successfully,
                         FAILURE otherwise.
-
-        Notes:
-            If the task's embedding is None, an embedding will be generated
-            automatically using the task's string representation.
         """
         if task.embedding is None:
             task.embedding = self.llm_connector.get_embedding(str(task))
