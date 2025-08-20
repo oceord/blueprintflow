@@ -9,6 +9,7 @@ from blueprintflow.core.models.tasks import (
     CreateSrcStructureTask,
     TaskStatusEnum,
 )
+from blueprintflow.llm.connector import LLMConnector
 from blueprintflow.store.lancedb_handler import LanceDB
 from blueprintflow.utils.xdg.data import UserData
 
@@ -42,8 +43,9 @@ class StoreManager:
         """
         self.lance_handler = LanceDB(user_data)
         self.settings = settings
+        self.llm_connector = LLMConnector(models=settings.models)
 
-    def dispatch_task(  # noqa: PLR0911
+    def create(
         self,
         task: CreateLanguageContextTask
         | CreatePreferenceTask
@@ -53,204 +55,27 @@ class StoreManager:
         | CreateAstractionTask
         | CreateCodeTask,
     ) -> TaskStatusEnum:
-        """Dispatch a task to its corresponding handler based on the task type.
+        """Create a new record in the database from a task object.
 
-        This function acts as a dispatcher, routing each task to its specific handler
-        method based on the task's type. It supports various task types including
-        language contexts, preferences, guidelines, rules, source structures,
-        abstractions, and code elements.
+        Takes a task object containing the data to be stored, optionally generates an
+        embedding if not provided, and creates a corresponding record in the database.
 
         Args:
-            task: A task object representing the entity to be created. The task must be
-                one of the supported types, each containing necessary information for
-                creating its specific entity.
+            task (CreateTask): A task object containing the data to be stored.
+                Can be any of the supported task types representing different entities
+                in the system.
 
         Returns:
-            TaskStatusEnum: The status of the task execution, indicating success or
-                failure.
+            TaskStatusEnum: SUCCESS if the record was created successfully,
+                        FAILURE otherwise.
 
-        Example:
-            >>> from blueprintflow.core.models.tasks import CreateRuleTask
-            >>> task = CreateRuleTask(  # doctest: +SKIP
-            ...     rule={"name": "rule1", "description": "A sample rule"}
-            ... )
-            >>> store_manager.dispatch_task(task)  # doctest: +SKIP
+        Notes:
+            If the task's embedding is None, an embedding will be generated
+            automatically using the task's string representation.
         """
-        match task:
-            case CreateLanguageContextTask() as t:
-                return self.create_language_context(t)
-            case CreatePreferenceTask() as t:
-                return self.create_preference(t)
-            case CreateGuidelineTask() as t:
-                return self.create_guideline(t)
-            case CreateRuleTask() as t:
-                return self.create_rule(t)
-            case CreateSrcStructureTask() as t:
-                return self.create_src_structure(t)
-            case CreateAstractionTask() as t:
-                return self.create_abstraction(t)
-            case CreateCodeTask() as t:
-                return self.create_code(t)
-
-    def create_language_context(
-        self, language_context_task: CreateLanguageContextTask
-    ) -> TaskStatusEnum:
-        """Create a language context record.
-
-        Args:
-            language_context_task (CreateLanguageContextTask): A task containing the
-                language context record to be created.
-
-        Returns:
-            TaskStatusEnum: The status of the task execution, either SUCCESS or FAILURE.
-
-        Example:
-            >>> from blueprintflow.core.models.tasks import CreateLanguageContextTask
-            >>> lang_context_task = CreateLanguageContextTask(  # doctest: +SKIP
-            ...     language_context={"name": "Python", "version": "3.8"}
-            ... )
-            >>> store_manager.create_language_context(  # doctest: +SKIP
-            ...     lang_context_task
-            ... )
-        """
-        if language_context_task.language_context.embedding is None:
-            # TODO: gen embedding if not provided
-            # self.settings.embedding_model
-            pass
-        if not self.lance_handler.create_record(language_context_task.language_context):
-            return TaskStatusEnum.FAILURE
-        return TaskStatusEnum.SUCCESS
-
-    def create_preference(
-        self, preference_task: CreatePreferenceTask
-    ) -> TaskStatusEnum:
-        """Create a preference record.
-
-        Args:
-            preference_task (CreatePreferenceTask): A task containing the preference
-                record to be created.
-
-        Returns:
-            TaskStatusEnum: The status of the task execution, either SUCCESS or FAILURE.
-
-        Example:
-            >>> from blueprintflow.core.models.tasks import CreatePreferenceTask
-            >>> preference_task = CreatePreferenceTask(  # doctest: +SKIP
-            ...     preference={"theme": "dark", "font_size": 12}
-            ... )
-            >>> store_manager.create_preference(preference_task)  # doctest: +SKIP
-        """
-        if not self.lance_handler.create_record(preference_task.preference):
-            return TaskStatusEnum.FAILURE
-        return TaskStatusEnum.SUCCESS
-
-    def create_guideline(self, guideline_task: CreateGuidelineTask) -> TaskStatusEnum:
-        """Create a guideline record.
-
-        Args:
-            guideline_task (CreateGuidelineTask): A task containing the guideline
-                record to be created.
-
-        Returns:
-            TaskStatusEnum: The status of the task execution, either SUCCESS or FAILURE.
-
-        Example:
-            >>> from blueprintflow.core.models.tasks import CreateGuidelineTask
-            >>> guideline_task = CreateGuidelineTask(  # doctest: +SKIP
-            ...     guideline={"name": "coding_standard", "description": "Follow PEP8"}
-            ... )
-            >>> store_manager.create_guideline(guideline_task)  # doctest: +SKIP
-        """
-        if not self.lance_handler.create_record(guideline_task.guideline):
-            return TaskStatusEnum.FAILURE
-        return TaskStatusEnum.SUCCESS
-
-    def create_rule(self, rule_task: CreateRuleTask) -> TaskStatusEnum:
-        """Create a rule record.
-
-        Args:
-            rule_task (CreateRuleTask): A task containing the rule record to be created.
-
-        Returns:
-            TaskStatusEnum: The status of the task execution, either SUCCESS or FAILURE.
-
-        Example:
-            >>> from blueprintflow.core.models.tasks import CreateRuleTask
-            >>> rule_task = CreateRuleTask(  # doctest: +SKIP
-            ...     rule={"name": "max_line_length", "value": 79}
-            ... )
-            >>> store_manager.create_rule(rule_task)  # doctest: +SKIP
-        """
-        if not self.lance_handler.create_record(rule_task.rule):
-            return TaskStatusEnum.FAILURE
-        return TaskStatusEnum.SUCCESS
-
-    def create_src_structure(
-        self, src_structure_task: CreateSrcStructureTask
-    ) -> TaskStatusEnum:
-        """Create a source structure record.
-
-        Args:
-            src_structure_task (CreateSrcStructureTask): A task containing the source
-                structure record to be created.
-
-        Returns:
-            TaskStatusEnum: The status of the task execution, either SUCCESS or FAILURE.
-
-        Example:
-            >>> from blueprintflow.core.models.tasks import CreateSrcStructureTask
-            >>> src_structure_task = CreateSrcStructureTask(  # doctest: +SKIP
-            ...     src_structure={"project": "my_project", "structure": "/src/main.py"}
-            ... )
-            >>> store_manager.create_src_structure(src_structure_task)  # doctest: +SKIP
-        """
-        if not self.lance_handler.create_record(src_structure_task.src_structure):
-            return TaskStatusEnum.FAILURE
-        return TaskStatusEnum.SUCCESS
-
-    def create_abstraction(
-        self, abstraction_task: CreateAstractionTask
-    ) -> TaskStatusEnum:
-        """Create an abstraction record.
-
-        Args:
-            abstraction_task (CreateAstractionTask): A task containing the abstraction
-                record to be created.
-
-        Returns:
-            TaskStatusEnum: The status of the task execution, either SUCCESS or FAILURE.
-
-        Example:
-            >>> from blueprintflow.core.models.tasks import CreateAstractionTask
-            >>> abstraction_task = CreateAstractionTask(  # doctest: +SKIP
-            ...     abstraction={
-            ...         "name": "abstract_class",
-            ...         "description": "An abstract class example"},
-            ... )
-            >>> store_manager.create_abstraction(abstraction_task)  # doctest: +SKIP
-        """
-        # TODO: gen embedding if not provided
-        if not self.lance_handler.create_record(abstraction_task.abstraction):
-            return TaskStatusEnum.FAILURE
-        return TaskStatusEnum.SUCCESS
-
-    def create_code(self, code_task: CreateCodeTask) -> TaskStatusEnum:
-        """Create a code record.
-
-        Args:
-            code_task (CreateCodeTask): A task containing the code record to be created.
-
-        Returns:
-            TaskStatusEnum: The status of the task execution, either SUCCESS or FAILURE.
-
-        Example:
-            >>> from blueprintflow.core.models.tasks import CreateCodeTask
-            >>> code_task = CreateCodeTask(  # doctest: +SKIP
-            ...     code={"function": "def hello_world(): ...", "language": "python"}
-            ... )
-            >>> store_manager.create_code(code_task)  # doctest: +SKIP
-        """
-        # TODO: gen embedding if not provided
-        if not self.lance_handler.create_record(code_task.code):
+        if task.embedding is None:
+            task.embedding = self.llm_connector.get_embedding(str(task))
+        success = self.lance_handler.create_record(task.to_data_store_model())
+        if not success:
             return TaskStatusEnum.FAILURE
         return TaskStatusEnum.SUCCESS

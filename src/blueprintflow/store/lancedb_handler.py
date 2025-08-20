@@ -194,7 +194,8 @@ class LanceDB:
             ...     key="python_data_001",
             ...     language="python",
             ...     context="data",
-            ...     description="Python for data science and analysis"
+            ...     description="Python for data science and analysis",
+            ...     embedding=[1, 1, 1],
             ... )
             >>> db_handler.create_record(lang_context)  # doctest: +SKIP
         """

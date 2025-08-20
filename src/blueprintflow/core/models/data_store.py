@@ -24,7 +24,7 @@ class LanguageContext(BaseModel):
         language (str): The programming language (e.g., "python", "javascript").
         context (str): The context or domain (e.g., "data", "web", "ml").
         description (str): A detailed description of the language context.
-        embedding (list[float], optional): Vector embedding for similarity search.
+        embedding (list[float]): Vector embedding for similarity search.
 
     Examples:
         >>> lang_context = LanguageContext(
@@ -32,6 +32,7 @@ class LanguageContext(BaseModel):
         ...     language="python",
         ...     context="data",
         ...     description="Python for data science and analysis",
+        ...     embedding=[1, 1, 1],
         ... )
         >>> lang_context.key
         'python_data_001'
@@ -45,7 +46,7 @@ class LanguageContext(BaseModel):
     language: str
     context: str
     description: str
-    embedding: list[float] | None = None
+    embedding: list[float]
 
 
 class Preference(BaseModel):
@@ -53,30 +54,30 @@ class Preference(BaseModel):
 
     Attributes:
         key (str): Key identifier for the preference.
+        language_context_key (str): Reference to the associated language context.
         name (str): Name of the preferred tool or library.
         description (str): Description of the preference.
-        language_context_key (str): Reference to the associated language context.
-        priority (int, optional): Priority level (1-10, higher is more important).
         tags (list[str], optional): Tags for categorization.
+        embedding (list[float]): Vector embedding for similarity search.
 
     Examples:
         >>> preference = Preference(
         ...     key="pref_001",
+        ...     language_context_key="python_data_001",
         ...     name="polars",
         ...     description="Fast DataFrame library for Python",
-        ...     language_context_key="python_data_001",
-        ...     priority=9,
+        ...     embedding=[1, 1, 1],
         ... )
         >>> preference.name
         'polars'
     """
 
     key: str
+    language_context_key: str
     name: str
     description: str
-    language_context_key: str
-    priority: int
     tags: list[str] | None = None
+    embedding: list[float]
 
 
 class Guideline(BaseModel):
@@ -84,30 +85,33 @@ class Guideline(BaseModel):
 
     Attributes:
         key (str): Key identifier for the guideline.
+        language_context_key (str): Reference to the associated language context.
         name (str): Name of the guideline.
         description (str): Detailed description of the guideline.
-        language_context_key (str): Reference to the associated language context.
         category (str, optional): Category of the guideline.
         examples (list[str], optional): Example implementations.
+        embedding (list[float]): Vector embedding for similarity search.
 
     Examples:
         >>> guideline = Guideline(
         ...     key="guide_001",
+        ...     language_context_key="python_data_001",
         ...     name="Use type hints",
         ...     description="Always use type hints in Python functions",
-        ...     language_context_key="python_data_001",
         ...     category="code_quality",
+        ...     embedding=[1, 1, 1],
         ... )
         >>> guideline.name
         'Use type hints'
     """
 
     key: str
+    language_context_key: str
     name: str
     description: str
-    language_context_key: str
     category: str | None = None
     examples: list[str] | None = None
+    embedding: list[float]
 
 
 class Rule(BaseModel):
@@ -115,21 +119,23 @@ class Rule(BaseModel):
 
     Attributes:
         key (str): Key identifier for the rule.
+        language_context_key (str): Reference to the associated language context.
         name (str): Name of the rule.
         description (str): Description of the rule.
-        language_context_key (str): Reference to the associated language context.
-        enforcement_level (int): Enforcement level (1-10, higher is stricter).
         rule_type (str, optional): Type of rule (e.g., "style", "security").
+        enforcement_level (int): Enforcement level (1-10, higher is stricter).
         violations_action (str, optional): Action to take on violations.
+        embedding (list[float]): Vector embedding for similarity search.
 
     Examples:
         >>> rule = Rule(
         ...     key="rule_001",
+        ...     language_context_key="python_data_001",
         ...     name="No global variables",
         ...     description="Avoid using global variables",
-        ...     language_context_key="python_data_001",
-        ...     enforcement_level=8,
         ...     rule_type="best_practice",
+        ...     enforcement_level=8,
+        ...     embedding=[1, 1, 1],
         ... )
         >>> rule.name
         'No global variables'
@@ -138,12 +144,13 @@ class Rule(BaseModel):
     """
 
     key: str
+    language_context_key: str
     name: str
     description: str
-    language_context_key: str
-    enforcement_level: int
     rule_type: str | None = None
+    enforcement_level: int
     violations_action: str | None = None
+    embedding: list[float]
 
 
 class SourceStructure(BaseModel):
@@ -151,28 +158,31 @@ class SourceStructure(BaseModel):
 
     Attributes:
         key (str): Key identifier for the source structure.
+        language_context_key (str): Reference to the associated language context.
         path (str): File or directory path.
         description (str): Description of the structure.
-        language_context_key (str): Reference to the associated language context.
         structure_type (str, optional): Type of structure (e.g., "module", "package").
+        embedding (list[float]): Vector embedding for similarity search.
 
     Examples:
         >>> src_structure = SourceStructure(
         ...     key="struct_001",
+        ...     language_context_key="python_data_001",
         ...     path="src/data_processing",
         ...     description="Data processing module",
-        ...     language_context_key="python_data_001",
         ...     structure_type="module",
+        ...     embedding=[1, 1, 1],
         ... )
         >>> src_structure.path
         'src/data_processing'
     """
 
     key: str
+    language_context_key: str
     path: str
     description: str
-    language_context_key: str
     structure_type: str | None = None
+    embedding: list[float]
 
 
 class Code(BaseModel):
@@ -180,20 +190,21 @@ class Code(BaseModel):
 
     Attributes:
         key (str): Key identifier for the code.
-        name (str): Name or title of the code.
-        content (str): The actual code content.
         language_context_key (str): Reference to the associated language context.
+        name (str): Name or title of the code.
         description (str, optional): Description of what the code does.
+        content (str): The actual code content.
         tags (list[str], optional): Tags for categorization.
-        embedding (list[float], optional): Vector embedding for similarity search.
+        embedding (list[float]): Vector embedding for similarity search.
 
     Examples:
         >>> code = Code(
         ...     key="code_001",
-        ...     name="data_loader",
-        ...     content="def load_data(path): ...",
         ...     language_context_key="python_data_001",
+        ...     name="data_loader",
         ...     description="Function to load data from file",
+        ...     content="def load_data(path): ...",
+        ...     embedding=[0.5, 0.5, 0.5],
         ... )
         >>> code.name
         'data_loader'
@@ -202,12 +213,12 @@ class Code(BaseModel):
     """
 
     key: str
-    name: str
-    content: str
     language_context_key: str
-    description: str | None = None
+    name: str
+    description: str
+    content: str
     tags: list[str] | None = None
-    embedding: list[float] | None = None
+    embedding: list[float]
 
 
 class Abstraction(BaseModel):
@@ -215,22 +226,23 @@ class Abstraction(BaseModel):
 
     Attributes:
         key (str): Key identifier for the abstraction.
+        language_context_key (str): Reference to the associated language context.
         name (str): Name of the abstraction.
         description (str): Description of the abstraction.
-        language_context_key (str): Reference to the associated language context.
         abstraction_type (str, optional): Type of abstraction
             (e.g., "pattern", "template").
         content (str, optional): Content or implementation of the abstraction.
-        related_code_keys (list[str], optional): Related code snippet IDs.
-        embedding (list[float], optional): Vector embedding for similarity search.
+        tags (list[str], optional): Tags for categorization.
+        embedding (list[float]): Vector embedding for similarity search.
 
     Examples:
         >>> abstraction = Abstraction(
         ...     key="abs_001",
+        ...     language_context_key="python_data_001",
         ...     name="Repository Pattern",
         ...     description="Data access abstraction pattern",
-        ...     language_context_key="python_data_001",
         ...     abstraction_type="pattern",
+        ...     embedding=[1, 1, 1],
         ... )
         >>> abstraction.abstraction_type
         'pattern'
@@ -239,13 +251,13 @@ class Abstraction(BaseModel):
     """
 
     key: str
+    language_context_key: str
     name: str
     description: str
-    language_context_key: str
     abstraction_type: str | None = None
     content: str | None = None
-    related_code_keys: list[str] | None = None
-    embedding: list[float] | None = None
+    tags: list[str] | None = None
+    embedding: list[float]
 
 
 class QueryFilter(BaseModel):
@@ -288,50 +300,53 @@ SCHEMAS = {
     TableNameEnum.PREFERENCE: pa.schema(
         [
             pa.field("key", pa.string()),
+            pa.field("language_context_key", pa.string()),
             pa.field("name", pa.string()),
             pa.field("description", pa.string()),
-            pa.field("language_context_key", pa.string()),
-            pa.field("priority", pa.int32()),
             pa.field("tags", pa.list_(pa.string())),
+            pa.field("embedding", pa.list_(pa.float64())),
         ]
     ),
     TableNameEnum.GUIDELINE: pa.schema(
         [
             pa.field("key", pa.string()),
+            pa.field("language_context_key", pa.string()),
             pa.field("name", pa.string()),
             pa.field("description", pa.string()),
-            pa.field("language_context_key", pa.string()),
             pa.field("category", pa.string()),
             pa.field("examples", pa.list_(pa.string())),
+            pa.field("embedding", pa.list_(pa.float64())),
         ]
     ),
     TableNameEnum.RULE: pa.schema(
         [
             pa.field("key", pa.string()),
+            pa.field("language_context_key", pa.string()),
             pa.field("name", pa.string()),
             pa.field("description", pa.string()),
-            pa.field("language_context_key", pa.string()),
             pa.field("enforcement_level", pa.int32()),
             pa.field("rule_type", pa.string()),
             pa.field("violations_action", pa.string()),
+            pa.field("embedding", pa.list_(pa.float64())),
         ]
     ),
     TableNameEnum.SRC_STRUCTURE: pa.schema(
         [
             pa.field("key", pa.string()),
+            pa.field("language_context_key", pa.string()),
             pa.field("path", pa.string()),
             pa.field("description", pa.string()),
-            pa.field("language_context_key", pa.string()),
             pa.field("structure_type", pa.string()),
+            pa.field("embedding", pa.list_(pa.float64())),
         ]
     ),
     TableNameEnum.CODE: pa.schema(
         [
             pa.field("key", pa.string()),
-            pa.field("name", pa.string()),
-            pa.field("content", pa.string()),
             pa.field("language_context_key", pa.string()),
+            pa.field("name", pa.string()),
             pa.field("description", pa.string()),
+            pa.field("content", pa.string()),
             pa.field("tags", pa.list_(pa.string())),
             pa.field("embedding", pa.list_(pa.float64())),
         ]
@@ -339,12 +354,12 @@ SCHEMAS = {
     TableNameEnum.ABSTRACTION: pa.schema(
         [
             pa.field("key", pa.string()),
+            pa.field("language_context_key", pa.string()),
             pa.field("name", pa.string()),
             pa.field("description", pa.string()),
-            pa.field("language_context_key", pa.string()),
             pa.field("abstraction_type", pa.string()),
             pa.field("content", pa.string()),
-            pa.field("related_code_keys", pa.list_(pa.string())),
+            pa.field("tags", pa.list_(pa.string())),
             pa.field("embedding", pa.list_(pa.float64())),
         ]
     ),
