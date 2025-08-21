@@ -44,21 +44,28 @@ class CreateLanguageContextTask(BaseModel):
     """A task for creating a language context record in the database.
 
     Attributes:
-        key (str): Key identifier for the language context.
+        key (str, optional): Key identifier for the language context.
         language (str): The programming language (e.g., "python", "javascript").
         context (str): The context or domain (e.g., "data", "web", "ml").
         description (str): A detailed description of the language context.
         embedding (list[float], optional): Vector embedding for similarity search.
     """
 
-    key: str
+    key: str | None = None
     language: str
     context: str
     description: str
     embedding: list[float] | None = None
 
-    def __str__(self) -> str:
-        """Returns a string representation of the CreateLanguageContextTask object."""
+    def as_text_features(self) -> str:
+        """Extracts a string of key features for creating a vector embedding.
+
+        The method ensures that the most semantically relevant information is
+        included in a format that a text-embedding model can process effectively.
+
+        Returns:
+            str: A formatted string containing the language context's key text features.
+        """
         return (
             f"Language: {self.language}; "
             f"Context: {self.context}; "
@@ -82,7 +89,7 @@ class CreatePreferenceTask(BaseModel):
     """A task for creating a preference record.
 
     Attributes:
-        key (str): Key identifier for the preference.
+        key (str, optional): Key identifier for the preference.
         language_context_key (str): Reference to the associated language context.
         name (str): Name of the preferred tool or library.
         description (str): Description of the preference.
@@ -90,15 +97,22 @@ class CreatePreferenceTask(BaseModel):
         embedding (list[float], optional): Vector embedding for similarity search.
     """
 
-    key: str
+    key: str | None = None
     language_context_key: str
     name: str
     description: str
     tags: list[str] | None = None
     embedding: list[float] | None = None
 
-    def __str__(self) -> str:
-        """Returns a string representation of the CreatePreferenceTask object."""
+    def as_text_features(self) -> str:
+        """Extracts a string of key features for creating a vector embedding.
+
+        The method ensures that the most semantically relevant information is
+        included in a format that a text-embedding model can process effectively.
+
+        Returns:
+            str: A formatted string containing the preference's key text features.
+        """
         str_tags = "; Tags: " + ", ".join(self.tags) if self.tags is not None else ""
         return f"Name: {self.name}; Description: {self.description}{str_tags}"
 
@@ -115,53 +129,11 @@ class CreatePreferenceTask(BaseModel):
         return Preference(**self.model_dump())
 
 
-class CreateGuidelineTask(BaseModel):
-    """A task for creating a guideline record.
-
-    Attributes:
-        key (str): Key identifier for the guideline.
-        language_context_key (str): Reference to the associated language context.
-        name (str): Name of the guideline.
-        description (str): Detailed description of the guideline.
-        category (str, optional): Category of the guideline.
-        examples (list[str], optional): Example implementations.
-        embedding (list[float], optional): Vector embedding for similarity search.
-    """
-
-    key: str
-    language_context_key: str
-    name: str
-    description: str
-    category: str | None = None
-    examples: list[str] | None = None
-    embedding: list[float] | None = None
-
-    def __str__(self) -> str:
-        """Returns a string representation of the CreateGuidelineTask object."""
-        return (
-            f"Name: {self.name}; "
-            f"Description: {self.description}; "
-            f"Category: {self.category}"
-        )
-
-    def to_data_store_model(self) -> Guideline:
-        """Converts the current task instance into a Guideline model instance.
-
-        This method unpacks the dictionary representation of the current task
-        (obtained via model_dump()) into the Guideline constructor.
-
-        Returns:
-            Guideline: An instance of Guideline populated with the data
-                from this task instance.
-        """
-        return Guideline(**self.model_dump())
-
-
 class CreateRuleTask(BaseModel):
     """A task for creating a rule record.
 
     Attributes:
-        key (str): Key identifier for the rule.
+        key (str, optional): Key identifier for the rule.
         language_context_key (str): Reference to the associated language context.
         name (str): Name of the rule.
         description (str): Description of the rule.
@@ -170,7 +142,7 @@ class CreateRuleTask(BaseModel):
         embedding (list[float], optional): Vector embedding for similarity search.
     """
 
-    key: str
+    key: str | None = None
     language_context_key: str
     name: str
     description: str
@@ -178,8 +150,15 @@ class CreateRuleTask(BaseModel):
     violations_action: str | None = None
     embedding: list[float] | None = None
 
-    def __str__(self) -> str:
-        """Returns a string representation of the CreateRuleTask object."""
+    def as_text_features(self) -> str:
+        """Extracts a string of key features for creating a vector embedding.
+
+        The method ensures that the most semantically relevant information is
+        included in a format that a text-embedding model can process effectively.
+
+        Returns:
+            str: A formatted string containing the rule's key text features.
+        """
         return (
             f"Name: {self.name}; "
             f"Description: {self.description}; "
@@ -199,11 +178,60 @@ class CreateRuleTask(BaseModel):
         return Rule(**self.model_dump())
 
 
+class CreateGuidelineTask(BaseModel):
+    """A task for creating a guideline record.
+
+    Attributes:
+        key (str, optional): Key identifier for the guideline.
+        language_context_key (str): Reference to the associated language context.
+        name (str): Name of the guideline.
+        description (str): Detailed description of the guideline.
+        category (str, optional): Category of the guideline.
+        examples (list[str], optional): Example implementations.
+        embedding (list[float], optional): Vector embedding for similarity search.
+    """
+
+    key: str | None = None
+    language_context_key: str
+    name: str
+    description: str
+    category: str | None = None
+    examples: list[str] | None = None
+    embedding: list[float] | None = None
+
+    def as_text_features(self) -> str:
+        """Extracts a string of key features for creating a vector embedding.
+
+        The method ensures that the most semantically relevant information is
+        included in a format that a text-embedding model can process effectively.
+
+        Returns:
+            str: A formatted string containing the guideline's key text features.
+        """
+        return (
+            f"Name: {self.name}; "
+            f"Description: {self.description}; "
+            f"Category: {self.category}"
+        )
+
+    def to_data_store_model(self) -> Guideline:
+        """Converts the current task instance into a Guideline model instance.
+
+        This method unpacks the dictionary representation of the current task
+        (obtained via model_dump()) into the Guideline constructor.
+
+        Returns:
+            Guideline: An instance of Guideline populated with the data
+                from this task instance.
+        """
+        return Guideline(**self.model_dump())
+
+
 class CreateSrcStructureTask(BaseModel):
     """A task for creating a src structure record.
 
     Attributes:
-        key (str): Key identifier for the source structure.
+        key (str, optional): Key identifier for the source structure.
         language_context_key (str): Reference to the associated language context.
         path (str): File or directory path.
         description (str): Description of the structure.
@@ -211,15 +239,22 @@ class CreateSrcStructureTask(BaseModel):
         embedding (list[float], optional): Vector embedding for similarity search.
     """
 
-    key: str
+    key: str | None = None
     language_context_key: str
     path: str
     description: str
     structure_type: str | None = None
     embedding: list[float] | None = None
 
-    def __str__(self) -> str:
-        """Returns a string representation of the CreateSrcStructureTask object."""
+    def as_text_features(self) -> str:
+        """Extracts a string of key features for creating a vector embedding.
+
+        The method ensures that the most semantically relevant information is
+        included in a format that a text-embedding model can process effectively.
+
+        Returns:
+            str: A formatted string containing the source structure's key text features.
+        """
         return (
             f"Path: {self.path}; "
             f"Description: {self.description}"
@@ -239,57 +274,11 @@ class CreateSrcStructureTask(BaseModel):
         return SourceStructure(**self.model_dump())
 
 
-class CreateCodeTask(BaseModel):
-    """A task for creating a code record.
-
-    Attributes:
-        key (str): Key identifier for the code.
-        language_context_key (str): Reference to the associated language context.
-        name (str): Name or title of the code.
-        description (str, optional): Description of what the code does.
-        content (str): The actual code content.
-        tags (list[str], optional): Tags for categorization.
-        embedding (list[float], optional): Vector embedding for similarity search.
-    """
-
-    key: str
-    language_context_key: str
-    name: str
-    description: str
-    content: str
-    tags: list[str] | None = None
-    embedding: list[float] | None = None
-
-    def __str__(self) -> str:
-        """Returns a string representation of the CreateCodeTask object."""
-        str_tags = (
-            "; Tags: " + ", ".join(self.tags) + ";" if self.tags is not None else ""
-        )
-        return (
-            f"Name: {self.name}; "
-            f"Description: {self.description}; "
-            f"{str_tags}"
-            f"Content:\n{self.content}"
-        )
-
-    def to_data_store_model(self) -> Code:
-        """Converts the current task instance into a Code model instance.
-
-        This method unpacks the dictionary representation of the current task
-        (obtained via model_dump()) into the Code constructor.
-
-        Returns:
-            Code: An instance of Code populated with the data
-                from this task instance.
-        """
-        return Code(**self.model_dump())
-
-
 class CreateAstractionTask(BaseModel):
     """A task for creating an abstraction record.
 
     Attributes:
-        key (str): Key identifier for the abstraction.
+        key (str, optional): Key identifier for the abstraction.
         language_context_key (str): Reference to the associated language context.
         name (str): Name of the abstraction.
         description (str): Description of the abstraction.
@@ -300,7 +289,7 @@ class CreateAstractionTask(BaseModel):
         embedding (list[float], optional): Vector embedding for similarity search.
     """
 
-    key: str
+    key: str | None = None
     language_context_key: str
     name: str
     description: str
@@ -309,8 +298,15 @@ class CreateAstractionTask(BaseModel):
     tags: list[str] | None = None
     embedding: list[float] | None = None
 
-    def __str__(self) -> str:
-        """Returns a string representation of the CreateAstractionTask object."""
+    def as_text_features(self) -> str:
+        """Extracts a string of key features for creating a vector embedding.
+
+        The method ensures that the most semantically relevant information is
+        included in a format that a text-embedding model can process effectively.
+
+        Returns:
+            str: A formatted string containing the abstraction's key text features.
+        """
         str_tags = (
             "; Tags: " + ", ".join(self.tags) + ";" if self.tags is not None else ""
         )
@@ -333,3 +329,56 @@ class CreateAstractionTask(BaseModel):
                 from this task instance.
         """
         return Abstraction(**self.model_dump())
+
+
+class CreateCodeTask(BaseModel):
+    """A task for creating a code record.
+
+    Attributes:
+        key (str, optional): Key identifier for the code.
+        language_context_key (str): Reference to the associated language context.
+        name (str): Name or title of the code.
+        description (str, optional): Description of what the code does.
+        content (str): The actual code content.
+        tags (list[str], optional): Tags for categorization.
+        embedding (list[float], optional): Vector embedding for similarity search.
+    """
+
+    key: str | None = None
+    language_context_key: str
+    name: str
+    description: str
+    content: str
+    tags: list[str] | None = None
+    embedding: list[float] | None = None
+
+    def as_text_features(self) -> str:
+        """Extracts a string of key features for creating a vector embedding.
+
+        The method ensures that the most semantically relevant information is
+        included in a format that a text-embedding model can process effectively.
+
+        Returns:
+            str: A formatted string containing the code's key text features.
+        """
+        str_tags = (
+            "; Tags: " + ", ".join(self.tags) + ";" if self.tags is not None else ""
+        )
+        return (
+            f"Name: {self.name}; "
+            f"Description: {self.description}; "
+            f"{str_tags}"
+            f"Content:\n{self.content}"
+        )
+
+    def to_data_store_model(self) -> Code:
+        """Converts the current task instance into a Code model instance.
+
+        This method unpacks the dictionary representation of the current task
+        (obtained via model_dump()) into the Code constructor.
+
+        Returns:
+            Code: An instance of Code populated with the data
+                from this task instance.
+        """
+        return Code(**self.model_dump())

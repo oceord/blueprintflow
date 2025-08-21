@@ -80,40 +80,6 @@ class Preference(BaseModel):
     embedding: list[float]
 
 
-class Guideline(BaseModel):
-    """A model representing a guideline in LanceDB.
-
-    Attributes:
-        key (str): Key identifier for the guideline.
-        language_context_key (str): Reference to the associated language context.
-        name (str): Name of the guideline.
-        description (str): Detailed description of the guideline.
-        category (str, optional): Category of the guideline.
-        examples (list[str], optional): Example implementations.
-        embedding (list[float]): Vector embedding for similarity search.
-
-    Examples:
-        >>> guideline = Guideline(
-        ...     key="guide_001",
-        ...     language_context_key="python_data_001",
-        ...     name="Use type hints",
-        ...     description="Always use type hints in Python functions",
-        ...     category="code_quality",
-        ...     embedding=[1, 1, 1],
-        ... )
-        >>> guideline.name
-        'Use type hints'
-    """
-
-    key: str
-    language_context_key: str
-    name: str
-    description: str
-    category: str | None = None
-    examples: list[str] | None = None
-    embedding: list[float]
-
-
 class Rule(BaseModel):
     """A model representing a rule in LanceDB.
 
@@ -148,6 +114,40 @@ class Rule(BaseModel):
     embedding: list[float]
 
 
+class Guideline(BaseModel):
+    """A model representing a guideline in LanceDB.
+
+    Attributes:
+        key (str): Key identifier for the guideline.
+        language_context_key (str): Reference to the associated language context.
+        name (str): Name of the guideline.
+        description (str): Detailed description of the guideline.
+        category (str, optional): Category of the guideline.
+        examples (list[str], optional): Example implementations.
+        embedding (list[float]): Vector embedding for similarity search.
+
+    Examples:
+        >>> guideline = Guideline(
+        ...     key="guide_001",
+        ...     language_context_key="python_data_001",
+        ...     name="Use type hints",
+        ...     description="Always use type hints in Python functions",
+        ...     category="code_quality",
+        ...     embedding=[1, 1, 1],
+        ... )
+        >>> guideline.name
+        'Use type hints'
+    """
+
+    key: str
+    language_context_key: str
+    name: str
+    description: str
+    category: str | None = None
+    examples: list[str] | None = None
+    embedding: list[float]
+
+
 class SourceStructure(BaseModel):
     """A model representing a source structure in LanceDB.
 
@@ -177,42 +177,6 @@ class SourceStructure(BaseModel):
     path: str
     description: str
     structure_type: str | None = None
-    embedding: list[float]
-
-
-class Code(BaseModel):
-    """A model representing code snippets in LanceDB.
-
-    Attributes:
-        key (str): Key identifier for the code.
-        language_context_key (str): Reference to the associated language context.
-        name (str): Name or title of the code.
-        description (str, optional): Description of what the code does.
-        content (str): The actual code content.
-        tags (list[str], optional): Tags for categorization.
-        embedding (list[float]): Vector embedding for similarity search.
-
-    Examples:
-        >>> code = Code(
-        ...     key="code_001",
-        ...     language_context_key="python_data_001",
-        ...     name="data_loader",
-        ...     description="Function to load data from file",
-        ...     content="def load_data(path): ...",
-        ...     embedding=[0.5, 0.5, 0.5],
-        ... )
-        >>> code.name
-        'data_loader'
-        >>> code.content
-        'def load_data(path): ...'
-    """
-
-    key: str
-    language_context_key: str
-    name: str
-    description: str
-    content: str
-    tags: list[str] | None = None
     embedding: list[float]
 
 
@@ -251,6 +215,42 @@ class Abstraction(BaseModel):
     description: str
     abstraction_type: str | None = None
     content: str | None = None
+    tags: list[str] | None = None
+    embedding: list[float]
+
+
+class Code(BaseModel):
+    """A model representing code snippets in LanceDB.
+
+    Attributes:
+        key (str): Key identifier for the code.
+        language_context_key (str): Reference to the associated language context.
+        name (str): Name or title of the code.
+        description (str, optional): Description of what the code does.
+        content (str): The actual code content.
+        tags (list[str], optional): Tags for categorization.
+        embedding (list[float]): Vector embedding for similarity search.
+
+    Examples:
+        >>> code = Code(
+        ...     key="code_001",
+        ...     language_context_key="python_data_001",
+        ...     name="data_loader",
+        ...     description="Function to load data from file",
+        ...     content="def load_data(path): ...",
+        ...     embedding=[0.5, 0.5, 0.5],
+        ... )
+        >>> code.name
+        'data_loader'
+        >>> code.content
+        'def load_data(path): ...'
+    """
+
+    key: str
+    language_context_key: str
+    name: str
+    description: str
+    content: str
     tags: list[str] | None = None
     embedding: list[float]
 

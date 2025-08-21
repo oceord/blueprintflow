@@ -51,8 +51,8 @@ class StoreManager:
         self,
         task: CreateLanguageContextTask
         | CreatePreferenceTask
-        | CreateGuidelineTask
         | CreateRuleTask
+        | CreateGuidelineTask
         | CreateSrcStructureTask
         | CreateAstractionTask
         | CreateCodeTask,
@@ -68,12 +68,12 @@ class StoreManager:
 
         Returns:
             TaskStatusEnum: SUCCESS if the record was created successfully,
-                        FAILURE otherwise.
+                FAILURE otherwise.
         """
         if task.key is None:
             task.key = str(uuid4())
         if task.embedding is None:
-            task.embedding = self.llm_connector.get_embedding(str(task))
+            task.embedding = self.llm_connector.get_embedding(task.as_text_features())
         success = self.lance_handler.create_record(task.to_data_store_model())
         if not success:
             return TaskStatusEnum.FAILURE
