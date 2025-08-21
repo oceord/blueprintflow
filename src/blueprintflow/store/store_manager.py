@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from blueprintflow.core.models.settings import BlueprintFlowSettings
 from blueprintflow.core.models.tasks import (
     CreateAstractionTask,
@@ -68,6 +70,8 @@ class StoreManager:
             TaskStatusEnum: SUCCESS if the record was created successfully,
                         FAILURE otherwise.
         """
+        if task.key is None:
+            task.key = str(uuid4())
         if task.embedding is None:
             task.embedding = self.llm_connector.get_embedding(str(task))
         success = self.lance_handler.create_record(task.to_data_store_model())
