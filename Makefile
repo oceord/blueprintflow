@@ -1,6 +1,6 @@
 # Makefile to gather common commands
 
-.PHONY: build check clean format help lint pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git test tox validate-publish verify version-bump version-bump-dev version-bump-patch version-bump-post version-bump-rc
+.PHONY: build check clean format help lint pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git test tox validate-publish verify bump-version bump-version-dev bump-version-patch bump-version-post bump-version-rc
 .DEFAULT_GOAL := help
 
 help: ## Show this help menu
@@ -23,19 +23,19 @@ set-up-git:
 
 ####### CI/CD COMMANDS #######################################################################
 
-version-bump-dev: ## Bump blueprintflow dev-release version
+bump-version-dev: ## Bump blueprintflow dev-release version
 	@python -m incremental.update blueprintflow --dev
 
-version-bump-rc: ## Bump blueprintflow release candidate version
+bump-version-rc: ## Bump blueprintflow release candidate version
 	@python -m incremental.update blueprintflow --rc
 
-version-bump: ## Bump blueprintflow version
+bump-version: ## Bump blueprintflow version
 	@python -m incremental.update blueprintflow
 
-version-bump-patch: ## Bump blueprintflow patch-release version
+bump-version-patch: ## Bump blueprintflow patch-release version
 	@python -m incremental.update blueprintflow --patch
 
-version-bump-post: ## Bump blueprintflow post-release version
+bump-version-post: ## Bump blueprintflow post-release version
 	@python -m incremental.update blueprintflow --post
 
 print-version: ## Display current local version
