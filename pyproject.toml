@@ -5,10 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 dynamic = ["version", "readme"]
 name = "blueprintflow"
-license = { file = "LICENSE" }
+license = "MIT"
 description = "Simplify code generation via abstractions and structured retrieval"
 classifiers = [
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
