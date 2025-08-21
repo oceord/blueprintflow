@@ -1,4 +1,5 @@
 from enum import StrEnum
+from typing import Protocol, TypeVar
 
 from pydantic import BaseModel
 
@@ -11,6 +12,48 @@ from blueprintflow.core.models.data_store import (
     Rule,
     SourceStructure,
 )
+
+TModel_co = TypeVar(
+    "TModel_co",
+    LanguageContext,
+    Preference,
+    Rule,
+    Guideline,
+    SourceStructure,
+    Abstraction,
+    Code,
+    covariant=True,
+)
+
+
+class CreateTaskProtocol(Protocol[TModel_co]):
+    """Protocol for task objects that can be used to create records in the data store.
+
+    Attributes:
+        key (str, optional): A unique identifier for the task. If not provided, one
+            will be generated.
+        embedding (list[float], optional): An embedding vector for the task. If not
+            provided, one will be generated.
+    """
+
+    key: str | None
+    embedding: list[float] | None
+
+    def as_text_features(self) -> str:
+        """Convert the task to a str representation suitable for generating embeddings.
+
+        Returns:
+            A string representation of the task's features.
+        """
+        ...
+
+    def to_data_store_model(self) -> TModel_co:
+        """Convert the task to a data store model instance.
+
+        Returns:
+            An instance of the model corresponding to this task.
+        """
+        ...
 
 
 class TaskStatusEnum(StrEnum):
@@ -274,7 +317,7 @@ class CreateSrcStructureTask(BaseModel):
         return SourceStructure(**self.model_dump())
 
 
-class CreateAstractionTask(BaseModel):
+class CreateAbstractionTask(BaseModel):
     """A task for creating an abstraction record.
 
     Attributes:

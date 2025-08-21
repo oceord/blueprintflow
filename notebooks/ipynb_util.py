@@ -1,12 +1,23 @@
 from pprint import pprint
+from typing import Any
+
+from pydantic import BaseModel
 
 LIST_SLICE_THRESHOLD = 3
 STR_SLICE_THRESHOLD = 250
 STR_SLICE_PLACEHOLDER = " [...]"
 
 
-def pprint_lancedb_record(  # noqa: PLR0913
-    record: dict,
+def pprint_model(
+    model: BaseModel | None,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
+    pprint_record(model.model_dump() if model else None, *args, **kwargs)
+
+
+def pprint_record(  # noqa: PLR0913
+    record: dict | None,
     *,
     fields_to_ignore: list[str] | None = None,
     fields_to_clip_at_first_line: list[str] | None = None,
@@ -14,6 +25,9 @@ def pprint_lancedb_record(  # noqa: PLR0913
     sort_dicts: bool = False,
     underscore_numbers: bool = True,
 ) -> None:
+    if record is None:
+        print("None")
+        return
     for field in fields_to_ignore or []:
         record.pop(field)
     for newline_replace_field in fields_to_clip_at_first_line or []:

@@ -7,13 +7,13 @@ from pydantic import BaseModel
 class TableNameEnum(StrEnum):
     """Enumeration of table names in the LanceDB database."""
 
-    GUIDELINE = "guidelines"
     LANG_CONTEXT = "language_contexts"
     PREFERENCE = "preferences"
     RULE = "rules"
+    GUIDELINE = "guidelines"
     SRC_STRUCTURE = "source_structures"
-    CODE = "code"
     ABSTRACTION = "abstractions"
+    CODE = "code"
 
 
 class LanguageContext(BaseModel):

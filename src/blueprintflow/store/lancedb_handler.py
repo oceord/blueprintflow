@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import cast
+from typing import TYPE_CHECKING, Literal, cast, overload
 
 import lancedb
 from lancedb import DBConnection
@@ -18,6 +18,9 @@ from blueprintflow.core.models.data_store import (
     TableNameEnum,
 )
 from blueprintflow.utils.xdg.data import UserData
+
+if TYPE_CHECKING:
+    from pydantic import BaseModel
 
 
 class LanceDB:
@@ -144,28 +147,112 @@ class LanceDB:
             results = table.search().limit(query_filter.limit).to_list()
         return cast("list[dict]", results)
 
-    def get_by_key(self, table_name: TableNameEnum, record_key: str) -> dict | None:
-        """Get a record by key.
+    @overload
+    def get_by_key(
+        self, table_name: Literal[TableNameEnum.LANG_CONTEXT], key: str
+    ) -> LanguageContext | None: ...
+
+    @overload
+    def get_by_key(
+        self, table_name: Literal[TableNameEnum.PREFERENCE], key: str
+    ) -> Preference | None: ...
+
+    @overload
+    def get_by_key(
+        self, table_name: Literal[TableNameEnum.RULE], key: str
+    ) -> Rule | None: ...
+
+    @overload
+    def get_by_key(
+        self, table_name: Literal[TableNameEnum.GUIDELINE], key: str
+    ) -> Guideline | None: ...
+
+    @overload
+    def get_by_key(
+        self, table_name: Literal[TableNameEnum.SRC_STRUCTURE], key: str
+    ) -> SourceStructure | None: ...
+
+    @overload
+    def get_by_key(
+        self, table_name: Literal[TableNameEnum.ABSTRACTION], key: str
+    ) -> Abstraction | None: ...
+
+    @overload
+    def get_by_key(
+        self, table_name: Literal[TableNameEnum.CODE], key: str
+    ) -> Code | None: ...
+
+    @overload
+    def get_by_key(
+        self, table_name: TableNameEnum, key: str
+    ) -> (
+        LanguageContext
+        | Preference
+        | Rule
+        | Guideline
+        | SourceStructure
+        | Abstraction
+        | Code
+        | None
+    ): ...
+
+    def get_by_key(
+        self, table_name: TableNameEnum, key: str
+    ) -> (
+        LanguageContext
+        | Preference
+        | Rule
+        | Guideline
+        | SourceStructure
+        | Abstraction
+        | Code
+        | None
+    ):
+        """Retrieve a record from the specified table using its unique key.
 
         Args:
-            table_name (TableNameEnum): Name of the table.
-            record_key (str): record key.
+            table_name (TableNameEnum): The table from which to retrieve the record.
+            key (str): The unique identifier for the record.
 
         Returns:
-            Optional[dict]: The record if found, None otherwise.
+            Union[BaseModel, None]:
+                An instance of the corresponding model (LanguageContext, Preference,
+                Rule, Guideline, SourceStructure, Abstraction, Code) if the record is
+                found, otherwise None.
 
-        Examples:
+        Example:
             >>> from blueprintflow.core.models.data_store import TableNameEnum
             >>> record = db_handler.get_by_key(  # doctest: +SKIP
             ...     TableNameEnum.PREFERENCE,
             ...     "pref_001",
             ... )
         """
-        query = QueryFilter(
-            table=table_name, filter_conditions={"key": record_key}, limit=1
-        )
-        results = self.query(query)
-        return results[0] if results else None
+        query = QueryFilter(table=table_name, filter_conditions={"key": key}, limit=1)
+        records = self.query(query)
+        record = records[0] if records else None
+
+        if record is None:
+            return None
+
+        model_instance: BaseModel | None = None
+
+        match table_name:
+            case TableNameEnum.LANG_CONTEXT:
+                model_instance = LanguageContext(**record)
+            case TableNameEnum.PREFERENCE:
+                model_instance = Preference(**record)
+            case TableNameEnum.RULE:
+                model_instance = Rule(**record)
+            case TableNameEnum.GUIDELINE:
+                model_instance = Guideline(**record)
+            case TableNameEnum.SRC_STRUCTURE:
+                model_instance = SourceStructure(**record)
+            case TableNameEnum.ABSTRACTION:
+                model_instance = Abstraction(**record)
+            case TableNameEnum.CODE:
+                model_instance = Code(**record)
+
+        return model_instance
 
     def create_record(
         self,
@@ -219,14 +306,12 @@ class LanceDB:
         table.add([data])
         return True
 
-    def update_record(
-        self, table_name: TableNameEnum, record_key: str, updates: dict
-    ) -> bool:
+    def update_record(self, table_name: TableNameEnum, key: str, updates: dict) -> bool:
         """Update a record.
 
         Args:
             table_name (TableNameEnum): Name of the table.
-            record_key (str): record key to update.
+            key (str): record key to update.
             updates (dict): Fields to update.
 
         Returns:
@@ -245,20 +330,20 @@ class LanceDB:
             ... )
         """
         table = self.get_table(table_name)
-        existing = self.get_by_key(table_name, record_key)
+        existing = self.get_by_key(table_name, key)
         if not existing:
             return False
-        existing.update(updates)
-        table.delete(f"key = '{record_key}'")
+        existing.model_copy(update=updates)
+        table.delete(f"key = '{key}'")
         table.add([existing])
         return True
 
-    def delete_record(self, table_name: TableNameEnum, record_key: str) -> bool:
+    def delete_record(self, table_name: TableNameEnum, key: str) -> bool:
         """Delete a record.
 
         Args:
             table_name (TableNameEnum): Name of the table.
-            record_key (str): record key to delete.
+            key (str): record key to delete.
 
         Returns:
             bool: True if successful.
@@ -271,7 +356,7 @@ class LanceDB:
             ... )
         """
         table = self.get_table(table_name)
-        table.delete(f"key = '{record_key}'")
+        table.delete(f"key = '{key}'")
         return True
 
     def search_vector(

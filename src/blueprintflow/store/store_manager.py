@@ -2,14 +2,9 @@ from uuid import uuid4
 
 from blueprintflow.core.models.settings import BlueprintFlowSettings
 from blueprintflow.core.models.tasks import (
-    CreateAstractionTask,
-    CreateCodeTask,
-    CreateGuidelineTask,
-    CreateLanguageContextTask,
-    CreatePreferenceTask,
-    CreateRuleTask,
-    CreateSrcStructureTask,
+    CreateTaskProtocol,
     TaskStatusEnum,
+    TModel_co,
 )
 from blueprintflow.llm.connector import LLMConnector
 from blueprintflow.store.lancedb_handler import LanceDB
@@ -48,33 +43,30 @@ class StoreManager:
         self.llm_connector = LLMConnector(models=settings.models)
 
     def create(
-        self,
-        task: CreateLanguageContextTask
-        | CreatePreferenceTask
-        | CreateRuleTask
-        | CreateGuidelineTask
-        | CreateSrcStructureTask
-        | CreateAstractionTask
-        | CreateCodeTask,
-    ) -> TaskStatusEnum:
+        self, task: CreateTaskProtocol[TModel_co]
+    ) -> tuple[TaskStatusEnum, TModel_co | None]:
         """Create a new record in the database from a task object.
 
-        Takes a task object containing the data to be stored, optionally generates an
-        embedding if not provided, and creates a corresponding record in the database.
+        Takes a task object containing the data to be stored, optionally generates a key
+        and embedding if not provided, and creates a corresponding record in the
+        database.
 
         Args:
             task: A task object containing the data to be stored. Can be any of the
-                supported task types representing different entities in the system.
+                supported task types.
 
         Returns:
-            TaskStatusEnum: SUCCESS if the record was created successfully,
-                FAILURE otherwise.
+            tuple:
+                A tuple where the first element is the status of the operation, and the
+                second element is the created model instance if successful, or None if
+                the operation failed.
         """
         if task.key is None:
             task.key = str(uuid4())
         if task.embedding is None:
             task.embedding = self.llm_connector.get_embedding(task.as_text_features())
-        success = self.lance_handler.create_record(task.to_data_store_model())
+        data_store_model = task.to_data_store_model()
+        success = self.lance_handler.create_record(data_store_model)
         if not success:
-            return TaskStatusEnum.FAILURE
-        return TaskStatusEnum.SUCCESS
+            return TaskStatusEnum.FAILURE, None
+        return TaskStatusEnum.SUCCESS, data_store_model
