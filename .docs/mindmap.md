@@ -28,21 +28,20 @@ mindmap
             {{Watermarks}}
         (Information Retrieval)
             {{RAG}}
-            {{GraphRAG}}
             {{Contextual Retrieval}}
             {{Query Expansion Retrieval}}
         (Storage)
             {{VectorStore}}
-                Abstractions
-                Boilerplate
-                High-Quality Code
-            {{GraphDB}}
-                Guidelines
+                LanguageContext
+                Preferences
                 Rules
+                Guidelines
+                SourceStructure
+                Abstractions
+                Code
         (Tech Stack)
             Python
             LiteLLM
             Pydantic
             LanceDB
-            Kùzu
 ```
