@@ -190,7 +190,8 @@ class Abstraction(BaseModel):
         description (str): Description of the abstraction.
         abstraction_type (str, optional): Type of abstraction
             (e.g., "pattern", "template").
-        content (str, optional): Content or implementation of the abstraction.
+        content (str, optional): Content or pseudo-implementation of the abstraction.
+        examples (list[str], optional): Example implementations of the abstraction.
         tags (list[str], optional): Tags for categorization.
         embedding (list[float]): Vector embedding for similarity search.
 
@@ -215,6 +216,7 @@ class Abstraction(BaseModel):
     description: str
     abstraction_type: str | None = None
     content: str | None = None
+    examples: list[str] | None = None
     tags: list[str] | None = None
     embedding: list[float]
 
@@ -302,17 +304,6 @@ SCHEMAS = {
             pa.field("embedding", pa.list_(pa.float64())),
         ]
     ),
-    TableNameEnum.GUIDELINE: pa.schema(
-        [
-            pa.field("key", pa.string()),
-            pa.field("language_context_key", pa.string()),
-            pa.field("name", pa.string()),
-            pa.field("description", pa.string()),
-            pa.field("category", pa.string()),
-            pa.field("examples", pa.list_(pa.string())),
-            pa.field("embedding", pa.list_(pa.float64())),
-        ]
-    ),
     TableNameEnum.RULE: pa.schema(
         [
             pa.field("key", pa.string()),
@@ -321,6 +312,17 @@ SCHEMAS = {
             pa.field("description", pa.string()),
             pa.field("rule_type", pa.string()),
             pa.field("violations_action", pa.string()),
+            pa.field("embedding", pa.list_(pa.float64())),
+        ]
+    ),
+    TableNameEnum.GUIDELINE: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("language_context_key", pa.string()),
+            pa.field("name", pa.string()),
+            pa.field("description", pa.string()),
+            pa.field("category", pa.string()),
+            pa.field("examples", pa.list_(pa.string())),
             pa.field("embedding", pa.list_(pa.float64())),
         ]
     ),
@@ -334,17 +336,6 @@ SCHEMAS = {
             pa.field("embedding", pa.list_(pa.float64())),
         ]
     ),
-    TableNameEnum.CODE: pa.schema(
-        [
-            pa.field("key", pa.string()),
-            pa.field("language_context_key", pa.string()),
-            pa.field("name", pa.string()),
-            pa.field("description", pa.string()),
-            pa.field("content", pa.string()),
-            pa.field("tags", pa.list_(pa.string())),
-            pa.field("embedding", pa.list_(pa.float64())),
-        ]
-    ),
     TableNameEnum.ABSTRACTION: pa.schema(
         [
             pa.field("key", pa.string()),
@@ -352,6 +343,18 @@ SCHEMAS = {
             pa.field("name", pa.string()),
             pa.field("description", pa.string()),
             pa.field("abstraction_type", pa.string()),
+            pa.field("content", pa.string()),
+            pa.field("examples", pa.list_(pa.string())),
+            pa.field("tags", pa.list_(pa.string())),
+            pa.field("embedding", pa.list_(pa.float64())),
+        ]
+    ),
+    TableNameEnum.CODE: pa.schema(
+        [
+            pa.field("key", pa.string()),
+            pa.field("language_context_key", pa.string()),
+            pa.field("name", pa.string()),
+            pa.field("description", pa.string()),
             pa.field("content", pa.string()),
             pa.field("tags", pa.list_(pa.string())),
             pa.field("embedding", pa.list_(pa.float64())),

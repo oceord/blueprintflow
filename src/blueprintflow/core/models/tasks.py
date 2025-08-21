@@ -328,6 +328,7 @@ class CreateAbstractionTask(BaseModel):
         abstraction_type (str, optional): Type of abstraction
             (e.g., "pattern", "template").
         content (str, optional): Content or implementation of the abstraction.
+        examples (list[str], optional): Example implementations of the abstraction.
         tags (list[str], optional): Tags for categorization.
         embedding (list[float], optional): Vector embedding for similarity search.
     """
@@ -338,6 +339,7 @@ class CreateAbstractionTask(BaseModel):
     description: str
     abstraction_type: str | None = None
     content: str | None = None
+    examples: list[str] | None = None
     tags: list[str] | None = None
     embedding: list[float] | None = None
 
