@@ -13,6 +13,4 @@ sudo ./scripts/install_meta_packages.sh \
 ./scripts/install_meta_packages.sh --use-pipx \
     --install-pip-dev-packages
 
-./scripts/install_meta_packages.sh --install-pyenv
-
 make set-up-git

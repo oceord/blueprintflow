@@ -40,7 +40,7 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-exclude = ["tests"]
+exclude = ["noxfile.py", "tests"]
 
 [tool.ruff]
 exclude = [
@@ -60,6 +60,7 @@ ignore = [
     "TD002",
     "TD003",
 ]
+exclude = ["noxfile.py"]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "*.ipynb" = [

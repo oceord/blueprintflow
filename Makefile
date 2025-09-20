@@ -1,6 +1,6 @@
 # Makefile to gather common commands
 
-.PHONY: build check clean format help lint pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git test tox validate-publish verify bump-version bump-version-dev bump-version-patch bump-version-post bump-version-rc
+.PHONY: build bump-version bump-version-dev bump-version-patch bump-version-post bump-version-rc check clean del-app-state del-user-config del-user-data doctest format help lint nox pipenv-dev-install print-phony print-version publish-pypi publish-testpypi set-up-git test validate-publish verify
 .DEFAULT_GOAL := help
 
 help: ## Show this help menu
@@ -100,10 +100,10 @@ doctest: ## Run doctests
 test: ## Run tests
 	@pytest
 
-tox: ## Run tox tests
-	@tox
+nox: ## Run nox tests
+	@nox --default-venv-backend uv
 
-verify: format lint check tox ## Run all verification commands
+verify: format lint check nox ## Run all verification commands
 
 pipenv-dev-install: ## Create dev venv
 	@pipenv run pip install --upgrade pip
