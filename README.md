@@ -52,7 +52,7 @@ BlueprintFlow uses advanced retrieval techniques to understand the context and i
 
 ## Storage Architecture
 
-BlueprintFlow uses a unified vector database (LanceDB) for all data storage, combining the benefits of both relational and similarity-based retrieval:
+BlueprintFlow uses a unified vector database (LanceDB) for all data storage, seamlessly integrating relational and similarity-based retrieval:
 
-- **Data Storage**: All entities (guidelines, rules, preferences, patterns, abstractions, and code snippets) are stored as records in LanceDB.
-- **Vector Search Capabilities**: Patterns, abstractions, and code snippets leverage LanceDB's vector search capabilities for efficient similarity-based retrieval.
+- **Data Storage**: All entities—including guidelines, rules, preferences, patterns, abstractions, and code snippets—are stored as records in LanceDB.
+- **Vector Search**: Every entity supports vector search, enabling efficient and scalable similarity-based retrieval across the entire database.
