@@ -8,6 +8,10 @@ BlueprintFlow is a Python package designed to simplify code generation through l
 It leverages LLMs to generate code from patterns and abstractions, adhering to predefined rules, guidelines, and preferences.
 It emphasizes modularity and simplicity while maintaining a singular focus on code generation from upstream sources.
 
+> [!WARNING]
+> BlueprintFlow is in active development and not yet ready for production use.
+> Expect breaking changes, missing features, and potential bugs as the project evolves.
+
 ## Features
 
 - **Pattern-Based Generation**: Generate code from existing patterns, abstractions, and good-quality code.

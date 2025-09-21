@@ -14,7 +14,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Code Generators",
-    "Development Status :: 1 - Planning",
+    "Development Status :: 2 - Pre-Alpha",
 ]
 authors = [{ name = "oceord" }]
 requires-python = ">=3.12,<3.14"
