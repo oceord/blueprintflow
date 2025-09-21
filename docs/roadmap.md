@@ -17,10 +17,10 @@ The milestones are ordered by development sequence.
   - [x] Provide utilities for initial data ingestion
 - [x] **Similarity Search**
   - Implement similarity search using vector embeddings
-- [ ] **Python Library Module**
+- [x] **Python Library Module**
   - [x] Create a Python module to connect with the datastore
   - [x] Provide methods for data ingestion
-  - [ ] Provide methods for data retrieval
+  - [x] Provide methods for data retrieval
 
 ## Phase 2: Code Generation Workflow and Library Interface
 

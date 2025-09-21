@@ -359,32 +359,131 @@ class LanceDB:
         table.delete(f"key = '{key}'")
         return True
 
+    @overload
+    def search_vector(
+        self,
+        table_name: Literal[TableNameEnum.LANG_CONTEXT],
+        embedding: list[float],
+        limit: int = 10,
+        filter_conditions: dict | None = None,
+    ) -> list[LanguageContext]: ...
+
+    @overload
+    def search_vector(
+        self,
+        table_name: Literal[TableNameEnum.PREFERENCE],
+        embedding: list[float],
+        limit: int = 10,
+        filter_conditions: dict | None = None,
+    ) -> list[Preference]: ...
+
+    @overload
+    def search_vector(
+        self,
+        table_name: Literal[TableNameEnum.RULE],
+        embedding: list[float],
+        limit: int = 10,
+        filter_conditions: dict | None = None,
+    ) -> list[Rule]: ...
+
+    @overload
+    def search_vector(
+        self,
+        table_name: Literal[TableNameEnum.GUIDELINE],
+        embedding: list[float],
+        limit: int = 10,
+        filter_conditions: dict | None = None,
+    ) -> list[Guideline]: ...
+
+    @overload
+    def search_vector(
+        self,
+        table_name: Literal[TableNameEnum.SRC_STRUCTURE],
+        embedding: list[float],
+        limit: int = 10,
+        filter_conditions: dict | None = None,
+    ) -> list[SourceStructure]: ...
+
+    @overload
+    def search_vector(
+        self,
+        table_name: Literal[TableNameEnum.ABSTRACTION],
+        embedding: list[float],
+        limit: int = 10,
+        filter_conditions: dict | None = None,
+    ) -> list[Abstraction]: ...
+
+    @overload
+    def search_vector(
+        self,
+        table_name: Literal[TableNameEnum.CODE],
+        embedding: list[float],
+        limit: int = 10,
+        filter_conditions: dict | None = None,
+    ) -> list[Code]: ...
+
+    @overload
     def search_vector(
         self,
         table_name: TableNameEnum,
         embedding: list[float],
         limit: int = 10,
         filter_conditions: dict | None = None,
-    ) -> list[dict]:
+    ) -> (
+        list[LanguageContext]
+        | list[Preference]
+        | list[Rule]
+        | list[Guideline]
+        | list[SourceStructure]
+        | list[Abstraction]
+        | list[Code]
+    ): ...
+
+    def search_vector(
+        self,
+        table_name: TableNameEnum,
+        embedding: list[float],
+        limit: int = 10,
+        filter_conditions: dict | None = None,
+    ) -> (
+        list[LanguageContext]
+        | list[Preference]
+        | list[Rule]
+        | list[Guideline]
+        | list[SourceStructure]
+        | list[Abstraction]
+        | list[Code]
+    ):
         """Perform vector similarity search.
 
         Args:
-            table_name (TableNameEnum): Name of the table to search.
-            embedding (list[float]): Query embedding vector.
-            limit (int): Maximum number of results.
-            filter_conditions (dict, optional): Additional filter conditions.
+            table_name (TableNameEnum):
+                The name of the table to search in. Must be a member of the
+                `TableNameEnum` enumeration.
+            embedding (list[float]):
+                The embedding vector to search for in the table.
+            limit (int, optional):
+                The maximum number of records to return. Defaults to 10.
+            filter_conditions (dict | None, optional):
+                A dictionary of filter conditions to apply to the search query.
+                If provided, only records matching these conditions will be returned.
+                Defaults to None.
 
         Returns:
-            list[dict]: List of similar records.
+            list[BaseModel]:
+                A list of records matching the search criteria, instantiated as objects
+                of the appropriate type based on the `table_name` provided.
+
+        Raises:
+            ValueError:
+                If the `table_name` is not a valid member of `TableNameEnum`.
 
         Examples:
-            >>> from blueprintflow.core.models.data_store import TableNameEnum
             >>> embedding = [0.1, 0.2, 0.3, ...]
-            >>> results = db_handler.vector_search(  # doctest: +SKIP
-            ...     table_name=TableNameEnum.CODE,
+            >>> results = search_vector( # doctest: +SKIP
+            ...     table_name=TableNameEnum.LANG_CONTEXT,
             ...     embedding=embedding,
-            ...     limit=5,
-            ...     filter_conditions={"language_context_key": "python_data_001"}
+            ...     limit=5
             ... )
         """
         table = self.get_table(table_name)
@@ -392,7 +491,32 @@ class LanceDB:
         if filter_conditions:
             filter_str = self._gen_filter_str(filter_conditions)
             query = query.where(filter_str)
-        return cast("list[dict]", query.to_list())
+        results = query.to_list()
+        model_instances: (
+            list[LanguageContext]
+            | list[Preference]
+            | list[Rule]
+            | list[Guideline]
+            | list[SourceStructure]
+            | list[Abstraction]
+            | list[Code]
+        ) = []
+        match table_name:
+            case TableNameEnum.LANG_CONTEXT:
+                model_instances = [LanguageContext(**record) for record in results]
+            case TableNameEnum.PREFERENCE:
+                model_instances = [Preference(**record) for record in results]
+            case TableNameEnum.RULE:
+                model_instances = [Rule(**record) for record in results]
+            case TableNameEnum.GUIDELINE:
+                model_instances = [Guideline(**record) for record in results]
+            case TableNameEnum.SRC_STRUCTURE:
+                model_instances = [SourceStructure(**record) for record in results]
+            case TableNameEnum.ABSTRACTION:
+                model_instances = [Abstraction(**record) for record in results]
+            case TableNameEnum.CODE:
+                model_instances = [Code(**record) for record in results]
+        return model_instances
 
     @staticmethod
     def _gen_filter_str(filter_conditions: dict) -> str:
