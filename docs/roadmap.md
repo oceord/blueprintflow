@@ -31,7 +31,7 @@ The milestones are ordered by development sequence.
 - [ ] **Base Workflow**
   - [ ] Develop a base code generation workflow with hardcoded steps
   - [ ] Generate code from bootstrapped data and user requests
-  - [ ] Apply similarity search only to patterns, abstractions, and code snippets
+  - [ ] Apply similarity search to patterns, abstractions, and code snippets
 - [ ] **Library Interface**
   - Provide a Python library interface to call and orchestrate the workflow
 
@@ -48,20 +48,11 @@ The milestones are ordered by development sequence.
 - [ ] **Metadata Embedding**
   - Embed watermarks and identifiers in generated code
 
-## Phase 4: Dynamic Workflow
-
-**Objective**: Dynamically determine workflow steps based on context and requirements.
-
-### Phase 4 Milestones
-
-- [ ] **Dynamic Workflow**
-  - Use LLMs to dynamically determine workflow steps
-
-## Phase 5: Smart Search and Contextual Retrieval
+## Phase 4: Smart Search and Contextual Retrieval
 
 **Objective**: Enhance search capabilities with contextual and query expansion retrieval.
 
-### Phase 5 Milestones
+### Phase 4 Milestones
 
 - [ ] **Similarity Search for All Entities**
   - Extend similarity search to support all entities in the datastore, beyond patterns and code
@@ -76,26 +67,45 @@ The milestones are ordered by development sequence.
 - [ ] **Reranker**
   - Implement reranking of retrieved results for higher relevance
 
-## Phase 6: Custom Validation and Abstraction Generation
+## Phase 5: Custom Validation and Abstraction Generation
 
 **Objective**: Support custom validation and generate abstractions.
 
-### Phase 6 Milestones
+### Phase 5 Milestones
 
 - [ ] **Custom Validation**
   - Allow users to define project-specific validation functions
 - [ ] **Abstraction Generation**
   - Generate abstractions from existing patterns and code
 
-## Phase 7: Non-Code Generation and User Interaction
+## Phase 6: Non-Code Generation
 
-**Objective**: Expand user interaction beyond the software library.
+**Objective**: Expand support to generate comprehensive technical documentation.
+
+### Phase 6 Milestones
+
+- [ ] **Technical Documentation**
+  - [ ] Support generating various types of technical documentation, including API documentation, user manuals, system architecture documents, and usage guides
+  - [ ] Create notes and annotations in the code to improve code clarity and maintainability
+  - [ ] Enable the creation of specifications, reports, configuration files, and data files
+
+## Phase 7: Automated File Generation
+
+**Objective**: Enable the automatic and dynamic generation of multiple files to support complex and scalable project setups.
 
 ### Phase 7 Milestones
 
-- [ ] **Non-Code Generation**
-  - Support generating non-code artifacts (e.g, documentation, technical documents, usage guides, specifications)
+- [ ] **Dynamic File Creation**
+  - Implement the ability to generate multiple files dynamically, tailored to project requirements and input parameters.
+
+## Phase 8: Improve User Interaction
+
+**Objective**: Expand user interaction beyond the software library.
+
+### Phase 8 Milestones
+
 - [ ] **User Interaction**
-  - Add Q&A and chat interfaces for user interaction
+  - [ ] Add a Q&A interface for user interaction
+  - [ ] Add a chat interface for user interaction
 - [ ] **Interactive Refinement**
   - Enable back-and-forth interaction between the LLM and the user to iteratively refine requirements and outputs
